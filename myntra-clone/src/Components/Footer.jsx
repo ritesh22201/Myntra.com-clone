@@ -5,18 +5,25 @@ import {
   Stack,
   SimpleGrid,
   Text,
+  Heading,
+  Image,
   Link,
   VisuallyHidden,
+  Flex,
+
   chakra,
   useColorModeValue,
-  Image,
+  HStack,
+  VStack,
 } from '@chakra-ui/react';
-import { FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
-import gplay from '../Assets/App_store_img.webp';
-import appStore from '../Assets/Google_play_img.webp';
+import { FaTwitter, FaYoutube, FaInstagram, FaFacebook } from 'react-icons/fa';
 
+ import apple from '../Assets/Footer/apple.webp';
+ import playstore from '../Assets/Footer/playstore.png';
+ import returnimg from '../Assets/Footer/14dayReturn.png';
+ import original from '../Assets/Footer/original.png';
 
-export const Footer = ({ children }: { children: ReactNode }) => {
+const ListHeader = ({ children }: { children: ReactNode }) => {
   return (
     <Text fontWeight={'500'} fontSize={'lg'} mb={2}>
       {children}
@@ -55,43 +62,118 @@ const SocialButton = ({
   );
 };
 
-export default function LargeWithAppLinksAndSocial() {
+export default function Footer() {
   return (
     <Box
+      mt={'30px'}
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}>
       <Container as={Stack} maxW={'6xl'} py={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} mb="25px" spacing={8}>
           <Stack align={'flex-start'}>
-            <Footer>Company</Footer>
-            <Link href={'#'}>About Us</Link>
+            {/* <ListHeader>Company</ListHeader> */}
+            <Heading size={"xs"}>ONLINE SHOPPING</Heading>
+         
+                <Box color={"gray.600"}>
+
+                 <Text>Men</Text>
+                 <Text>Women</Text>
+                 <Text>Kids</Text>
+                 <Text>Home & Living</Text>
+                 <Text>Beauty</Text>
+                 <Text>Gift Cards</Text>
+                <Text>Myntra Insiders</Text>
+                </Box>
+                <br/>
+                <Heading size={"xs"}>USEFUL LINKS</Heading>
+                 
+                 <Box color={"gray.600"}>
+
+                 <Text>Blog</Text>
+                 <Text>Careers</Text>
+                 <Text>Site Map</Text>
+                 <Text>Corporate Information</Text>
+                 <Text>Whitehat</Text>
+                 </Box>
+            {/* <Link href={'#'}>About Us</Link>
             <Link href={'#'}>Blog</Link>
             <Link href={'#'}>Careers</Link>
-            <Link href={'#'}>Contact Us</Link>
+            <Link href={'#'}>Contact Us</Link> */}
           </Stack>
 
           <Stack align={'flex-start'}>
-            <Footer>Support</Footer>
-            <Link href={'#'}>Help Center</Link>
+          
+            {/* <ListHeader>Support</ListHeader> */}
+            <Heading size={"xs"}>CUSTOMER POLICIES</Heading>
+            
+              <Box color={"gray.600"}>
+
+                 <Text>Contact Us</Text>
+                 <Text>FAQ</Text>
+                 <Text>T&C</Text>
+                 <Text>Terms Of Use</Text>
+                 <Text>Track Orders</Text>
+                 <Text>Shipping</Text>
+                 <Text>Cancellation</Text>
+                 <Text>Returns</Text>
+                 <Text>Privacy policy</Text>
+                 <Text>Grievence Officer</Text>
+              </Box>
+            {/* <Link href={'#'}>Help Center</Link>
             <Link href={'#'}>Safety Center</Link>
-            <Link href={'#'}>Community Guidelines</Link>
+            <Link href={'#'}>Community Guidelines</Link> */}
           </Stack>
 
           <Stack align={'flex-start'}>
-            <Footer>Legal</Footer>
-            <Link href={'#'}>Cookies Policy</Link>
-            <Link href={'#'}>Privacy Policy</Link>
-            <Link href={'#'}>Terms of Service</Link>
-            <Link href={'#'}>Law Enforcement</Link>
+            {/* <ListHeader>Legal</ListHeader> */}
+            <Heading mb="10px" size={"xs"} textTransform={"uppercase"}>Experience Ud app on mobile</Heading>
+            <Flex  gap="10px">
+            <Image w="120px" src={apple} />
+            <Image  w="120px" src={playstore} />
+            </Flex>
+
+            <Box >
+            <Heading mt="20px" size={"xs"}>KEEP IN TOUCH</Heading>
+       
+          <HStack mt="10px" fontSize={"25px"} color={"gray"}>
+
+          <FaFacebook/>
+          <FaTwitter/>
+          <FaYoutube/>
+          <FaInstagram/>
+          </HStack>
+
+            </Box>
+
           </Stack>
 
           <Stack align={'flex-start'}>
-            <Footer>Install App</Footer>
-            {/* <AppStoreBadge /> */}
-            <Image src={gplay} alt='app_store_img' />
-            <Image src={appStore} alt='google_play_img'/>
+            {/* <ListHeader>Install App</ListHeader> */}
+            <HStack>
+            <Image w="60px" src={original} />
+             <VStack>
+                <Text>100% ORIGINAL guarantee for  all products at myntra.com</Text>
+               
+             
+             </VStack>
+            </HStack>
+            <HStack>
+            <Image w="70px" src={returnimg} />
+             <VStack>
+                <Text>Return within 14 days of <br/>  receiving your order</Text>
+               
+             
+             </VStack>
+            </HStack>
+
           </Stack>
+         
         </SimpleGrid>
+        <Box >
+          <Heading mb="10px" size={"xs"} textTransform={"uppercase"}>Popular Searches</Heading>
+          <Text>
+Makeup | Dresses | For Girls | T-Shirts |  Sandals | Headphones | Babydolls | Blazers For Men|  Handbags|  Ladies Watches | Bags|  Sport Shoes | Reebok Shoes | Puma Shoes | Boxers | Wallets | Tops | Earrings | Fastrack Watches | Kurtis | Nike | Smart Watches | Titan Watches | Designer Blouse | Gowns | Rings | Cricket Shoes | Forever 21 | Eye Makeup | Photo Frames | Punjabi Suits | Bikini | Myntra Fashion Show | Lipstick | Saree | Watches | Dresses | Lehenga | Nike Shoes | Goggles | Bras | Suit | Chinos | Shoes | Adidas Shoes | Woodland Shoes | Jewellery | Designers Sarees</Text>
+          </Box>
       </Container>
 
       <Box
@@ -106,17 +188,10 @@ export default function LargeWithAppLinksAndSocial() {
           spacing={4}
           justify={{ md: 'space-between' }}
           align={{ md: 'center' }}>
-          <Text>© 2022 Chakra Templates. All rights reserved</Text>
+          <Text>In case of any concern, <Link href="#" color={"blue"} fontWeight={"bold"} >Contact Us</Link> </Text>  
           <Stack direction={'row'} spacing={6}>
-            <SocialButton label={'Twitter'} href={'#'}>
-              <FaTwitter />
-            </SocialButton>
-            <SocialButton label={'YouTube'} href={'#'}>
-              <FaYoutube />
-            </SocialButton>
-            <SocialButton label={'Instagram'} href={'#'}>
-              <FaInstagram />
-            </SocialButton>
+          <Text>© 2023 UniqkDezynes Templates. All rights reserved</Text>
+          
           </Stack>
         </Container>
       </Box>

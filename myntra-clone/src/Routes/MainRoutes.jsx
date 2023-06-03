@@ -7,6 +7,7 @@ import Women from '../Pages/Women'
 import Login from '../Pages/Login'
 import Product from '../Pages/Product'
 import SingleProduct from '../Pages/SingleProduct'
+import ErrorPage from '../Pages/ErrorPage'
 
 const MainRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const MainRoutes = () => {
         <Route path='/men' element={<Men/>}/>
         <Route path='/women' element={<Women/>}/>
         <Route path='/products/:id' element={<SingleProduct/>}/>
+        <Route path='*' element={<ErrorPage />}/>
     </Routes>
   )
 }

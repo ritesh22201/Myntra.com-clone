@@ -10,6 +10,8 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast, Toaster } from "react-hot-toast";
 import '../index.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { LOADER_FALSE, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS } from '../Redux/AuthReducer/actionTypes';
 
 const Login = () => {
     const [otpCount, setOtpCount] = useState(25);
@@ -19,6 +21,8 @@ const Login = () => {
     const [user, setUser] = useState(null);
     const [ph, setPh] = useState('');
     const toaster = useToast();
+    const dispatch = useDispatch();
+    const {isLoading, token} = useSelector(store => store.authReducer);
 
     const id = useRef();
 
@@ -40,7 +44,8 @@ const Login = () => {
     }
 
     const onSignup = () => {
-        setLoading(true);
+        // setLoading(true);
+        dispatch({type : LOGIN_REQUEST});
         onCaptchaVerify();
 
         const appVerifier = window.recaptchaVerifier;
@@ -50,29 +55,35 @@ const Login = () => {
         signInWithPhoneNumber(auth, formatPh, appVerifier)
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
-                setLoading(false);
+                // setLoading(false);
+                dispatch({type : LOADER_FALSE});
                 setShowOtp(true);
                 toast.success("OTP sent successfully!");
             }).catch((error) => {
-                console.log(error)
-                setLoading(false);
+                // console.log(error)
+                // setLoading(false);
+                dispatch({type : LOGIN_FAILURE});
             });
 
     }
 
     function onOTPVerify(){
-        setLoading(true);
+        // setLoading(true);
+        dispatch({type : LOGIN_REQUEST});
         window.confirmationResult.confirm(otp).then(async(res) => {
-            setUser(res.user);
-            setLoading(false);
+            // setUser(res.user);
+            dispatch({type : LOGIN_SUCCESS, payload : res.user.accessToken});
+            // setLoading(false);
         })
         .catch(err => {
-            setLoading(false);
+            // setLoading(false);
+            dispatch({type : LOGIN_FAILURE});
             toast.error("OTP is Incorrect!");
         })
     }
 
-    useEffect(() => {
+
+    // useEffect(() => {
         //  id.current = setInterval(() => {
         //     setOtpCount(prev => prev - 1);
         // },1000)
@@ -80,12 +91,14 @@ const Login = () => {
         // if(otpCount === 0){
         //     clearInterval(id.current)
         // }
-    }, [id])
+    // }, [id])
+
+
     return (
         <> 
             <Toaster toastOptions={{ duration: 4000 }} />
             <Box id="recaptcha-container"></Box>
-            {!user ?
+            {!token ?
                 <Box>
                     {!showOtp ?
                         <Box h={'100vh'} pt={'20px'} bg={'#F9ECEC'}>
@@ -97,7 +110,7 @@ const Login = () => {
 
                                 <PhoneInput country={"in"} value={ph} onChange={setPh} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
-                                <Button onClick={onSignup} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{loading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
+                                <Button onClick={onSignup} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
                             </div>
                         </Box>
@@ -119,7 +132,7 @@ const Login = () => {
                                     autofocus
                                     className='opt-container'>
                                 </OtpInput>
-                                <Button onClick={onOTPVerify} borderRadius={'none'} w={'84%'} mt={'20px'} _hover={'none'} bg={'#FF3F6C'} color={'white'} fontWeight={'bold'}> {loading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />} <span>Verify OTP</span></Button>
+                                <Button onClick={onOTPVerify} borderRadius={'none'} w={'84%'} mt={'20px'} _hover={'none'} bg={'#FF3F6C'} color={'white'} fontWeight={'bold'}> {isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />} <span>Verify OTP</span></Button>
                                 <Flex m={'30px 0 20px 0'} alignItems={'center'}>
                                     <Text color={'gray.500'} fontSize={'14px'}>Resend OTP in:</Text>
                                     {otpCount !== 0 ?
@@ -140,7 +153,7 @@ const Login = () => {
                 </Box>
                 :
                 toaster({
-                    position: 'center',
+                    position: 'top',
                     title: 'Login Successful.',
                     description: "Welcome Back.",
                     status: 'success',

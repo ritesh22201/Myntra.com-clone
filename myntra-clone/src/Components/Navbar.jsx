@@ -33,7 +33,7 @@ import {
     const { isOpen, onToggle } = useDisclosure();
   
     return (
-      <Box boxShadow= 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'>
+      <Box position={'sticky'} top={0} zIndex={'overlay'}  boxShadow= 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'>
         <Flex
           bg={useColorModeValue('white', 'gray.800')}
           color={useColorModeValue('gray.600', 'white')}

@@ -1,25 +1,40 @@
 import { Box, Button, Flex, Heading, Select, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Sidebar from '../Components/Sidebar';
 import Men from './Men';
 import { BsChevronDown } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen } from '../Redux/ProductReducer/action';
 import Pagination from '../Components/Pagination';
+import { GlobalContext } from '../Context/GlobalContextProvider';
+import { useSearchParams } from 'react-router-dom';
 
 const Product = () => {
     const [totalCount, setTotalCount] = useState(0);
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     let pageButton = Math.ceil(totalCount / 14);
+    const {paramVal} = useContext(GlobalContext);
+    const [searchParams] = useSearchParams();
+    
 
     useEffect(() => {
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     }, [])
 
+    let obj = {
+        params : {
+            categories : searchParams.getAll('categories'),
+            gender : searchParams.getAll('gender'),
+            color : searchParams.getAll('color'),
+            brand : searchParams.getAll('brand'),
+            price : searchParams.getAll('price')
+        }
+    }
+
     useEffect(() => {
-        dispatch(getProductsMen(setTotalCount, page));
-    }, [page])
+        dispatch(getProductsMen(setTotalCount, page, obj));
+    }, [page, searchParams])
 
     return (
         <Box m={'30px auto'}>

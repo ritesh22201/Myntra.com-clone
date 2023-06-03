@@ -1,9 +1,9 @@
 import { PRODUCT_FAILURE, PRODUCT_REQ, PRODUCT_SUCCESS } from "./actionTypes";
 import axios from 'axios';
 
-export const getProductsMen = (setTotalCount, page) => (dispatch) => {
+export const getProductsMen = (setTotalCount, page, obj) => (dispatch) => {
     dispatch({type : PRODUCT_REQ});
-    axios.get(`https://tense-bull-wrap.cyclic.app/men?_limit=14&_page=${page}`)
+    axios.get(`https://tense-bull-wrap.cyclic.app/products?_limit=14&_page=${page}`, obj)
     .then(res => {
         setTotalCount(res.headers['x-total-count']);
         dispatch({type : PRODUCT_SUCCESS, payload : res.data})
