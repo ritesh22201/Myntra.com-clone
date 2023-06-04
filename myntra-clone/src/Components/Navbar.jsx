@@ -28,9 +28,19 @@ import {
   import {FaHeart, FaUserAlt} from 'react-icons/fa'
   import {FiHeart, FiUser} from 'react-icons/fi'
   import {HiOutlineShoppingBag} from 'react-icons/hi'
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { getProductsMen } from '../Redux/ProductReducer/action';
+import { GlobalContext } from '../Context/GlobalContextProvider';
   
   export default function Navbar() {
     const { isOpen, onToggle } = useDisclosure();
+    const navigate = useNavigate();
+    const {inputVal, setInputVal} = useContext(GlobalContext);
+    const dispatch = useDispatch();
+    // let id = useRef();
+
   
     return (
       <Box position={'sticky'} top={0} zIndex={'overlay'}  boxShadow= 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'>
@@ -73,7 +83,7 @@ import {
             <Box position={'relative'} top={'7px'} left={'26px'}>
                 <SearchIcon/>
             </Box>
-            <Input pl={'40px'} _focusVisible={'none'} type='text' placeholder='Search for products, brands and more'/>
+            <Input value={inputVal} onChange={(e) => setInputVal(e.target.value)} pl={'40px'} _focusVisible={'none'} type='text' placeholder='Search for products, brands and more'/>
           </Box>
   
           <Stack
@@ -81,15 +91,15 @@ import {
             justify={'flex-end'}
             direction={'row'}
             spacing={6}>
-            <VStack _hover={{borderBottom : '4px solid pink', boxSizing : 'border-box'}}>
+            <VStack cursor={'pointer'} _hover={{borderBottom : '4px solid pink', boxSizing : 'border-box'}}>
                 <FiUser style={{fontSize : '20px'}}/>
                 <label style={{fontSize : '15px', fontWeight : 'bold'}}>Profile</label>
             </VStack>
-            <VStack>
+            <VStack cursor={'pointer'} onClick={() => navigate('/wishlist')}>
                 <FiHeart style={{fontSize : '20px'}}/>
                 <label style={{fontSize : '15px', fontWeight : 'bold'}}>Wishlist</label>
             </VStack>
-            <VStack>
+            <VStack cursor={'pointer'} onClick={() => navigate('/cart')}>
                 <HiOutlineShoppingBag style={{fontSize : '20px'}}/>
                 <label style={{fontSize : '15px', fontWeight : 'bold'}}>Bag</label>
             </VStack>

@@ -8,6 +8,9 @@ import Login from '../Pages/Login'
 import Product from '../Pages/Product'
 import SingleProduct from '../Pages/SingleProduct'
 import ErrorPage from '../Pages/ErrorPage'
+import Cart from '../Pages/Cart'
+import Loader from '../Components/Loader'
+import Wishlist from '../Pages/Wishlist'
 
 const MainRoutes = () => {
   return (
@@ -19,6 +22,8 @@ const MainRoutes = () => {
         <Route path='/men' element={<Men/>}/>
         <Route path='/women' element={<Women/>}/>
         <Route path='/products/:id' element={<SingleProduct/>}/>
+        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/wishlist' element={<Wishlist />}/>
         <Route path='*' element={<ErrorPage />}/>
     </Routes>
   )

@@ -16,7 +16,8 @@ const Product = () => {
     let pageButton = Math.ceil(totalCount / 14);
     const {paramVal} = useContext(GlobalContext);
     const [searchParams] = useSearchParams();
-    
+    const {inputVal} = useContext(GlobalContext);
+
 
     useEffect(() => {
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});

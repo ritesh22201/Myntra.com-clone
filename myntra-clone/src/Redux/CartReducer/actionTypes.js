@@ -1,0 +1,8 @@
+
+export const CART_REQ = 'CART_REQ';
+export const CART_REQ_SUCCESS = 'CART_REQ_SUCCESS';
+export const CART_REQ_FAILURE = 'CART_REQ_FAILURE';
+
+// POST 
+
+export const CART_POST_SUCCESS = 'CART_POST_SUCCESS';
