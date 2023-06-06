@@ -11,6 +11,7 @@ import ErrorPage from '../Pages/ErrorPage'
 import Cart from '../Pages/Cart'
 import Loader from '../Components/Loader'
 import Wishlist from '../Pages/Wishlist'
+import Payment from '../Pages/Payment'
 
 const MainRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const MainRoutes = () => {
         <Route path='/products/:id' element={<SingleProduct/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path='/wishlist' element={<Wishlist />}/>
+        <Route path='/payment' element={<Payment />}/>
         <Route path='*' element={<ErrorPage />}/>
     </Routes>
   )
