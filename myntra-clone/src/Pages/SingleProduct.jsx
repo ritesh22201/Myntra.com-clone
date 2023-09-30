@@ -159,7 +159,6 @@ const SingleProduct = () => {
     }
 
 
-
     // if (!Array.isArray(wishlist)) {
     //   // Fetch wishlist data again and update the store
     //   window.location.reload()
