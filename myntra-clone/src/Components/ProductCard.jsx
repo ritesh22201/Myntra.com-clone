@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Heading, Image, Text, Flex, Button } from '@chakra-ui/react'
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { FiHeart } from 'react-icons/fi';
 
-const ProductCard = ({ id, brand, categories, color, count, description, gender, discount, images, price, rating, sizes, title, off_price }) => {
+const ProductCard = ({ id, brand, count, discount, images, price, rating, title, off_price }) => {
     const navigate = useNavigate();
-    const [hover, setHover] = useState(false);
 
     const handleClick = () => {
         navigate(`/products/${id}`);
@@ -24,23 +23,13 @@ const ProductCard = ({ id, brand, categories, color, count, description, gender,
                     <Text m={"0 4px"}> | </Text> <span>{count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count}</span>
                 </Flex>
             </Box>
-            {!hover ? 
             <Box p="10px" lineHeight={"25px"}>
                 <Heading lineHeight={"25px"} fontSize={"17px"}>{brand.substring(0, 15)}...</Heading>
                 <Text color={"gray.600"}>{title.substring(0, 20)}...</Text>
                 <Flex alignItems={"center"}  >
-                    <span><Heading fontSize={"15px"}  >{`Rs.${off_price}`}</Heading></span><span ><Text fontSize={"13px"} mr="5px" ml="5px" mt="3px" color={"grey"} textDecoration={"line-through"}> {`Rs.${price}`}</Text>   </span><span><Text fontSize={"14px"} color='#FF8A65' mt="3px">({discount}%OFF)</Text></span>
+                    <span><Heading fontSize={"15px"}  >{`Rs.${price}`}</Heading></span><span ><Text fontSize={"13px"} mr="5px" ml="5px" mt="3px" color={"grey"} textDecoration={"line-through"}> {`Rs.${off_price}`}</Text>   </span><span><Text fontSize={"14px"} color='#FF8A65' mt="3px">({discount}%OFF)</Text></span>
                 </Flex>
             </Box>
-            :
-            <Box bg={'white'} position={'absolute'} bottom={'0px'} p={'20px'} h={'150px'} textAlign={'center'} w={'100%'}>
-                <Button w={'90%'} borderRadius={'2px'} variant={'outline'}><FiHeart /> WISHLIST</Button>
-                <Text>Sizes: {sizes[2]}</Text>
-                <Flex alignItems={"center"}  >
-                    <span><Heading fontSize={"15px"}  >{`Rs.${off_price}`}</Heading></span><span ><Text fontSize={"13px"} mr="5px" ml="5px" mt="3px" color={"grey"} textDecoration={"line-through"}> {`Rs.${price}`}</Text>   </span><span><Text fontSize={"14px"} color='#FF8A65' mt="3px">({discount}%OFF)</Text></span>
-                </Flex>
-            </Box>
-            } 
         </Box>
     )
 }
