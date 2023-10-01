@@ -25,22 +25,26 @@ const Wishlist = () => {
   // }
   const handleDelete = async (id) => {
     await dispatch(deleteWishlist(id))
-    await dispatch(getwishlistproducts())
+    await dispatch(getwishlistproducts());
   }
 
-
   useEffect(() => {
-    if (isDeleted) {
-      toast({
-        title: 'Product is removed from wishlist!',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top',
-      });
-      return
-    }
-  }, [isDeleted])
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    dispatch(getwishlistproducts())
+  }, [dispatch, wishlist])
+
+  // useEffect(() => {
+  //   if (isDeleted) {
+  //     toast({
+  //       title: 'Product is removed from wishlist!',
+  //       status: 'success',
+  //       duration: 3000,
+  //       isClosable: true,
+  //       position: 'top',
+  //     });
+  //     return
+  //   }
+  // }, [dispatch]);
 
   return (
     <Box>
@@ -62,14 +66,14 @@ const Wishlist = () => {
 
           {
             wishlist?.map((el) => {
-              return <Box key={el.id} position={"relative"} w="100%" >
+              return <Box key={el?.id} position={"relative"} w="100%" >
                 <Image src={el?.images?.image1} w="100%" />
 
                 <Box  >
 
 
                   <Flex opacity={"0.7"} bg={"white"} w="36%" borderRadius={"2px"} justifyContent={"center"} position={"absolute"} top={"250px"} left={2} fontSize={"14px"} alignItems={"center"} p="0 4px">
-                    <Heading fontSize={"14px"}> {el.rating} </Heading>
+                    <Heading fontSize={"14px"}> {el?.rating} </Heading>
                     <span style={{ marginLeft: "3px" }} >
 
                       <FaStar color="#00695C" />
@@ -85,12 +89,12 @@ const Wishlist = () => {
 
                 }} p="10px" lineHeight={"25px"}>
                   <Heading lineHeight={"25px"} fontSize={"17px"}>
-                    {el.brand}
+                    {el?.brand}
                   </Heading>
-                  <Text color={"gray.600"}>{el.title.substring(0, 20)}...</Text>
+                  <Text color={"gray.600"}>{el?.title?.substring(0, 20)}...</Text>
                   <Flex alignItems={"center"}>
                     <span>
-                      <Heading fontSize={"15px"}>{`Rs.${el.off_price}`}</Heading>
+                      <Heading fontSize={"15px"}>{`Rs.${el?.off_price}`}</Heading>
                     </span>
                     <span>
                       <Text
@@ -102,12 +106,12 @@ const Wishlist = () => {
                         textDecoration={"line-through"}
                       >
                         {" "}
-                        {`Rs.${el.price}`}
+                        {`Rs.${el?.price}`}
                       </Text>{" "}
                     </span>
                     <span>
                       <Text fontSize={"14px"} color="#FF8A65" mt="3px">
-                        ({el.discount}%OFF)
+                        ({el?.discount}%OFF)
                       </Text>
                     </span>
                   </Flex>

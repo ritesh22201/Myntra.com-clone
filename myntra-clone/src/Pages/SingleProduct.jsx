@@ -24,6 +24,7 @@ import { FiHeart } from "react-icons/fi";
 import { BsFillCircleFill, BsStarFill, BsTruck } from "react-icons/bs";
 import { CgDetailsMore } from "react-icons/cg";
 import { RiStarSLine } from "react-icons/ri";
+import { AiFillCheckCircle } from "react-icons/ai";
 // import { GlobalContext } from "../Context/GlobalContextProvider";
 // import AOS from 'aos';
 
@@ -35,7 +36,10 @@ const SingleProduct = () => {
   // const [addWishlistData,setAddWishlistData] = useState({})
   const toast = useToast()
   const dispatch = useDispatch()
-  const { wishlist } = useSelector((store) => store.productReducer)
+  const { wishlist, isLoading, isAdded } = useSelector((store) => store.productReducer);
+  const [isProductAddedToWishlist, setIsProductAddedToWishlist] = useState(false);
+  const wishListData = JSON.parse(localStorage.getItem('wishlist')) || [];
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -46,7 +50,6 @@ const SingleProduct = () => {
     }
   }, [id]);
 
-  //  console.log(wishlist)
 
   let {
     brand,
@@ -79,8 +82,6 @@ const SingleProduct = () => {
     } else {
       localStorage.setItem(`selectedSize_${id}`, el);
     }
-
-
   }
 
 
@@ -125,7 +126,7 @@ const SingleProduct = () => {
       return;
     }
 
-    const existedProduct = wishlist?.find(el => el.id === id || el.title === title);
+    const existedProduct = wishlist?.find(el => el.id == id || el.title == title);
     console.log(existedProduct)
 
     if (existedProduct) {
@@ -155,7 +156,8 @@ const SingleProduct = () => {
         size: selectedSize,
       };
 
-      dispatch(addwishList(productData));
+      dispatch(addwishList(productData, setLoading));
+      localStorage.setItem('wishlist', JSON.stringify([...wishlist, productData]));
     }
 
 
@@ -249,6 +251,28 @@ const SingleProduct = () => {
   // useEffect(() => {
   //   dispatch(getwishlistproducts())
   // }, [])
+
+  useEffect(() => {
+    if (isAdded) {
+      toast({
+        title: 'Product added to wishlist',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
+    }
+  }, [isAdded]);
+
+  useEffect(() => {
+    const existedProduct = wishListData?.find(el => el.id === id || el.title === title);
+    if (existedProduct && !loading) {
+      setIsProductAddedToWishlist(true);
+    }
+    else {
+      setIsProductAddedToWishlist(false);
+    }
+  }, [wishListData])
 
   const handlePincodeChange = (e) => {
     setPincode(e.target.value);
@@ -430,21 +454,28 @@ const SingleProduct = () => {
                 </Flex>
               </HStack>
             </Button>
-            <Button
-              onClick={() => handleWishList(id)}
-              ml="10px"
-              p="30px 60px"
-              bg="white"
-              _hover={{ bg: "white", border: "1px solid #6b6d6a" }}
-              border={"1px solid #C1D0B5"}
-            >
-              <HStack>
-                <FiHeart />
-                <Heading size={"sm"} fontWeight={""}>
-                  WISHLIST
-                </Heading>
-              </HStack>
-            </Button>
+            {!isProductAddedToWishlist ?
+              <Button
+                isLoading={loading === true}
+                isDisabled={isLoading === true}
+                loadingText={loading && 'Adding to wishlist'}
+                onClick={() => handleWishList(id)}
+                ml="10px"
+                p="30px 60px"
+                bg="white"
+                _hover={{ bg: "white", border: "1px solid #6b6d6a" }}
+                border={"1px solid #C1D0B5"}
+              >
+                <HStack>
+                  <FiHeart />
+                  <Heading size={"sm"} fontWeight={""}>
+                    WISHLIST
+                  </Heading>
+                </HStack>
+              </Button>
+              :
+              <Button color={'green.500'} _hover={'none'} _active={'none'} ml="10px" fontSize={'20px'} p="30px 60px" leftIcon={<AiFillCheckCircle />}>Added to wishlist</Button>
+            }
           </Flex>
         </Box>
         {/* <br/> */}

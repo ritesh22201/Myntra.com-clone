@@ -1,4 +1,5 @@
 import { ADD_WISHLIST_PRODUCTS, ADD_WISHLIST_PRODUCTS_FAILURE, ADD_WISHLIST_PRODUCTS_SUCCESS, DELETE_WISHLIST_PRODUCTS, GET_WISHLIST_PRODUCTS, PRODUCT_FAILURE, PRODUCT_REQ, PRODUCT_SUCCESS } from "./actionTypes";
+const wishListData = localStorage.getItem('wishlist') || [];
 
 const initialState = {
     isLoading: false,
@@ -7,7 +8,7 @@ const initialState = {
     products: [],
     men: [],
     women: [],
-    wishlist: [],
+    wishlist: wishListData ? JSON.parse(wishListData) : [],
     isDeleted: false
 }
 
@@ -17,7 +18,9 @@ export const reducer = (state = initialState, { type, payload }) => {
         case PRODUCT_REQ: {
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                isAdded : false,
+                isDeleted : false
             }
         }
 
@@ -44,7 +47,7 @@ export const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 isLoading: true,
                 isError: false,
-                isAdded: false
+                isAdded: false,
             }
         }
 
@@ -53,7 +56,7 @@ export const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 isLoading: false,
                 isError: false,
-                isAdded: true
+                isAdded: true,
             }
         }
         case ADD_WISHLIST_PRODUCTS_FAILURE: {
@@ -69,7 +72,7 @@ export const reducer = (state = initialState, { type, payload }) => {
                 ...state,
                 isLoading: false,
                 isError: false,
-                isDeleted: true
+                isDeleted: true,
             }
         }
 
