@@ -1,6 +1,5 @@
 import { Box, Button, Checkbox, Flex, FormLabel, Heading, Text } from '@chakra-ui/react'
 import React, { useContext, useEffect, useState } from 'react';
-import '../CSS/Sidebar.css';
 import { BsCircleFill } from 'react-icons/bs';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';

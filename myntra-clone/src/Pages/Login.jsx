@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Image, Input, InputGroup, InputLeftAddon, Text, Flex, Spinner, Toast, useToast } from '@chakra-ui/react'
+import { Box, Button, Heading, Image, Text, Flex, Spinner, Toast, useToast } from '@chakra-ui/react'
 import React from 'react';
 import img from '../Assets/myntra-login-in-img.avif'
 import { useEffect, useRef, useState } from 'react';
@@ -12,19 +12,20 @@ import { toast, Toaster } from "react-hot-toast";
 import '../index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOADER_FALSE, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS } from '../Redux/AuthReducer/actionTypes';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [otpCount, setOtpCount] = useState(25);
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [showOtp, setShowOtp] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState(null);
     const [ph, setPh] = useState('');
     const toaster = useToast();
     const dispatch = useDispatch();
     const {isLoading, token} = useSelector(store => store.authReducer);
-
-    const id = useRef();
 
     function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
@@ -71,9 +72,10 @@ const Login = () => {
         // setLoading(true);
         dispatch({type : LOGIN_REQUEST});
         window.confirmationResult.confirm(otp).then(async(res) => {
-            // setUser(res.user);
+            console.log(res)
+            localStorage.setItem('google-login', JSON.stringify(res.user.accessToken));
             dispatch({type : LOGIN_SUCCESS, payload : res.user.accessToken});
-            // setLoading(false);
+            navigate(location.state, {replace : true});
         })
         .catch(err => {
             // setLoading(false);
@@ -83,36 +85,24 @@ const Login = () => {
     }
 
 
-    // useEffect(() => {
-        //  id.current = setInterval(() => {
-        //     setOtpCount(prev => prev - 1);
-        // },1000)
-
-        // if(otpCount === 0){
-        //     clearInterval(id.current)
-        // }
-    // }, [id])
-
-
     return (
-        <> 
+        <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} h={'83.5vh'}> 
             <Toaster toastOptions={{ duration: 4000 }} />
             <Box id="recaptcha-container"></Box>
             {!token ?
                 <Box>
                     {!showOtp ?
-                        <Box h={'100vh'} pt={'20px'} bg={'#F9ECEC'}>
+                        <Box>
                             <Box w={'33%'} m={'10px auto 0 auto'}>
                                 <Image src={img} />
                             </Box>
-                            <div style={{ width: '33%', padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
+                            <Box style={{ width: '33%', padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
                                 <Heading mb={'25px'} color={'#161515'} fontSize={'18px'}>Login <span>or</span> Signup</Heading>
-
-                                <PhoneInput country={"in"} value={ph} onChange={setPh} />
+                                <PhoneInput inputStyle={{width : '100%'}} country={"in"} value={ph} onChange={setPh} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
                                 <Button onClick={onSignup} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
-                            </div>
+                            </Box>
                         </Box>
                         :
                         <Box h={'100vh'} pt={'20px'} bg={'#F9ECEC'}>
@@ -161,7 +151,7 @@ const Login = () => {
                     isClosable: true,
                 })
             }
-        </>
+        </Box>
     )
 }
 
