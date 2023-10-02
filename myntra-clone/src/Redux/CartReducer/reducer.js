@@ -1,9 +1,12 @@
-import { CART_POST_SUCCESS, CART_REQ, CART_REQ_FAILURE, CART_REQ_SUCCESS } from "./actionTypes";
+import { CART_POST_SUCCESS, CART_REQ, CART_REQ_FAILURE, CART_REQ_SUCCESS, CART_UPDATE_SUCCESS } from "./actionTypes";
+const cartData = localStorage.getItem('cart') || [];
 
 const initialState = {
-    isLoading : false,
+    isLoadingCart : false,
     isError : false,
-    cart : []
+    isAddedCart : false,
+    isUpdated : false,
+    cart : cartData ? JSON.parse(cartData) : []
 }
 
 export const reducer = (state = initialState, {type, payload}) => {
@@ -12,14 +15,16 @@ export const reducer = (state = initialState, {type, payload}) => {
         case CART_REQ : {
             return {
                 ...state,
-                isLoading : true
+                isLoadingCart : true,
+                isAddedCart : false,
+                isUpdated : false
             }
         }
 
         case CART_REQ_SUCCESS : {
             return {
                 ...state,
-                isLoading : false,
+                isLoadingCart : false,
                 isError : false,
                 cart : payload
             }
@@ -28,17 +33,26 @@ export const reducer = (state = initialState, {type, payload}) => {
         case CART_REQ_FAILURE : {
             return {
                 ...state,
-                isLoading : false,
+                isLoadingCart : false,
                 isError : true
+            }
+        }
+
+        case CART_UPDATE_SUCCESS : {
+            return {
+                ...state,
+                isLoadingCart : false,
+                isError : false,
+                isUpdated : true
             }
         }
 
         case CART_POST_SUCCESS : {
             return {
                 ...state,
-                isLoading : false,
+                isLoadingCart : false,
                 isError : false,
-                cart : [...state.cart, payload]
+                isAddedCart : true
             }
         }
 

@@ -5,9 +5,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 const PrivateRoutes = ({children}) => {
   const location = useLocation();
   const token = localStorage.getItem('google-login') || '';
-  return <>
-    {token ? children : <Navigate to={'/login'} state={location.pathname} replace={true}/>}
-  </>
+  return !token ? <Navigate to={'/login'} state={location.pathname} replace={true}/> : children;
 }
 
-export default PrivateRoutes
+export default PrivateRoutes;

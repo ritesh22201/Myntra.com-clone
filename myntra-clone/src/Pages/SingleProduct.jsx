@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { addwishList, getProductsSingleMen, getwishlistproducts } from "../Redux/ProductReducer/action";
 import {
   Box,
@@ -25,6 +25,7 @@ import { BsFillCircleFill, BsStarFill, BsTruck } from "react-icons/bs";
 import { CgDetailsMore } from "react-icons/cg";
 import { RiStarSLine } from "react-icons/ri";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { addProductToCart, getCartProducts } from "../Redux/CartReducer/action";
 // import { GlobalContext } from "../Context/GlobalContextProvider";
 // import AOS from 'aos';
 
@@ -37,9 +38,14 @@ const SingleProduct = () => {
   const toast = useToast()
   const dispatch = useDispatch()
   const { wishlist, isLoading, isAdded } = useSelector((store) => store.productReducer);
+  const { cart, isLoadingCart, isAddedCart } = useSelector((store) => store.cartReducer);
   const [isProductAddedToWishlist, setIsProductAddedToWishlist] = useState(false);
+  const [isProductAddedToCart, setIsProductAddedToCart] = useState(false);
   const wishListData = JSON.parse(localStorage.getItem('wishlist')) || [];
+  const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -85,13 +91,10 @@ const SingleProduct = () => {
   }
 
 
-  const handleAdd = (id) => {
-
+  const handleAdd = async(id) => {
     if (!selectedSize[id]) {
-      // alert('Please select a size!');
       toast({
         title: 'Please select a size!',
-        // description: "We've created your account for you.",
         status: 'warning',
         duration: 3000,
         isClosable: true,
@@ -100,17 +103,40 @@ const SingleProduct = () => {
       return;
     }
 
-    let productData = {
-      title,
-      brand,
-      color,
-      rating,
-      price,
-      gender,
-      categories,
-      size: selectedSize
+    const existedProduct = cart?.find(el => el.id == id || el.title == title);
+
+    // if (existedProduct) {
+    //   toast({
+    //     title: 'Product is already in the cart!',
+    //     status: 'warning',
+    //     duration: 3000,
+    //     isClosable: true,
+    //     position: 'top'
+    //   })
+    // }
+    // else 
+    if (!existedProduct) {
+      let productData = {
+        title,
+        brand,
+        color,
+        rating,
+        price,
+        gender,
+        categories,
+        description,
+        discount,
+        off_price,
+        images,
+        productId: id,
+        size: selectedSize[id],
+        quantity: 1
+      };
+
+      await dispatch(addProductToCart(productData, setCartLoading));
+      await dispatch(getCartProducts());
+      localStorage.setItem('cart', JSON.stringify([...cart, productData]));
     }
-    // console.log(productData)
   }
 
   const handleWishList = (id) => {
@@ -127,7 +153,6 @@ const SingleProduct = () => {
     }
 
     const existedProduct = wishlist?.find(el => el.id == id || el.title == title);
-    console.log(existedProduct)
 
     if (existedProduct) {
       toast({
@@ -137,7 +162,6 @@ const SingleProduct = () => {
         isClosable: true,
         position: 'top'
       })
-      // return;
     }
     else if (!existedProduct) {
       let productData = {
@@ -153,116 +177,23 @@ const SingleProduct = () => {
         off_price,
         images,
         productId: id,
-        size: selectedSize,
+        size: selectedSize[id],
       };
 
       dispatch(addwishList(productData, setLoading));
       localStorage.setItem('wishlist', JSON.stringify([...wishlist, productData]));
     }
-
-
-    // if (!Array.isArray(wishlist)) {
-    //   // Fetch wishlist data again and update the store
-    //   window.location.reload()
-    //   dispatch(getwishlistproducts()).then(() => {
-    //     // After fetching data, check if the product already exists in the wishlist
-    //     const isProductExists = wishlist?.some(
-    //       (product) =>
-    //         product.productId === id &&
-    //         JSON.stringify(product.size) === JSON.stringify(selectedSize)
-    //     );
-
-    //     if (isProductExists) {
-    //       toast({
-    //         title: 'Product is already in the wishlist!',
-    //         status: 'warning',
-    //         duration: 3000,
-    //         isClosable: true,
-    //         position: 'top',
-    //       });
-    //     } else {
-    //       // If the product doesn't exist, add it to the wishlist
-    //       let productData = {
-    //         title,
-    //         brand,
-    //         color,
-    //         rating,
-    //         price,
-    //         gender,
-    //         categories,
-    //         description,
-    //         discount,
-    //         off_price,
-    //         images,
-    //         productId: id,
-    //         size: selectedSize,
-    //       };
-    //       dispatch(addwishList(productData));
-    //     }
-    //   });
-    // } else {
-    //   // If the wishlist data is already available, perform the check and update
-    //   const isProductExists = wishlist.some(
-    //     (product) =>
-    //       product.productId === id &&
-    //       JSON.stringify(product.size) === JSON.stringify(selectedSize)
-    //   );
-
-    //   if (isProductExists) {
-    //     toast({
-    //       title: 'Product is already in the wishlist!',
-    //       status: 'warning',
-    //       duration: 3000,
-    //       isClosable: true,
-    //       position: 'top',
-    //     });
-    //   } else {
-    //     let productData = {
-    //       title,
-    //       brand,
-    //       color,
-    //       rating,
-    //       price,
-    //       gender,
-    //       categories,
-    //       description,
-    //       discount,
-    //       off_price,
-    //       images,
-    //       productId: id,
-    //       size: selectedSize,
-    //     };
-    //     dispatch(addwishList(productData));
-    //   }
-    // }
   }
 
-  //  useEffect(()=>{
-  //    toast({
-  //       title: 'Product added to wishlist!',
-  //       status: 'success',
-  //       duration: 3000,
-  //       isClosable: true,
-  //       position: 'top',
-  //     });
-
-  //  },[dispatch])
-
-  // useEffect(() => {
-  //   dispatch(getwishlistproducts())
-  // }, [])
-
   useEffect(() => {
-    if (isAdded) {
-      toast({
-        title: 'Product added to wishlist',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top'
-      })
+    const existedProduct = cartData?.find(el => el.id === id || el.title === title);
+    if (existedProduct && !isLoadingCart) {
+      setIsProductAddedToCart(true);
     }
-  }, [isAdded]);
+    else {
+      setIsProductAddedToCart(false);
+    }
+  }, [cartData]);
 
   useEffect(() => {
     const existedProduct = wishListData?.find(el => el.id === id || el.title === title);
@@ -280,7 +211,6 @@ const SingleProduct = () => {
 
   const getRandomDeliveryStatus = () => {
     const randomStatus = pincode.length === 6 ? 'Available' : 'Please enter a valid pincode';
-
     return randomStatus;
   };
 
@@ -364,7 +294,7 @@ const SingleProduct = () => {
           <Box>
             <Flex alignItems={"center"}>
               <span>
-                <Heading size={"lg"}>{`Rs.${off_price}`}</Heading>
+                <Heading size={"lg"}>{`Rs.${price}`}</Heading>
               </span>
               <span>
                 <Text
@@ -376,7 +306,7 @@ const SingleProduct = () => {
                   textDecoration={"line-through"}
                 >
                   {" "}
-                  {`Rs.${price}`}
+                  {`Rs.${off_price}`}
                 </Text>{" "}
               </span>
               <span>
@@ -437,23 +367,28 @@ const SingleProduct = () => {
 
         <Box mt="20px">
           <Flex>
-            <Button
-              p="30px 80px"
-              bg="#D14D72"
-              _hover={{ bg: "#d65f81", color: "white" }}
-              color={"white"}
-              onClick={() => handleAdd(id)}
-            >
-              <HStack>
-                <HiOutlineShoppingBag />
-                {/* <VStack> */}
-                <Flex direction={"column"}>
-                  <Text fontWeight={"bold"}>ADD TO BAG</Text>
-                  {/* <Text mt="2px">Buy with early Access</Text> */}
-                  {/* </VStack> */}
-                </Flex>
-              </HStack>
-            </Button>
+            {!isProductAddedToCart ?
+              <Button
+                isLoading={isLoadingCart === true}
+                isDisabled={isLoading === true}
+                loadingText={isLoadingCart && 'Adding to Cart'}
+                p="30px 80px"
+                bg="#D14D72"
+                _hover={{ bg: "#d65f81", color: "white" }}
+                color={"white"}
+                onClick={() => handleAdd(id)}
+              >
+                <HStack>
+                  <HiOutlineShoppingBag />
+                  <Flex direction={"column"}>
+                    <Text fontWeight={"bold"}>ADD TO BAG</Text>
+                  </Flex>
+                </HStack>
+              </Button>
+              : <Button bg={'green.400'} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'19px'} p="30px 60px" onClick={() => navigate('/cart')}>
+                GO TO BAG
+              </Button>
+            }
             {!isProductAddedToWishlist ?
               <Button
                 isLoading={loading === true}

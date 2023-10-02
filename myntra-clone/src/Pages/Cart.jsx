@@ -3,12 +3,7 @@ import {
     AccordionItem,
     AccordionButton,
     AccordionPanel,
-    List,
-    ListItem,
-    ListIcon,
-    OrderedList,
     UnorderedList,
-    AccordionIcon,
     Box,
     Container,
     Heading,
@@ -19,14 +14,21 @@ import {
     Flex,
     HStack,
     Divider,
-    IconButton,
-    VStack,
-    Spacer,
     Checkbox,
     Select,
+    useDisclosure,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    FormControl,
+    FormLabel,
+    ModalFooter,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Wishlist } from "./Wishlist";
 import { Link, useNavigate } from "react-router-dom";
 import { CheckIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
@@ -37,49 +39,75 @@ import { BsFillSave2Fill } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiBookmarkLine } from "react-icons/ri";
 import giftImage from "../Assets/gift-big.webp";
+import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/CartReducer/action";
 // import { PiKeyReturnBold } from "react-icons/pi";
 
 const Cart = () => {
-    // const {wishlist} = useSelector((store)=>store.productsReducer)
+    const { cart } = useSelector((store) => store.cartReducer);
     const [showStatus, setShowStatus] = useState(false);
-
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Product 1",
-            price: 20,
-            quantity: 2,
-        },
-        {
-            id: 2,
-            name: "Product 2",
-            price: 30,
-            quantity: 1,
-        },
-    ]);
-    const total = cartItems.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-    );
-
-    const handleRemoveItem = (itemId) => {
-        const updatedCart = cartItems.filter((item) => item.id !== itemId);
-        setCartItems(updatedCart);
-    };
-
-    const handleQuantityChange = (itemId, newQuantity) => {
-        const updatedCart = cartItems.map((item) => {
-            if (item.id === itemId) {
-                return { ...item, quantity: newQuantity };
-            }
-            return item;
-        });
-        setCartItems(updatedCart);
-    };
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [discountedPrice, setDiscountedPrice] = useState(0);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    useEffect(() => {
+        dispatch(getCartProducts());
+    }, [])
+
+    useEffect(() => {
+        let price = 0;
+        let discountPrice = 0;
+        cart.map(el => {
+            price += +el.off_price
+            discountPrice += +el.price
+        });
+        setTotalPrice(price);
+        setDiscountedPrice(discountPrice);
+    }, [cart])
+
+
+    const handleQuantityChange = async (itemId, newQuantity) => {
+        let product = cart?.find(el => el.id === itemId);
+        product.quantity = newQuantity;
+
+        await dispatch(updateDetails(product, itemId));
+        await dispatch(getCartProducts());
+    };
+
+    const handleSize = async (itemId, newSize) => {
+        let product = cart?.find(el => el.id === itemId);
+        product.size = newSize;
+
+        await dispatch(updateDetails(product, itemId));
+        await dispatch(getCartProducts());
+    }
+
+    let currentDateArr = new Date().toISOString().split('T')[0];
+    let currentDate = new Date(currentDateArr);
+    let futureDate = new Date(currentDate);
+
+    futureDate.setDate(currentDate.getDate() + 6);
+    let formattedDate = futureDate.toString().split(' ').slice(0, 4);
+    let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
+
+    const handleDelete = async (id) => {
+        dispatch(deleteCartProduct(id)).then(() => {
+            dispatch(getCartProducts());
+        })
+    }
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [dispatch, cart])
+
+
+    // useEffect(() => {
+    // }, [dispatch])
+
     return (
         <>
-            {cartItems ? (
+            {cart?.length ? (
                 <>
                     <Flex justifyContent={"center"} gap="10px" alignItems={"center"}>
                         <Box w="50%">
@@ -90,7 +118,6 @@ const Cart = () => {
                                     borderRadius={"3px"}
                                     border={"1px solid #eaeaec"}
                                 >
-
                                     <Flex justifyContent={"space-between"} alignItems={"center"}>
                                         <Box >
                                             <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>Sharvari,416008</span></Text>
@@ -204,13 +231,12 @@ const Cart = () => {
                                 >
                                     <Flex alignItems={"center"} justifyContent={"space-between"}>
                                         <Flex>
-                                            <Checkbox colorScheme={"pink"} />
                                             <Text
                                                 fontWeight={"700"}
                                                 ml="8px"
                                                 textTransform={"uppercase"}
                                             >
-                                                3/4 Items Selected
+                                                Total {cart.length} Items
                                             </Text>
                                         </Flex>
 
@@ -240,128 +266,130 @@ const Cart = () => {
                                     </Flex>
 
                                     {/* map here  */}
+                                    {cart?.map(el => {
+                                        // console.log(el)
+                                        return <Box key={el.id} maxW="container.sm" w="100%">
+                                            <Box
+                                                cursor={"pointer"}
+                                                mt="10px"
+                                                p="10px"
+                                                borderRadius={"3px"}
+                                                border={"1px solid #eaeaec"}
+                                            >
 
-                                    <Box maxW="container.sm" w="100%">
-                                        <Box
-                                            cursor={"pointer"}
-                                            mt="10px"
-                                            p="10px"
-                                            borderRadius={"3px"}
-                                            border={"1px solid #eaeaec"}
-                                        >
-                                            <Checkbox
-                                                position={"relative"}
-                                                top="30px"
-                                                left={"20px"}
-                                                focusBorderColor="#eaeaec"
-                                                colorScheme={"pink"}
-                                            />
-                                            <Flex justifyContent={"space-around"}>
-                                                {/* <Box> */}
-                                                <Image
-                                                    w="120px"
-                                                    src="https://assets.myntassets.com/f_webp,dpr_1.0,q_60,w_210,c_limit,fl_progressive/assets/images/2314372/2018/6/19/29e8ddfd-6f5f-43fd-8b71-dfa8ac6cef681529385860869-HRX-by-Hrithik-Roshan-Men-Charcoal-Grey-Slim-Advanced-Rapid--1.jpg"
-                                                    alt="productImage"
-                                                />
-                                                {/* </Box> */}
-                                                <Box w="70%">
-                                                    <Flex
-                                                        justifyContent={"space-between"}
-                                                        alignItems={"center"}
-                                                    >
-                                                        <Text fontSize={"md"} fontWeight={"700"}>
-                                                            HRX by Hrithik Roshan
+                                                <Flex justifyContent={"space-around"}>
+                                                    {/* <Box> */}
+                                                    <Image
+                                                        w="120px"
+                                                        src={el?.images?.image1}
+                                                        alt="productImage"
+                                                    />
+                                                    {/* </Box> */}
+                                                    <Box w="70%">
+                                                        <Flex
+                                                            justifyContent={"space-between"}
+                                                            alignItems={"center"}
+                                                        >
+                                                            <Text fontSize={"md"} fontWeight={"700"}>
+                                                                {el?.brand}
+                                                            </Text>{" "}
+                                                            {/* {Add brand} */}
+                                                            <CloseIcon onClick={() => handleDelete(el.id)} />
+                                                        </Flex>
+                                                        <Text>
+                                                            {el?.title}
                                                         </Text>{" "}
-                                                        {/* {Add brand} */}
-                                                        <CloseIcon />
-                                                    </Flex>
-                                                    <Text>
-                                                        Men charcoal gray slim advanced Rapid Dry Raglan
-                                                    </Text>{" "}
-                                                    {/* {Add title} */}
-                                                    {/* size add here */}
-                                                    <Flex gap="10px">
-                                                        <Select
-                                                            fontWeight={"700"}
-                                                            w="25%"
-                                                            focusBorderColor="#eaeaec"
-                                                        >
-                                                            <option value="">Size:</option>
-                                                            <option value="S">S</option>
-                                                            <option value="M">M</option>
-                                                            <option value="L">L</option>
-                                                            <option value="XL">XL</option>
-                                                            <option value="XXL">XXL</option>
-                                                        </Select>
-
-                                                        <Select
-                                                            fontWeight={"700"}
-                                                            w="25%"
-                                                            focusBorderColor="#eaeaec"
-                                                        >
-                                                            <option value="">Qty:</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                            <option value="6">6</option>
-                                                            <option value="7">7</option>
-                                                            <option value="8">8</option>
-                                                            <option value="9">9</option>
-                                                            <option value="10">10</option>
-                                                        </Select>
-                                                    </Flex>
-                                                    {/* {Add price and off price} */}
-                                                    <Text mt="5px" fontSize={"md"} fontWeight={"700"}>
-                                                        ₹399{" "}
-                                                        <span
-                                                            style={{
-                                                                textDecoration: "line-through",
-                                                                color: "#9c9ea6",
-                                                                fontSize: "13px",
-                                                            }}
-                                                        >
-                                                            ₹899
-                                                        </span>
-                                                    </Text>
-                                                    <Flex mt="5px" alignItems={"center"} gap="10px">
-                                                        <GiReturnArrow
-                                                            style={{ color: "#2b2f42", fontSize: "16px" }}
-                                                        />
-                                                        <Text
-                                                            color="#2b2f42"
-                                                            fontSize={"sm"}
-                                                            fontWeight={"700"}
-                                                        >
-                                                            14 days{" "}
-                                                            <span
-                                                                style={{ fontSize: "13px", fontWeight: "400" }}
+                                                        {/* {Add title} */}
+                                                        {/* size add here */}
+                                                        <Flex gap="10px">
+                                                            <Select
+                                                                defaultValue={el?.size}
+                                                                fontWeight={"700"}
+                                                                w="25%"
+                                                                onChange={(e) => handleSize(el?.id, e.target.value)}
+                                                                focusBorderColor="#eaeaec"
                                                             >
-                                                                return available
-                                                            </span>
-                                                        </Text>
-                                                    </Flex>
-                                                    <Flex mt="5px" alignItems={"center"} gap="10px">
-                                                        <CheckIcon color="#10ab8b" />
-                                                        <Text mr="5px" color="#9c9ea6" fontSize={"sm"}>
-                                                            Delivery by
+                                                                <option value="">Size:</option>
+                                                                <option value="S">S</option>
+                                                                <option value="M">M</option>
+                                                                <option value="L">L</option>
+                                                                <option value="XL">XL</option>
+                                                                <option value="XXL">XXL</option>
+                                                            </Select>
+
+                                                            <Select
+                                                                defaultValue={el?.quantity}
+                                                                fontWeight={"700"}
+                                                                w="25%"
+                                                                focusBorderColor="#eaeaec"
+                                                                onChange={(e) => handleQuantityChange(el?.id, e.target.value)}
+                                                            >
+                                                                <option value="">Qty:</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                                <option value="6">6</option>
+                                                                <option value="7">7</option>
+                                                                <option value="8">8</option>
+                                                                <option value="9">9</option>
+                                                                <option value="10">10</option>
+                                                            </Select>
+                                                        </Flex>
+                                                        {/* {Add price and off price} */}
+                                                        <Text mt="5px" fontSize={"md"} fontWeight={"700"}>
+                                                            ₹ {el.price}
+                                                            {'  '}
                                                             <span
                                                                 style={{
+                                                                    textDecoration: "line-through",
+                                                                    color: "#9c9ea6",
                                                                     fontSize: "13px",
-                                                                    color: "#2b2f42",
-                                                                    marginLeft: "5px",
-                                                                    fontWeight: "700",
                                                                 }}
                                                             >
-                                                                5 Oct 2023
+                                                                ₹ {el.off_price}
                                                             </span>
                                                         </Text>
-                                                    </Flex>
-                                                </Box>
-                                            </Flex>
+                                                        <Flex mt="5px" alignItems={"center"} gap="10px">
+                                                            <GiReturnArrow
+                                                                style={{ color: "#2b2f42", fontSize: "16px" }}
+                                                            />
+                                                            <Text
+                                                                color="#2b2f42"
+                                                                fontSize={"sm"}
+                                                                fontWeight={"700"}
+                                                            >
+                                                                14 days{" "}
+                                                                <span
+                                                                    style={{ fontSize: "13px", fontWeight: "400" }}
+                                                                >
+                                                                    return available
+                                                                </span>
+                                                            </Text>
+                                                        </Flex>
+                                                        <Flex mt="5px" alignItems={"center"} gap="10px">
+                                                            <CheckIcon color="#10ab8b" />
+                                                            <Text mr="5px" color="#9c9ea6" fontSize={"sm"}>
+                                                                Delivery by
+                                                                <span
+                                                                    style={{
+                                                                        fontSize: "13px",
+                                                                        color: "#2b2f42",
+                                                                        marginLeft: "5px",
+                                                                        fontWeight: "700",
+                                                                    }}
+                                                                >
+                                                                    {day}
+                                                                </span>
+                                                            </Text>
+                                                        </Flex>
+                                                    </Box>
+                                                </Flex>
+                                            </Box>
                                         </Box>
-                                    </Box>
+                                    })}
+                                    {/* {map ends here} */}
                                 </Box>
 
                                 <Box mt="40px" maxW="container.sm" w="100%">
@@ -428,10 +456,52 @@ const Cart = () => {
                                     _hover={{
                                         background: "#e1cacf",
                                     }}
+                                    onClick={onOpen}
                                 >
                                     APPLY
                                 </Button>
                             </Flex>
+
+                            <Modal
+                                isOpen={isOpen}
+                                onClose={onClose}
+                            >
+                                <ModalOverlay />
+                                <ModalContent h={'450px'}>
+                                    <ModalHeader color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"sm"}>Apply Coupon</ModalHeader>
+                                    <Box>
+                                        <Divider orientation="horizontal" />
+                                    </Box>
+                                    <ModalCloseButton />
+                                    <ModalBody className='scrollbar' pb={6} overflowY={'scroll'}>
+                                        <FormControl position={'relative'}>
+                                            <Input p={'22px 12px'} focusBorderColor='black' type="text" size="sm" placeholder='Enter coupon code' />
+                                            <Button textTransform={'uppercase'} right={'0px'} top={'3px'} _hover={'none'} _active={'none'} color={'#ff3f6c'} variant={'ghost'} position={'absolute'}>Check</Button>
+                                        </FormControl>
+                                    </ModalBody>
+                                    <ModalFooter boxShadow="rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px">
+                                        <Flex alignItems={'center'} w={'100%'}>
+                                            <Box w={'45%'}>
+                                                <Text mt={'10px'} color={'gray.500'} fontWeight={'bold'} fontSize={'13px'}>Maximum Savings:</Text>
+                                                <Text fontWeight={'bold'}>₹{discountedPrice ? (discountedPrice * 0.1).toFixed() : 0}</Text>
+                                            </Box>
+                                            <Button
+                                                w="100%"
+                                                fontSize={"13px"}
+                                                borderRadius={"none"}
+                                                mt="10px"
+                                                color="white"
+                                                bg="#ff3f6c"
+                                                textTransform={"uppercase"}
+                                                variant={"unstyled"}
+                                                onClick={onClose}
+                                            >
+                                                Apply
+                                            </Button>
+                                        </Flex>
+                                    </ModalFooter>
+                                </ModalContent>
+                            </Modal>
 
                             <Divider
                                 m="10px"
@@ -494,7 +564,7 @@ const Cart = () => {
                                 color={"#909390"}
                             >
                                 <Text>Total MRP</Text>
-                                <Text>₹8,197</Text>
+                                <Text>₹{totalPrice.toLocaleString()}</Text>
                             </Flex>
 
                             <Flex
@@ -505,7 +575,7 @@ const Cart = () => {
                                 color={"#909390"}
                             >
                                 <Text>Discount on MRP</Text>
-                                <Text color={"#65b8a5"}>-₹6,487</Text>
+                                <Text color={"#65b8a5"}>-₹{(totalPrice - discountedPrice).toLocaleString()}</Text>
                             </Flex>
 
                             <Flex
@@ -516,7 +586,7 @@ const Cart = () => {
                                 color={"#909390"}
                             >
                                 <Text>Coupon Discount</Text>
-                                <Text color={"#ff5d71"}>Apply Coupon</Text>
+                                <Text cursor={'pointer'} onClick={onOpen} color={"#ff5d71"}>Apply Coupon</Text>
                             </Flex>
 
                             <Flex
@@ -552,7 +622,7 @@ const Cart = () => {
                                 color={"#3e4152"}
                             >
                                 <Text>Total Amount</Text>
-                                <Text>₹1,730</Text>
+                                <Text>₹{(discountedPrice + 20).toLocaleString()}</Text>
                             </Flex>
 
                             <Button

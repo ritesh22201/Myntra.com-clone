@@ -37,7 +37,7 @@ export const addwishList = (products, setLoading) => (dispatch) => {
 
 export const getwishlistproducts = () => (dispatch) => {
     return axios.get("https://myntra-clone-backend.onrender.com/wishlist").then((res) => {
-        // console.log(res)
+        console.log(res.data)
         dispatch({ type: GET_WISHLIST_PRODUCTS, payload: res.data })
     }).catch((err) => {
         console.log(err)
@@ -46,7 +46,7 @@ export const getwishlistproducts = () => (dispatch) => {
 
 export const deleteWishlist = (id) => (dispatch) => {
     dispatch({ type: PRODUCT_REQ })
-    axios.delete(`https://myntra-clone-backend.onrender.com/wishlist/${id}`).then((res) => {
+    return axios.delete(`https://myntra-clone-backend.onrender.com/wishlist/${id}`).then((res) => {
         // console.log(res)
         dispatch({ type: DELETE_WISHLIST_PRODUCTS })
     }).catch((err) => {

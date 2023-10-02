@@ -13,16 +13,11 @@ const Wishlist = () => {
   const { wishlist, isDeleted } = useSelector((store) => store.productReducer)
   const navigate = useNavigate()
   const toast = useToast()
-  // console.log(wishlist)
 
   useEffect(() => {
     dispatch(getwishlistproducts())
   }, [])
 
-
-  // const handleClick = (id) => {
-  //   navigate(`/products/${id}`)
-  // }
   const handleDelete = async (id) => {
     await dispatch(deleteWishlist(id))
     await dispatch(getwishlistproducts());
@@ -30,21 +25,8 @@ const Wishlist = () => {
 
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    dispatch(getwishlistproducts())
   }, [dispatch, wishlist])
 
-  // useEffect(() => {
-  //   if (isDeleted) {
-  //     toast({
-  //       title: 'Product is removed from wishlist!',
-  //       status: 'success',
-  //       duration: 3000,
-  //       isClosable: true,
-  //       position: 'top',
-  //     });
-  //     return
-  //   }
-  // }, [dispatch]);
 
   return (
     <Box>

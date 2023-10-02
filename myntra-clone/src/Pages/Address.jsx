@@ -163,10 +163,6 @@ const Address = () => {
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
-
-
-
-
                 </Box>
             </Box>
 
