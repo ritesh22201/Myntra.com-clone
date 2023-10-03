@@ -27,7 +27,7 @@ import {
     FormLabel,
     ModalFooter,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Wishlist } from "./Wishlist";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,6 +40,8 @@ import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiBookmarkLine } from "react-icons/ri";
 import giftImage from "../Assets/gift-big.webp";
 import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/CartReducer/action";
+import { CheckmarkIcon } from "react-hot-toast";
+import { addwishList } from "../Redux/ProductReducer/action";
 // import { PiKeyReturnBold } from "react-icons/pi";
 
 const Cart = () => {
@@ -49,7 +51,18 @@ const Cart = () => {
     const [discountedPrice, setDiscountedPrice] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [coupon, setCoupon] = useState('');
+
+    let couponArr = [{ title: 'FIRSTBUY10', desc: 'Get 10% discount on first buy.', discount: '10%' },
+    { title: 'MISSEDYOU', desc: 'Get 10% discount on min purchase of ₹499.', discount: '10%' },
+    { title: 'SAVEBIG20', desc: 'Enjoy a 20% discount on your next purchase.', discount: '20%' },
+    { title: 'FAMILYDEAL', desc: 'Buy one, get one 5% off on family meal combos.', discount: '5%' }
+    ]
+    const [applyCoupon, setApplyCoupon] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
+
 
     useEffect(() => {
         dispatch(getCartProducts());
@@ -58,9 +71,10 @@ const Cart = () => {
     useEffect(() => {
         let price = 0;
         let discountPrice = 0;
+
         cart.map(el => {
-            price += +el.off_price
-            discountPrice += +el.price
+            price += +el.off_price * el.quantity;
+            discountPrice += +el.price * el.quantity;
         });
         setTotalPrice(price);
         setDiscountedPrice(discountPrice);
@@ -101,9 +115,39 @@ const Cart = () => {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [dispatch, cart])
 
+    const handleCouponChange = (ind, discount) => {
+        let temp = applyCoupon === ind ? null : ind;
+        if (temp === null) {
+            localStorage.setItem('coupon', JSON.stringify({ temp, discount: null }));
+        }
+        else {
+            localStorage.setItem('coupon', JSON.stringify({ temp, discount }));
+        }
+        setApplyCoupon(temp);
 
-    // useEffect(() => {
-    // }, [dispatch])
+        setTimeout(() => {
+            onClose();
+        }, 2000)
+    }
+
+    let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
+
+    const handleRemoveCoupon = () => {
+        localStorage.setItem('coupon', JSON.stringify({ temp: null, discount: null }));
+        dispatch(getCartProducts());
+    }
+
+    const handleMoveToWishlist = async (el) => {
+        try {
+            await Promise.all([
+                dispatch(addwishList(el, setLoading)),
+                dispatch(deleteCartProduct(el.id)),
+                dispatch(getCartProducts()),
+            ]);
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
 
     return (
         <>
@@ -336,6 +380,17 @@ const Cart = () => {
                                                                 <option value="9">9</option>
                                                                 <option value="10">10</option>
                                                             </Select>
+                                                            <Button _active={'none'} fontSize={"12px"}
+                                                                fontWeight={"800"}
+                                                                colorScheme="pink"
+                                                                borderRadius={"none"}
+                                                                border={"1px solid #ff3f71"}
+                                                                _hover={{
+                                                                    background: "#f6ecee",
+                                                                }} variant={'outline'}
+                                                                onClick={() => handleMoveToWishlist(el)}
+
+                                                            >Move to Wishlist</Button>
                                                         </Flex>
                                                         {/* {Add price and off price} */}
                                                         <Text mt="5px" fontSize={"md"} fontWeight={"700"}>
@@ -445,21 +500,37 @@ const Cart = () => {
                                         Apply Coupons
                                     </Text>
                                 </HStack>
-                                <Button
-                                    fontSize={"12px"}
-                                    fontWeight={"800"}
-                                    pt="3px"
-                                    colorScheme="pink"
-                                    borderRadius={"none"}
-                                    border={"1px solid #ff3f71"}
-                                    variant="outline"
-                                    _hover={{
-                                        background: "#e1cacf",
-                                    }}
-                                    onClick={onOpen}
-                                >
-                                    APPLY
-                                </Button>
+                                {couponValue.temp == null ?
+                                    <Button
+                                        fontSize={"12px"}
+                                        fontWeight={"800"}
+                                        pt="3px"
+                                        colorScheme="pink"
+                                        borderRadius={"none"}
+                                        border={"1px solid #ff3f71"}
+                                        variant="outline"
+                                        _hover={{
+                                            background: "#e6ccd1",
+                                        }}
+                                        onClick={onOpen}
+                                    >
+                                        APPLY
+                                    </Button>
+                                    :
+                                    <Button
+                                        _hover={{
+                                            background: "#e6d7da",
+                                        }}
+                                        variant={'outline'}
+                                        border={"1px solid #ff3f71"}
+                                        fontSize={"12px"}
+                                        fontWeight={"800"}
+                                        borderRadius={'0'}
+                                        colorScheme="red"
+                                        onClick={handleRemoveCoupon}
+
+                                    >Remove Coupon</Button>
+                                }
                             </Flex>
 
                             <Modal
@@ -475,17 +546,38 @@ const Cart = () => {
                                     <ModalCloseButton />
                                     <ModalBody className='scrollbar' pb={6} overflowY={'scroll'}>
                                         <FormControl position={'relative'}>
-                                            <Input p={'22px 12px'} focusBorderColor='black' type="text" size="sm" placeholder='Enter coupon code' />
-                                            <Button textTransform={'uppercase'} right={'0px'} top={'3px'} _hover={'none'} _active={'none'} color={'#ff3f6c'} variant={'ghost'} position={'absolute'}>Check</Button>
+                                            <Input fontSize={'17px'} color={'gray.500'} value={coupon} onChange={(e) => setCoupon(e.target.value)} p={'22px 12px'} focusBorderColor='black' type="text" size="sm" placeholder='Enter coupon code' />
+                                            <Button zIndex={'overlay'} textTransform={'uppercase'} right={'0px'} top={'3px'} _hover={'none'} _active={'none'} color={'#ff3f6c'} variant={'ghost'} position={'absolute'}>Check</Button>
                                         </FormControl>
+                                        {couponArr.map((el, ind) => {
+                                            return <FormControl opacity={el.title === 'MISSEDYOU' && discountedPrice < 499 ? '0.5' : ''} isDisabled={el.title === 'MISSEDYOU' && discountedPrice < 499} mt={'20px'}>
+                                                <Flex gap={'20px'}>
+                                                    <Checkbox isChecked={couponValue.temp == ind} onChange={() => handleCouponChange(ind, el.discount)} _focusVisible={'none'} colorScheme="pink" />
+                                                    <Button _hover={'none'} bg={'white'} _active={'none'} border={'1.5px dashed #ff3f71'}>{el.title}</Button>
+                                                    {couponValue.temp !== null && couponValue.temp == ind && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
+                                                        <CheckmarkIcon />
+                                                        <Text>applied</Text>
+                                                    </Flex>}
+                                                </Flex>
+                                                {el.title === 'MISSEDYOU' && discountedPrice < 499 && <Text fontSize={'13px'} m={'5px 0 0 37px'} color={'red'}>Cart value should be at least ₹499 to apply this coupon.</Text>}
+                                                <Box>
+                                                    <Text fontSize={'14px'} m={'10px 0 0px 37px'} fontWeight={'bold'}>Save ₹{el.discount == '10%' ? (discountedPrice * 0.1).toFixed() : el.discount == '20%' ? (discountedPrice * 0.2).toFixed() : (discountedPrice * 0.05).toFixed()}</Text>
+                                                    <Text ml={'37px'} color={'gray.500'}>{el.desc}</Text>
+                                                </Box>
+                                                <hr style={{ borderTop: 'dotted 1.7px', color: '#bababb', margin: '15px 0 0 37px' }} />
+                                            </FormControl>
+                                        })}
+                                        {!couponArr.length && <FormControl color={'gray.500'} minH={'260px'} display={'grid'} placeItems={'center'}>
+                                            <Text>No other coupon is available</Text>
+                                        </FormControl>}
                                     </ModalBody>
                                     <ModalFooter boxShadow="rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px">
                                         <Flex alignItems={'center'} w={'100%'}>
-                                            <Box w={'45%'}>
-                                                <Text mt={'10px'} color={'gray.500'} fontWeight={'bold'} fontSize={'13px'}>Maximum Savings:</Text>
-                                                <Text fontWeight={'bold'}>₹{discountedPrice ? (discountedPrice * 0.1).toFixed() : 0}</Text>
-                                            </Box>
-                                            <Button
+                                            <Flex alignItems={'center'} w={'60%'} gap={'10px'}>
+                                                <Text color={'gray.500'} fontWeight={'bold'} fontSize={'13px'}>Maximum Savings:</Text>
+                                                <Text fontWeight={'bold'}>₹{couponDiscount}</Text>
+                                            </Flex>
+                                            {/* <Button
                                                 w="100%"
                                                 fontSize={"13px"}
                                                 borderRadius={"none"}
@@ -497,7 +589,7 @@ const Cart = () => {
                                                 onClick={onClose}
                                             >
                                                 Apply
-                                            </Button>
+                                            </Button> */}
                                         </Flex>
                                     </ModalFooter>
                                 </ModalContent>
@@ -585,8 +677,18 @@ const Cart = () => {
                                 alignItems={"center"}
                                 color={"#909390"}
                             >
-                                <Text>Coupon Discount</Text>
-                                <Text cursor={'pointer'} onClick={onOpen} color={"#ff5d71"}>Apply Coupon</Text>
+                                <Flex alignItems={'center'} gap={'20px'}>
+                                    <Text>Coupon Discount</Text>
+                                    {couponValue.temp !== null && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
+                                        <CheckmarkIcon />
+                                        <Text>applied</Text>
+                                    </Flex>}
+                                </Flex>
+                                {couponValue.temp == null ?
+                                    <Text cursor={'pointer'} onClick={onOpen} color={"#ff5d71"}>Apply Coupon</Text>
+                                    :
+                                    <Text color={'#65b8a5'}>-₹{couponDiscount}</Text>
+                                }
                             </Flex>
 
                             <Flex
@@ -622,7 +724,7 @@ const Cart = () => {
                                 color={"#3e4152"}
                             >
                                 <Text>Total Amount</Text>
-                                <Text>₹{(discountedPrice + 20).toLocaleString()}</Text>
+                                <Text>₹{couponValue.temp == null ? (discountedPrice + 20).toLocaleString() : (discountedPrice + 20 - couponDiscount).toLocaleString()}</Text>
                             </Flex>
 
                             <Button
@@ -632,6 +734,7 @@ const Cart = () => {
                                 color="white"
                                 bg="#ff3f6c"
                                 variant={"unstyled"}
+                                onClick={() => navigate('/address')}
                             >
                                 Place Order
                             </Button>
@@ -726,4 +829,4 @@ const Cart = () => {
     );
 };
 
-export default Cart;
+export default memo(Cart);

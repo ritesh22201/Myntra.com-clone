@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Input,
     ListItem,
@@ -27,13 +27,30 @@ import {
 } from "@chakra-ui/react";
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/Scrollbar.css'
+import { useSelector } from 'react-redux';
 
 const Address = () => {
     const navigate = useNavigate()
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const {cart} = useSelector(store => store.cartReducer);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [discountedPrice, setDiscountedPrice] = useState(0);
     const handleContinue = () => {
         navigate("/payment")
     }
+
+    useEffect(() => {
+        let price = 0;
+        let discountPrice = 0;
+
+        cart.map(el => {
+            price += +el.off_price * el.quantity;
+            discountPrice += +el.price * el.quantity;
+        });
+        setTotalPrice(price);
+        setDiscountedPrice(discountPrice);
+    }, [cart])
+
     return (
         <Flex h="80vh" justifyContent={"center"} gap="10px" alignItems={"center"}>
             <Box maxW="container.sm" w="100%">
@@ -219,7 +236,7 @@ const Address = () => {
                     color={"#909390"}
                 >
                     <Text>Total MRP</Text>
-                    <Text>₹8,197</Text>
+                    <Text>₹{totalPrice.toLocaleString()}</Text>
                 </Flex>
 
                 <Flex
@@ -230,7 +247,7 @@ const Address = () => {
                     color={"#909390"}
                 >
                     <Text>Discount on MRP</Text>
-                    <Text color={"#65b8a5"}>-₹6,487</Text>
+                    <Text color={"#65b8a5"}>-₹{(totalPrice - discountedPrice).toLocaleString()}</Text>
                 </Flex>
 
 
@@ -267,7 +284,7 @@ const Address = () => {
                     color={"#3e4152"}
                 >
                     <Text>Total Amount</Text>
-                    <Text>₹1,730</Text>
+                    <Text>₹{(discountedPrice + 20).toLocaleString()}</Text>
                 </Flex>
 
                 <Button

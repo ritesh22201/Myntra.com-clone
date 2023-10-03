@@ -4,7 +4,7 @@ import { CART_DELETE_SUCCESS, CART_POST_SUCCESS, CART_REQ, CART_REQ_FAILURE, CAR
 export const getCartProducts = () => (dispatch) => {
     dispatch({ type: CART_REQ });
 
-    return axios.get('https://myntra-clone-backend.onrender.com/cart')
+    axios.get('https://myntra-clone-backend.onrender.com/cart')
         .then(res => {
             console.log(res.data);
             dispatch({ type: CART_REQ_SUCCESS, payload: res.data });

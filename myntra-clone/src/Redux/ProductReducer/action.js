@@ -23,10 +23,10 @@ export const getProductsSingleMen = (setSingleData, id, value = '') => {
     })
 }
 
-export const addwishList = (products, setLoading) => (dispatch) => {
+export const addwishList = (products, setLoading = false) => (dispatch) => {
     dispatch({ type: ADD_WISHLIST_PRODUCTS_SUCCESS })
     setLoading(true);
-    axios.post("https://myntra-clone-backend.onrender.com/wishlist", products).then((res) => {
+    return axios.post("https://myntra-clone-backend.onrender.com/wishlist", products).then((res) => {
         dispatch({ type: ADD_WISHLIST_PRODUCTS })
         setLoading(false);
     }).catch((err) => {

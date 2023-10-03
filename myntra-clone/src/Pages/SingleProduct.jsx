@@ -21,11 +21,12 @@ import {
 import { FaStar } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FiHeart } from "react-icons/fi";
-import { BsFillCircleFill, BsStarFill, BsTruck } from "react-icons/bs";
+import { BsArrowRight, BsFillCircleFill, BsFillHeartFill, BsStarFill, BsTruck } from "react-icons/bs";
 import { CgDetailsMore } from "react-icons/cg";
 import { RiStarSLine } from "react-icons/ri";
-import { AiFillCheckCircle } from "react-icons/ai";
+import { AiFillCheckCircle, AiFillHeart } from "react-icons/ai";
 import { addProductToCart, getCartProducts } from "../Redux/CartReducer/action";
+import { BiRightArrow } from "react-icons/bi";
 // import { GlobalContext } from "../Context/GlobalContextProvider";
 // import AOS from 'aos';
 
@@ -103,18 +104,18 @@ const SingleProduct = () => {
       return;
     }
 
-    const existedProduct = cart?.find(el => el.id == id || el.title == title);
+    const existedProduct = cart?.find(el => el.productId == id || el.title == title);
 
-    // if (existedProduct) {
-    //   toast({
-    //     title: 'Product is already in the cart!',
-    //     status: 'warning',
-    //     duration: 3000,
-    //     isClosable: true,
-    //     position: 'top'
-    //   })
-    // }
-    // else 
+    if (existedProduct) {
+      toast({
+        title: 'Product is already in the cart!',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
+    }
+    else 
     if (!existedProduct) {
       let productData = {
         title,
@@ -133,8 +134,10 @@ const SingleProduct = () => {
         quantity: 1
       };
 
-      await dispatch(addProductToCart(productData, setCartLoading));
-      await dispatch(getCartProducts());
+      dispatch(addProductToCart(productData, setCartLoading)).then(() => {
+        dispatch(getCartProducts());
+      })
+
       localStorage.setItem('cart', JSON.stringify([...cart, productData]));
     }
   }
@@ -385,7 +388,7 @@ const SingleProduct = () => {
                   </Flex>
                 </HStack>
               </Button>
-              : <Button bg={'green.400'} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'19px'} p="30px 60px" onClick={() => navigate('/cart')}>
+              : <Button bg={'#D14D72'} rightIcon={<BsArrowRight style={{fontWeight : 'bold'}}/>} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'19px'} p="30px 60px" onClick={() => navigate('/cart')}>
                 GO TO BAG
               </Button>
             }
@@ -409,7 +412,7 @@ const SingleProduct = () => {
                 </HStack>
               </Button>
               :
-              <Button color={'green.500'} _hover={'none'} _active={'none'} ml="10px" fontSize={'20px'} p="30px 60px" leftIcon={<AiFillCheckCircle />}>Added to wishlist</Button>
+              <Button bg={'#535766'} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'20px'} p="30px 60px" leftIcon={<BsFillHeartFill style={{color : '#e34975'}} />}>Wishlisted</Button>
             }
           </Flex>
         </Box>

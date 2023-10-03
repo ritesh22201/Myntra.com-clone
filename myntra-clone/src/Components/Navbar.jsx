@@ -31,7 +31,7 @@ import { FiHeart, FiUser } from 'react-icons/fi'
 import { HiOutlineShoppingBag } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen, getSearchProducts } from '../Redux/ProductReducer/action';
 import { GlobalContext } from '../Context/GlobalContextProvider';
 import logo from '../Assets/myntra-logo.webp';
@@ -40,6 +40,8 @@ export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
   const { inputVal, setInputVal } = useContext(GlobalContext);
+  const { cart } = useSelector(store => store.cartReducer);
+  const { wishlist } = useSelector(store => store.productReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -77,12 +79,7 @@ export default function Navbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} alignItems={'center'} justify={{ base: 'center', md: 'start' }}>
-          {/* <Text
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
-          </Text> */}
-          <Image w={'60px'} src={logo} alt='logo' />
+          <Image onClick={() => navigate('/')} w={'60px'} src={logo} alt='logo' />
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -103,12 +100,14 @@ export default function Navbar() {
             <FiUser style={{ fontSize: '20px' }} />
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Profile</label>
           </VStack>
-          <VStack cursor={'pointer'} onClick={() => navigate('/wishlist')}>
+          <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/wishlist')}>
             <FiHeart style={{ fontSize: '20px' }} />
+            {wishlist.length && <Box bg={'#ff3f71'} top={'-20px'} left={'29px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{wishlist?.length}</Box>}
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Wishlist</label>
           </VStack>
-          <VStack cursor={'pointer'} onClick={() => navigate('/cart')}>
+          <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
+            {cart.length && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</label>
           </VStack>
         </Stack>
