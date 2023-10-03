@@ -1,5 +1,5 @@
 import { ADD_WISHLIST_PRODUCTS, ADD_WISHLIST_PRODUCTS_FAILURE, ADD_WISHLIST_PRODUCTS_SUCCESS, DELETE_WISHLIST_PRODUCTS, GET_WISHLIST_PRODUCTS, PRODUCT_FAILURE, PRODUCT_REQ, PRODUCT_SUCCESS } from "./actionTypes";
-const wishListData = localStorage.getItem('wishlist') || [];
+const wishListData = localStorage.getItem('wishlist');
 
 const initialState = {
     isLoading: false,

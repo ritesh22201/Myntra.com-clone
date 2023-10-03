@@ -79,7 +79,7 @@ export default function Navbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} alignItems={'center'} justify={{ base: 'center', md: 'start' }}>
-          <Image onClick={() => navigate('/')} w={'60px'} src={logo} alt='logo' />
+          <Image onClick={() => navigate('/')} cursor={'pointer'} w={'60px'} src={logo} alt='logo' />
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -102,12 +102,12 @@ export default function Navbar() {
           </VStack>
           <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/wishlist')}>
             <FiHeart style={{ fontSize: '20px' }} />
-            {wishlist.length && <Box bg={'#ff3f71'} top={'-20px'} left={'29px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{wishlist?.length}</Box>}
+            {/* {wishlist?.length && <Box bg={'#ff3f71'} top={'-20px'} left={'29px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{wishlist?.length}</Box>} */}
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Wishlist</label>
           </VStack>
           <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
-            {cart.length && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
+            {cart?.length && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</label>
           </VStack>
         </Stack>

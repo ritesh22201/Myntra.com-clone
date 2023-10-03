@@ -31,7 +31,7 @@ const Wishlist = () => {
   return (
     <Box>
       {
-        wishlist && wishlist.length > 0 ? <Box
+        wishlist && wishlist?.length > 0 ? <Box
           w="90%"
           display={"grid"}
           gap="20px"

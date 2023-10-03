@@ -72,7 +72,7 @@ const Cart = () => {
         let price = 0;
         let discountPrice = 0;
 
-        cart.map(el => {
+        cart?.map(el => {
             price += +el.off_price * el.quantity;
             discountPrice += +el.price * el.quantity;
         });
@@ -148,6 +148,12 @@ const Cart = () => {
             console.error(error.message);
         }
     }
+
+    useEffect(() => {
+        if(cart.length === 0){
+            localStorage.setItem('coupon', JSON.stringify({ temp: null, discount: null }));
+        }
+    }, [cart])
 
     return (
         <>
@@ -280,7 +286,7 @@ const Cart = () => {
                                                 ml="8px"
                                                 textTransform={"uppercase"}
                                             >
-                                                Total {cart.length} Items
+                                                Total {cart?.length} Items
                                             </Text>
                                         </Flex>
 
@@ -554,7 +560,7 @@ const Cart = () => {
                                                 <Flex gap={'20px'}>
                                                     <Checkbox isChecked={couponValue.temp == ind} onChange={() => handleCouponChange(ind, el.discount)} _focusVisible={'none'} colorScheme="pink" />
                                                     <Button _hover={'none'} bg={'white'} _active={'none'} border={'1.5px dashed #ff3f71'}>{el.title}</Button>
-                                                    {couponValue.temp !== null && couponValue.temp == ind && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
+                                                    {couponValue.temp != null && couponValue.temp == ind && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
                                                         <CheckmarkIcon />
                                                         <Text>applied</Text>
                                                     </Flex>}
@@ -679,7 +685,7 @@ const Cart = () => {
                             >
                                 <Flex alignItems={'center'} gap={'20px'}>
                                     <Text>Coupon Discount</Text>
-                                    {couponValue.temp !== null && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
+                                    {couponValue.temp != null && <Flex fontWeight={'bold'} gap={'5px'} color={'green.400'} alignItems={'center'}>
                                         <CheckmarkIcon />
                                         <Text>applied</Text>
                                     </Flex>}

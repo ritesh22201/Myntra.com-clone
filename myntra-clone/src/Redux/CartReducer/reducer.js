@@ -1,5 +1,5 @@
 import { CART_POST_SUCCESS, CART_REQ, CART_REQ_FAILURE, CART_REQ_SUCCESS, CART_UPDATE_SUCCESS } from "./actionTypes";
-const cartData = localStorage.getItem('cart') || [];
+const cartData = localStorage.getItem('cart');
 
 const initialState = {
     isLoadingCart : false,
