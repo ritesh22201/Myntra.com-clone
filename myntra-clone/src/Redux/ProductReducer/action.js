@@ -1,6 +1,8 @@
 import { ADD_WISHLIST_PRODUCTS, ADD_WISHLIST_PRODUCTS_FAILURE, ADD_WISHLIST_PRODUCTS_SUCCESS, DELETE_WISHLIST_PRODUCTS, GET_WISHLIST_PRODUCTS, PRODUCT_FAILURE, PRODUCT_REQ, PRODUCT_SUCCESS } from "./actionTypes";
 import axios from 'axios';
 
+const token = JSON.parse(localStorage.getItem('google-login')) || {};
+
 export const getProductsMen = (setTotalCount, page, obj) => (dispatch) => {
     dispatch({ type: PRODUCT_REQ });
     axios.get(`https://myntra-clone-backend.onrender.com/products?_limit=14&_page=${page}`, obj)
@@ -37,8 +39,9 @@ export const addwishList = (products, setLoading = false) => (dispatch) => {
 
 export const getwishlistproducts = () => (dispatch) => {
     return axios.get("https://myntra-clone-backend.onrender.com/wishlist").then((res) => {
-        console.log(res.data)
-        dispatch({ type: GET_WISHLIST_PRODUCTS, payload: res.data })
+        // console.log(res.data)
+        const products = res.data.filter(el => el.mobile == token?.mobile);
+        dispatch({ type: GET_WISHLIST_PRODUCTS, payload: products });
     }).catch((err) => {
         console.log(err)
     })

@@ -25,7 +25,8 @@ const Login = () => {
     const [ph, setPh] = useState('');
     const toaster = useToast();
     const dispatch = useDispatch();
-    const {isLoading, token} = useSelector(store => store.authReducer);
+    const { isLoading, token } = useSelector(store => store.authReducer);
+    const tokenVal = JSON.parse(localStorage.getItem('google-login')) || {};
 
     function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
@@ -46,7 +47,7 @@ const Login = () => {
 
     const onSignup = () => {
         // setLoading(true);
-        dispatch({type : LOGIN_REQUEST});
+        dispatch({ type: LOGIN_REQUEST });
         onCaptchaVerify();
 
         const appVerifier = window.recaptchaVerifier;
@@ -57,39 +58,39 @@ const Login = () => {
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
                 // setLoading(false);
-                dispatch({type : LOADER_FALSE});
+                dispatch({ type: LOADER_FALSE });
                 setShowOtp(true);
                 toast.success("OTP sent successfully!");
             }).catch((error) => {
                 // console.log(error)
                 // setLoading(false);
-                dispatch({type : LOGIN_FAILURE});
+                dispatch({ type: LOGIN_FAILURE });
             });
 
     }
 
-    function onOTPVerify(){
+    function onOTPVerify() {
         // setLoading(true);
-        dispatch({type : LOGIN_REQUEST});
-        window.confirmationResult.confirm(otp).then(async(res) => {
+        dispatch({ type: LOGIN_REQUEST });
+        window.confirmationResult.confirm(otp).then(async (res) => {
             console.log(res)
-            localStorage.setItem('google-login', JSON.stringify(res.user.accessToken));
-            dispatch({type : LOGIN_SUCCESS, payload : res.user.accessToken});
-            navigate(location.state, {replace : true});
+            localStorage.setItem('google-login', JSON.stringify({ mobile: res.user.phoneNumber, token: res.user.accessToken }));
+            dispatch({ type: LOGIN_SUCCESS, payload: res.user.accessToken });
+            navigate(location.state, { replace: true });
         })
-        .catch(err => {
-            // setLoading(false);
-            dispatch({type : LOGIN_FAILURE});
-            toast.error("OTP is Incorrect!");
-        })
+            .catch(err => {
+                // setLoading(false);
+                dispatch({ type: LOGIN_FAILURE });
+                toast.error("OTP is Incorrect!");
+            })
     }
 
 
     return (
-        <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} h={'83.5vh'}> 
+        <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} h={'83.5vh'}>
             <Toaster toastOptions={{ duration: 4000 }} />
             <Box id="recaptcha-container"></Box>
-            {!token ?
+            {!token &&
                 <Box>
                     {!showOtp ?
                         <Box>
@@ -98,7 +99,7 @@ const Login = () => {
                             </Box>
                             <Box style={{ width: '33%', padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
                                 <Heading mb={'25px'} color={'#161515'} fontSize={'18px'}>Login <span>or</span> Signup</Heading>
-                                <PhoneInput inputStyle={{width : '100%'}} country={"in"} value={ph} onChange={setPh} />
+                                <PhoneInput inputStyle={{ width: '100%' }} country={"in"} value={ph} onChange={setPh} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
                                 <Button onClick={onSignup} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
@@ -141,15 +142,6 @@ const Login = () => {
                         </Box>
                     }
                 </Box>
-                :
-                toaster({
-                    position: 'top',
-                    title: 'Login Successful.',
-                    description: "Welcome Back.",
-                    status: 'success',
-                    duration: 4000,
-                    isClosable: true,
-                })
             }
         </Box>
     )

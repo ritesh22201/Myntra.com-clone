@@ -27,16 +27,39 @@ import {
 } from "@chakra-ui/react";
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/Scrollbar.css'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import '../CSS/Scrollbar.css'
+import { addAddress, deleteAddress, getAddress } from '../Redux/addressReducer/action';
 
 const Address = () => {
     const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {cart} = useSelector(store => store.cartReducer);
+    const { cart } = useSelector(store => store.cartReducer);
     const [totalPrice, setTotalPrice] = useState(0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
-    const handleContinue = () => {
-        navigate("/payment")
+    const [address, setAddress] = useState({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false });
+    const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
+    const token = JSON.parse(localStorage.getItem('google-login')) || {};
+    const { addressData } = useSelector(store => store.addressReducer);
+    const dispatch = useDispatch();
+    const [edit, setEdit] = useState(false);
+    const [populateData, setPopulateData] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value, checked } = e.target;
+        setAddress({ ...address, [name]: name === 'isDefault' ? checked : value });
+    }
+
+    useEffect(() => {
+        dispatch(getAddress());
+    }, [])
+
+    const handleAddAddress = async (e) => {
+        e.preventDefault();
+        const data = { ...address, userMobile: token?.mobile };
+        await dispatch(addAddress(data));
+        await dispatch(getAddress());
+        onClose();
     }
 
     useEffect(() => {
@@ -51,8 +74,32 @@ const Address = () => {
         setDiscountedPrice(discountPrice);
     }, [cart])
 
+    let currentDateArr = new Date().toISOString().split('T')[0];
+    let currentDate = new Date(currentDateArr);
+    let futureDate = new Date(currentDate);
+
+    futureDate.setDate(currentDate.getDate() + 6);
+    let formattedDate = futureDate.toString().split(' ').slice(0, 4);
+    let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
+
+    let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
+    const defaultAddress = addressData?.find(el => el.isDefault == true);
+    const otherAddresses = addressData?.filter(el => el.isDefault == false);
+
+    const handleRemoveAddress = async (id) => {
+        await dispatch(deleteAddress(id));
+        await dispatch(getAddress());
+    }
+
+    const handleEdit = (id) => {
+        // onOpen()
+        setEdit(true);
+        const data = addressData?.find(el => el.id == id);
+        setPopulateData(data);
+    }
+
     return (
-        <Flex h="80vh" justifyContent={"center"} gap="10px" alignItems={"center"}>
+        <Flex minH="80vh" justifyContent={"center"} gap="10px">
             <Box maxW="container.sm" w="100%">
                 <Box mt="10px">
                     <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -64,10 +111,10 @@ const Address = () => {
 
                 </Box>
 
-                <Text fontWeight={"700"} fontSize={"13px"} textTransform={"uppercase"} >Default Address</Text>
+                {defaultAddress && <Text fontWeight={"700"} fontSize={"13px"} textTransform={"uppercase"} >Default Address</Text>}
 
                 <Box maxW="container.sm">
-                    <Box
+                    {defaultAddress && <Box
                         cursor={"pointer"}
                         mt="10px"
                         p="10px"
@@ -75,7 +122,7 @@ const Address = () => {
                         border={"1px solid #eaeaec"}
                     >
                         <Flex alignItems={"center"} gap="10px">
-                            <Text fontWeight={"700"}>Sharvari </Text>
+                            <Text fontWeight={"700"}>{defaultAddress?.name}</Text>
                             <Tag
                                 size={'sm'}
 
@@ -83,26 +130,68 @@ const Address = () => {
                                 variant='outline'
                                 colorScheme='green'
                             >
-                                <TagLabel>HOME</TagLabel>
+                                <TagLabel>{defaultAddress?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
 
                             </Tag>
                         </Flex>
-                        <Text fontSize={"sm"}>1321/34 A Ward Residency Colony Shastrinagar,Kolhapur</Text>
-                        <Text fontSize={"sm"}>Kolhapur,Maharashtra-416001</Text>
-                        <Text mt="10px" fontSize={"sm"}>Mobile:<span style={{ fontWeight: "700" }}>80838374829</span></Text>
+                        <Text fontSize={"sm"}>{defaultAddress?.address}</Text>
+                        <Text fontSize={"sm"}>{`${defaultAddress?.locality}, ${defaultAddress?.city}, ${defaultAddress?.state} - ${defaultAddress?.pincode}`}</Text>
+                        <Text mt="10px" fontSize={"sm"}>Mobile :<span style={{ fontWeight: "700" }}> {defaultAddress?.mobile}</span></Text>
 
                         <UnorderedList fontSize={"sm"}>
                             <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
                         </UnorderedList>
                         <Flex ml="10px" mt="20px" gap="10px">
-                            <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                            <Button onClick={() => handleRemoveAddress(defaultAddress?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
                                 Remove
                             </Button>
-                            <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                            <Button onClick={() => { handleEdit(defaultAddress?.id) }} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
                                 Edit
                             </Button>
                         </Flex>
-                    </Box>
+                    </Box>}
+
+                    {otherAddresses.length !== 0 && <Text fontWeight={"700"} mt={'15px'} fontSize={"13px"} textTransform={"uppercase"} >Other Addresses</Text>}
+
+                    {otherAddresses?.map(el => {
+                        return <Box
+                            key={el?.id}
+                            cursor={"pointer"}
+                            mt="10px"
+                            p="10px"
+                            borderRadius={"3px"}
+                            border={"1px solid #eaeaec"}
+                        >
+                            <Flex alignItems={"center"} gap="10px">
+                                <Text fontWeight={"700"}>{el?.name}</Text>
+                                <Tag
+                                    size={'sm'}
+
+                                    borderRadius='full'
+                                    variant='outline'
+                                    colorScheme='green'
+                                >
+                                    <TagLabel>{el?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
+
+                                </Tag>
+                            </Flex>
+                            <Text fontSize={"sm"}>{el?.address}</Text>
+                            <Text fontSize={"sm"}>{`${el?.locality}, ${el?.city}, ${el?.state} - ${el?.pincode}`}</Text>
+                            <Text mt="10px" fontSize={"sm"}>Mobile :<span style={{ fontWeight: "700" }}> {el?.mobile}</span></Text>
+
+                            <UnorderedList fontSize={"sm"}>
+                                <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
+                            </UnorderedList>
+                            <Flex ml="10px" mt="20px" gap="10px">
+                                <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                    Remove
+                                </Button>
+                                <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                    Edit
+                                </Button>
+                            </Flex>
+                        </Box>
+                    })}
 
                     <Box maxW="container.sm">
                         <Box
@@ -122,63 +211,66 @@ const Address = () => {
                         onClose={onClose}
                     >
                         <ModalOverlay />
-                        <ModalContent h={'450px'}>
-                            <ModalHeader color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"sm"}>Add New Address</ModalHeader>
-                            <ModalCloseButton />
-                            <ModalBody className='scrollbar' pb={6} overflowY={'scroll'}>
-                                <FormControl>
-                                    <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"}>Contact Details</FormLabel>
-                                    <Input focusBorderColor='black' type="text" size="sm" placeholder='Name' />
-                                    <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Mobile No.' />
-                                </FormControl>
+                        <form onSubmit={handleAddAddress}>
+                            <ModalContent h={'450px'}>
+                                <ModalHeader color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"sm"}>Add New Address</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody className='scrollbar' pb={6} overflowY={'scroll'}>
+                                    <FormControl>
+                                        <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"}>Contact Details</FormLabel>
+                                        <Input name='name' value={address.name} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" placeholder='Name' />
+                                        <Input name='mobile' value={address.mobile} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Mobile No.' />
+                                    </FormControl>
 
-                                <FormControl >
-                                    <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"} mt={4}>Address</FormLabel>
-                                    <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Pincode' />
-                                    <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Address' />
-                                    <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Locality / Town' />
-                                    <Flex gap="10px">
-                                        <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='City / District' />
-                                        <Input focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='State' />
+                                    <FormControl >
+                                        <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"} mt={4}>Address</FormLabel>
+                                        <Input name='pincode' value={address.pincode} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Pincode' />
+                                        <Input name='address' value={address.address} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Address' />
+                                        <Input name='locality' value={address.locality} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Locality / Town' />
+                                        <Flex gap="10px">
+                                            <Input name='city' value={address.city} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='City / District' />
+                                            <Input name='state' value={address.state} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='State' />
+                                        </Flex>
+                                    </FormControl>
+
+                                    <FormControl cursor={"pointer"} mt="30px">
+                                        <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"}>Save Address As</FormLabel>
+                                        <Flex gap="20px" alignItems={"center"}>
+
+                                            <Tag colorScheme={address.addressType == 'home' ? 'green' : 'gray'} onClick={() => setAddress({ ...address, addressType: 'home' })} fontWeight={address.addressType == 'home' ? 'bold' : '500'} size={'sm'} borderRadius='full' variant='outline' padding="5px 15px">
+                                                <TagLabel>HOME</TagLabel>
+                                            </Tag>
+
+                                            <Tag colorScheme={address.addressType == 'work' ? 'green' : 'gray'} onClick={() => setAddress({ ...address, addressType: 'work' })} fontWeight={address.addressType == 'work' ? 'bold' : '500'} size={'sm'} borderRadius='full' padding="5px 15px" variant='outline'>
+                                                <TagLabel >WORK</TagLabel>
+                                            </Tag>
+                                        </Flex>
+                                    </FormControl>
+
+                                    <Flex mt="30px" alignItems={"center"} gap="10px">
+                                        <Checkbox name='isDefault' isChecked={address.isDefault} onChange={(e) => handleChange(e)} colorScheme='pink' />
+                                        <Text fontSize={"13px"}>Make this my default address</Text>
                                     </Flex>
-                                </FormControl>
+                                </ModalBody>
 
-                                <FormControl cursor={"pointer"} mt="30px">
-                                    <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"}>Save Address As</FormLabel>
-                                    <Flex gap="20px" alignItems={"center"}>
-
-                                        <Tag size={'sm'} borderRadius='full' variant='outline' padding="5px 15px">
-                                            <TagLabel>HOME</TagLabel>
-                                        </Tag>
-
-                                        <Tag size={'sm'} borderRadius='full' padding="5px 15px" variant='outline'>
-                                            <TagLabel>WORK</TagLabel>
-                                        </Tag>
-                                    </Flex>
-                                </FormControl>
-
-                                <Flex mt="30px" alignItems={"center"} gap="10px">
-                                    <Checkbox colorScheme='pink' />
-                                    <Text fontSize={"13px"}>Make this my default address</Text>
-                                </Flex>
-                            </ModalBody>
-
-                            <ModalFooter boxShadow="rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px">
-                                <Button
-                                    w="100%"
-                                    fontSize={"13px"}
-                                    borderRadius={"none"}
-                                    mt="10px"
-                                    color="white"
-                                    bg="#ff3f6c"
-                                    textTransform={"uppercase"}
-                                    variant={"unstyled"}
-                                    onClick={handleContinue}
-                                >
-                                    Add Address
-                                </Button>
-                            </ModalFooter>
-                        </ModalContent>
+                                <ModalFooter boxShadow="rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px">
+                                    <Button
+                                        type='submit'
+                                        w="100%"
+                                        fontSize={"13px"}
+                                        borderRadius={"none"}
+                                        mt="10px"
+                                        color="white"
+                                        bg="#ff3f6c"
+                                        textTransform={"uppercase"}
+                                        variant={"unstyled"}
+                                        onClick={handleAddAddress}
+                                    >
+                                        Add Address
+                                    </Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </form>
                     </Modal>
                 </Box>
             </Box>
@@ -199,19 +291,14 @@ const Address = () => {
                     </Text>
                 </HStack>
 
-                <Box mt="10px">
-                    <Flex alignItems={"center"} gap="15px">
-                        <Image w="35px" src="https://assets.myntassets.com/f_webp,dpr_1.0,q_60,w_210,c_limit,fl_progressive/assets/images/2314372/2018/6/19/29e8ddfd-6f5f-43fd-8b71-dfa8ac6cef681529385860869-HRX-by-Hrithik-Roshan-Men-Charcoal-Grey-Slim-Advanced-Rapid--1.jpg" />
-                        <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>6 Oct 2023</span></Text>
-                    </Flex>
-                </Box>
-
-                <Box mt="10px">
-                    <Flex alignItems={"center"} gap="15px">
-                        <Image w="35px" src="https://assets.myntassets.com/f_webp,dpr_1.0,q_60,w_210,c_limit,fl_progressive/assets/images/2314372/2018/6/19/29e8ddfd-6f5f-43fd-8b71-dfa8ac6cef681529385860869-HRX-by-Hrithik-Roshan-Men-Charcoal-Grey-Slim-Advanced-Rapid--1.jpg" />
-                        <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>6 Oct 2023</span></Text>
-                    </Flex>
-                </Box>
+                {cart.map((el, ind) => {
+                    return <Box mt="10px" key={ind} className='scrollbar' overflowY={'scroll'} minH={'50px'}>
+                        <Flex alignItems={"center"} gap="15px">
+                            <Image w="35px" src={el?.images?.image1} />
+                            <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>{day}</span></Text>
+                        </Flex>
+                    </Box>
+                })}
 
                 <Divider
                     m="10px"
@@ -249,8 +336,22 @@ const Address = () => {
                     <Text>Discount on MRP</Text>
                     <Text color={"#65b8a5"}>-₹{(totalPrice - discountedPrice).toLocaleString()}</Text>
                 </Flex>
-
-
+                {couponValue.temp != null && <Flex
+                    mt="8px"
+                    fontSize={"md"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                    color={"#909390"}
+                >
+                    <Flex alignItems={'center'} gap={'20px'}>
+                        <Text>Coupon Discount</Text>
+                    </Flex>
+                    {couponValue.temp == null ?
+                        <Text cursor={'pointer'} onClick={onOpen} color={"#ff5d71"}>Apply Coupon</Text>
+                        :
+                        <Text color={'#65b8a5'}>-₹{couponDiscount}</Text>
+                    }
+                </Flex>}
                 <Flex
                     mt="8px"
                     fontSize={"md"}
@@ -270,7 +371,7 @@ const Address = () => {
                             Know More
                         </span>
                     </Text>
-                    <Text>₹20</Text>
+                    <Text>₹{discountedPrice === 0 ? 0 : 20}</Text>
                 </Flex>
 
                 <Divider orientation="horizontal" borderColor="#d4d5d9" mx={3} />
@@ -284,7 +385,7 @@ const Address = () => {
                     color={"#3e4152"}
                 >
                     <Text>Total Amount</Text>
-                    <Text>₹{(discountedPrice + 20).toLocaleString()}</Text>
+                    <Text>₹{discountedPrice === 0 ? 0 : couponValue.temp != null ? (discountedPrice + 20 - couponDiscount).toLocaleString() : (discountedPrice + 20).toLocaleString()}</Text>
                 </Flex>
 
                 <Button
@@ -294,7 +395,7 @@ const Address = () => {
                     color="white"
                     bg="#ff3f6c"
                     variant={"unstyled"}
-                    onClick={handleContinue}
+                    onClick={() => navigate('/payment')}
                 >
                     Continue
                 </Button>

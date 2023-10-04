@@ -76,7 +76,7 @@ const Wishlist = () => {
                   <Text color={"gray.600"}>{el?.title?.substring(0, 20)}...</Text>
                   <Flex alignItems={"center"}>
                     <span>
-                      <Heading fontSize={"15px"}>{`Rs.${el?.off_price}`}</Heading>
+                      <Heading fontSize={"15px"}>{`Rs.${el?.price}`}</Heading>
                     </span>
                     <span>
                       <Text
@@ -88,7 +88,7 @@ const Wishlist = () => {
                         textDecoration={"line-through"}
                       >
                         {" "}
-                        {`Rs.${el?.price}`}
+                        {`Rs.${el?.off_price}`}
                       </Text>{" "}
                     </span>
                     <span>

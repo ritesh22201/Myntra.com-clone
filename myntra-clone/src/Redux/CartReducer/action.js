@@ -1,13 +1,16 @@
 import axios from "axios";
 import { CART_DELETE_SUCCESS, CART_POST_SUCCESS, CART_REQ, CART_REQ_FAILURE, CART_REQ_SUCCESS, CART_UPDATE_SUCCESS } from "./actionTypes"
 
+const token = JSON.parse(localStorage.getItem('google-login')) || {};
+
 export const getCartProducts = () => (dispatch) => {
     dispatch({ type: CART_REQ });
 
     axios.get('https://myntra-clone-backend.onrender.com/cart')
         .then(res => {
             console.log(res.data);
-            dispatch({ type: CART_REQ_SUCCESS, payload: res.data });
+            const products = res.data.filter(el => el.mobile == token?.mobile);
+            dispatch({ type: CART_REQ_SUCCESS, payload: products });
         })
         .catch(err => {
             console.log(err);

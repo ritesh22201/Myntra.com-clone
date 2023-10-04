@@ -43,6 +43,7 @@ export default function Navbar() {
   const { cart } = useSelector(store => store.cartReducer);
   const { wishlist } = useSelector(store => store.productReducer);
   const dispatch = useDispatch();
+  const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
   useEffect(() => {
     if (id) clearTimeout(id);
@@ -107,7 +108,7 @@ export default function Navbar() {
           </VStack>
           <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
-            {cart?.length && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
+            {cart?.length && token.token && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
             <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</label>
           </VStack>
         </Stack>

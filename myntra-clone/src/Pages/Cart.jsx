@@ -62,6 +62,7 @@ const Cart = () => {
     const [applyCoupon, setApplyCoupon] = useState(null);
     const [loading, setLoading] = useState(false);
     const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
+    const {addressData} = useSelector(store => store.addressReducer);
 
 
     useEffect(() => {
@@ -130,6 +131,8 @@ const Cart = () => {
         }, 2000)
     }
 
+    const defaultAddress = addressData?.find(el => el.isDefault == true);
+
     let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
 
     const handleRemoveCoupon = () => {
@@ -159,10 +162,10 @@ const Cart = () => {
         <>
             {cart?.length ? (
                 <>
-                    <Flex justifyContent={"center"} gap="10px" alignItems={"center"}>
+                    <Flex justifyContent={"center"} gap="10px">
                         <Box w="50%">
                             <Box maxW="container.sm" w="100%">
-                                <Box
+                            {defaultAddress &&  <Box
                                     mt="10px"
                                     p="10px"
                                     borderRadius={"3px"}
@@ -170,8 +173,8 @@ const Cart = () => {
                                 >
                                     <Flex justifyContent={"space-between"} alignItems={"center"}>
                                         <Box >
-                                            <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>Sharvari,416008</span></Text>
-                                            <Text fontSize={"sm"}>1321/34 A Ward Residency Colony Shastrinagar,Kolhapur</Text>
+                                            <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>{defaultAddress?.name},{defaultAddress?.pincode}</span></Text>
+                                            <Text fontSize={"sm"}>{defaultAddress?.address}, {defaultAddress?.locality}, {defaultAddress?.city}</Text>
                                         </Box>
                                         <Button
                                             fontSize={"12px"}
@@ -188,7 +191,7 @@ const Cart = () => {
                                         </Button>
 
                                     </Flex>
-                                </Box>
+                                </Box>}
                             </Box>
                             <Flex>
                                 <Box maxW="container.sm" w="100%">
@@ -774,7 +777,7 @@ const Cart = () => {
                         </Flex>
                     </Container>
 
-                    <Box mt="200px" borderTop={"1px solid #C1D0B5"}>
+                    {/* <Box borderTop={"1px solid #C1D0B5"}>
                         <Flex
                             mt="15px"
                             alignItems={"center"}
@@ -826,9 +829,9 @@ const Cart = () => {
                             </Box>
                             <Box>
                                 <Text fontWeight={"700"}>Need Help ? Contact Us</Text>
-                            </Box>
-                        </Flex>
-                    </Box>
+                            </Box> */}
+                        {/* </Flex> */}
+                    {/* </Box> */}
                 </Box>
             )}
         </>

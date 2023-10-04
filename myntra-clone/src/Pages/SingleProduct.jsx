@@ -44,6 +44,7 @@ const SingleProduct = () => {
   const [isProductAddedToCart, setIsProductAddedToCart] = useState(false);
   const wishListData = JSON.parse(localStorage.getItem('wishlist')) || [];
   const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+  const token = JSON.parse(localStorage.getItem('google-login')) || {};
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
@@ -131,7 +132,8 @@ const SingleProduct = () => {
         images,
         productId: id,
         size: selectedSize[id],
-        quantity: 1
+        quantity: 1,
+        mobile : token?.mobile
       };
 
       dispatch(addProductToCart(productData, setCartLoading)).then(() => {
@@ -181,6 +183,7 @@ const SingleProduct = () => {
         images,
         productId: id,
         size: selectedSize[id],
+        mobile : token?.mobile
       };
 
       dispatch(addwishList(productData, setLoading));
