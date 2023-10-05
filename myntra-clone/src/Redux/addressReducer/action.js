@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADDRESS_FAILURE, ADDRESS_GET_SUCCESS, ADDRESS_REQ, ADD_NEW_ADDRESS, DELETE_ADDRESS } from "./actionTypes";
+import { ADDRESS_FAILURE, ADDRESS_GET_SUCCESS, ADDRESS_REQ, ADD_NEW_ADDRESS, DELETE_ADDRESS, UPDATE_ADDRESS } from "./actionTypes";
 const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
 export const getAddress = () => (dispatch) => {
@@ -24,6 +24,20 @@ export const addAddress = (data) => (dispatch) => {
         .then(res => {
             console.log(res.data);
             dispatch({ type: ADD_NEW_ADDRESS});
+        })
+        .catch(err => {
+            console.log(err);
+            dispatch({ type: ADDRESS_FAILURE });
+        })
+}
+
+export const updateAddress = (data, id) => (dispatch) => {
+    dispatch({ type: ADDRESS_REQ });
+
+    return axios.patch(`https://myntra-clone-backend.onrender.com/address/${id}`, data)
+        .then(res => {
+            console.log(res.data);
+            dispatch({ type: UPDATE_ADDRESS});
         })
         .catch(err => {
             console.log(err);

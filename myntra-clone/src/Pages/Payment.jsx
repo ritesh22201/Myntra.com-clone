@@ -29,12 +29,12 @@ const Payment = () => {
             <CiPercent/>
             <Text fontWeight={"700"} ml="8px">Bank Offers</Text>
             </Flex>
-            <Text color={"gray.600"} fontSize={"13px"}>10% Instant Discount on ICICI Bank Credit Cards on a min spend of Rs.3500.TCA</Text>
+            <Text ml={'24px'} color={"gray.600"} fontSize={"13px"}>10% Instant Discount on ICICI Bank Credit Cards on a min spend of Rs.3500.TCA</Text>
             <Accordion allowToggle>
   <AccordionItem borderTop={"none"} borderBottom={"none"} bg="white" color={"gray.700"}  _hover={{bg:"white"}}>
     <h2>
       <AccordionButton >
-        <Box as="span" flex='1' textAlign='left'>
+        <Box ml={'9px'} as="span" flex='1' textAlign='left'>
           show more 
         </Box>
         {/* <AccordionIcon /> */}

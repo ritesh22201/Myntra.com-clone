@@ -1,4 +1,4 @@
-import { ADDRESS_FAILURE, ADDRESS_GET_SUCCESS, ADDRESS_REQ, ADD_NEW_ADDRESS, DELETE_ADDRESS } from "./actionTypes"
+import { ADDRESS_FAILURE, ADDRESS_GET_SUCCESS, ADDRESS_REQ, ADD_NEW_ADDRESS, DELETE_ADDRESS, UPDATE_ADDRESS } from "./actionTypes"
 
 const initialState = {
     isLoading : false,
@@ -48,6 +48,16 @@ export const reducer = (state = initialState, {type, payload}) => {
                 isError : false,
                 isAdded : true,
                 isUpdated : false
+            }
+        }
+
+        case UPDATE_ADDRESS : {
+            return {
+                ...state,
+                isLoading : false,
+                isError : false,
+                isAdded : true,
+                isUpdated : true
             }
         }
 

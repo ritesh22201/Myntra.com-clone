@@ -24,12 +24,13 @@ import {
     FormControl,
     FormLabel,
     Checkbox,
+    Radio,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/Scrollbar.css'
 import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Scrollbar.css'
-import { addAddress, deleteAddress, getAddress } from '../Redux/addressReducer/action';
+import { addAddress, deleteAddress, getAddress, updateAddress } from '../Redux/addressReducer/action';
 
 const Address = () => {
     const navigate = useNavigate()
@@ -42,8 +43,7 @@ const Address = () => {
     const token = JSON.parse(localStorage.getItem('google-login')) || {};
     const { addressData } = useSelector(store => store.addressReducer);
     const dispatch = useDispatch();
-    const [edit, setEdit] = useState(false);
-    const [populateData, setPopulateData] = useState({});
+
 
     const handleChange = (e) => {
         const { name, value, checked } = e.target;
@@ -56,10 +56,29 @@ const Address = () => {
 
     const handleAddAddress = async (e) => {
         e.preventDefault();
+
         const data = { ...address, userMobile: token?.mobile };
+
+        if (address.isDefault) {
+            const defaultAddress = addressData?.find(el => el.isDefault == true);
+            if (defaultAddress) {
+                const obj = { isDefault: false }
+
+                await dispatch(updateAddress(obj, defaultAddress.id));
+                await dispatch(addAddress(data));
+                await dispatch(getAddress());
+
+                onClose();
+                setAddress({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
+                return;
+            }
+        }
+
         await dispatch(addAddress(data));
         await dispatch(getAddress());
+
         onClose();
+        setAddress({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
     }
 
     useEffect(() => {
@@ -87,15 +106,37 @@ const Address = () => {
     const otherAddresses = addressData?.filter(el => el.isDefault == false);
 
     const handleRemoveAddress = async (id) => {
-        await dispatch(deleteAddress(id));
-        await dispatch(getAddress());
+        await Promise.all([
+            dispatch(deleteAddress(id)),
+            dispatch(getAddress())
+        ])
     }
 
-    const handleEdit = (id) => {
-        // onOpen()
-        setEdit(true);
-        const data = addressData?.find(el => el.id == id);
-        setPopulateData(data);
+    const handleMakeDefault = async (id) => {
+        try {
+            const defaultAddress = addressData?.find(el => el.isDefault == true);
+            if (defaultAddress) {
+                const obj = { isDefault: false };
+                const obj2 = { isDefault: true };
+                await Promise.all([
+                    dispatch(updateAddress(obj, defaultAddress.id)),
+                    dispatch(getAddress()),
+                    dispatch(updateAddress(obj2, id)),
+                    dispatch(getAddress())
+                ])
+
+                return;
+            }
+
+            const obj = { isDefault: true }
+            await Promise.all([
+                dispatch(updateAddress(obj, id)),
+                dispatch(getAddress())
+            ])
+
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     return (
@@ -145,9 +186,9 @@ const Address = () => {
                             <Button onClick={() => handleRemoveAddress(defaultAddress?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
                                 Remove
                             </Button>
-                            <Button onClick={() => { handleEdit(defaultAddress?.id) }} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
-                                Edit
-                            </Button>
+                            {!defaultAddress?.isDefault && <Button onClick={() => { handleMakeDefault(defaultAddress?.id) }} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                Make default
+                            </Button>}
                         </Flex>
                     </Box>}
 
@@ -183,11 +224,11 @@ const Address = () => {
                                 <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
                             </UnorderedList>
                             <Flex ml="10px" mt="20px" gap="10px">
-                                <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                <Button onClick={() => handleRemoveAddress(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
                                     Remove
                                 </Button>
-                                <Button fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
-                                    Edit
+                                <Button onClick={() => handleMakeDefault(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                    Make default
                                 </Button>
                             </Flex>
                         </Box>
@@ -219,12 +260,12 @@ const Address = () => {
                                     <FormControl>
                                         <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"}>Contact Details</FormLabel>
                                         <Input name='name' value={address.name} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" placeholder='Name' />
-                                        <Input name='mobile' value={address.mobile} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Mobile No.' />
+                                        <Input name='mobile' maxLength={10} value={address.mobile} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Mobile No.' />
                                     </FormControl>
 
                                     <FormControl >
                                         <FormLabel color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"11px"} mt={4}>Address</FormLabel>
-                                        <Input name='pincode' value={address.pincode} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Pincode' />
+                                        <Input name='pincode' maxLength={6} value={address.pincode} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Pincode' />
                                         <Input name='address' value={address.address} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Address' />
                                         <Input name='locality' value={address.locality} onChange={(e) => handleChange(e)} focusBorderColor='black' type="text" size="sm" mt="10px" placeholder='Locality / Town' />
                                         <Flex gap="10px">

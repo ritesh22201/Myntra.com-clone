@@ -207,7 +207,7 @@ const Cart = () => {
                                                 Available Offers
                                             </Text>
                                         </Flex>
-                                        <Text color={"gray.600"} fontSize={"13px"}>
+                                        <Text ml={'23px'} color={"gray.600"} fontSize={"13px"}>
                                             10% Instant Discount on ICICI Bank Credit Cards on a min
                                             spend of Rs.3500.TCA
                                         </Text>
@@ -229,7 +229,7 @@ const Cart = () => {
                                                             textAlign="left"
                                                         >
                                                             <Flex alignItems={"center"}>
-                                                                <Text color={"#ff3f71"} fontWeight={"bold"}>
+                                                                <Text ml={'7px'} color={"#ff3f71"} fontWeight={"bold"}>
                                                                     Show {showStatus ? "Less" : "More"}{" "}
                                                                 </Text>
                                                                 {/* <Text color={"#ff3f71"} fontWeight={"bold"}>show more </Text> */}
@@ -336,6 +336,7 @@ const Cart = () => {
                                                         w="120px"
                                                         src={el?.images?.image1}
                                                         alt="productImage"
+                                                        onClick={() => navigate(`/products/${el.productId}`)}
                                                     />
                                                     {/* </Box> */}
                                                     <Box w="70%">
@@ -491,9 +492,9 @@ const Cart = () => {
                         <Box
                             w="25%"
                             p="15px"
-                            borderBottom={"1px solid #eaeaec"}
-                            borderLeft={"1px solid #eaeaec"}
-                            borderRight={"1px solid #eaeaec"}
+                            mt={'10px'}
+                            minH={'-webkit-fit-content'}
+                            border={"1px solid #eaeaec"}
                         >
                             <Text
                                 textTransform={"uppercase"}
@@ -776,62 +777,6 @@ const Cart = () => {
                             </Button>
                         </Flex>
                     </Container>
-
-                    {/* <Box borderTop={"1px solid #C1D0B5"}>
-                        <Flex
-                            mt="15px"
-                            alignItems={"center"}
-                            justifyContent={"space-evenly"}
-                        >
-                            <Box>
-                                <HStack>
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-ssl.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-visa.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-mc.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-ae.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-dc.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-nb.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-cod.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-rupay.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-paypal.png"
-                                    />
-                                    <Image
-                                        width="60px"
-                                        src="https://constant.myntassets.com/checkout/assets/img/footer-bank-bhim.png"
-                                    />
-                                </HStack>
-                            </Box>
-                            <Box>
-                                <Text fontWeight={"700"}>Need Help ? Contact Us</Text>
-                            </Box> */}
-                        {/* </Flex> */}
-                    {/* </Box> */}
                 </Box>
             )}
         </>
