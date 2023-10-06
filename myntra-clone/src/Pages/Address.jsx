@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import {
     Input,
     ListItem,
@@ -38,10 +38,10 @@ const Address = () => {
     const { cart } = useSelector(store => store.cartReducer);
     const [totalPrice, setTotalPrice] = useState(0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
-    const [address, setAddress] = useState({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false });
+    const [address, setAddress] = useState({ name: '', mobile: '', pincode: '', address: '', isSelected: false, locality: '', city: '', state: '', addressType: '', isDefault: false });
     const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
     const token = JSON.parse(localStorage.getItem('google-login')) || {};
-    const { addressData } = useSelector(store => store.addressReducer);
+    const { addressData, isDeleted, isAdded, isUpdated } = useSelector(store => store.addressReducer);
     const dispatch = useDispatch();
 
 
@@ -66,19 +66,25 @@ const Address = () => {
 
                 await dispatch(updateAddress(obj, defaultAddress.id));
                 await dispatch(addAddress(data));
-                await dispatch(getAddress());
 
                 onClose();
-                setAddress({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
+                setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
                 return;
             }
         }
 
+        if (addressData.length === 0) {
+            const data = { ...address, userMobile: token?.mobile, isSelected: true };
+            await dispatch(addAddress(data));
+            onClose();
+            setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
+            return;
+        }
+
         await dispatch(addAddress(data));
-        await dispatch(getAddress());
 
         onClose();
-        setAddress({ name: '', mobile: '', pincode: '', address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
+        setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
     }
 
     useEffect(() => {
@@ -102,14 +108,11 @@ const Address = () => {
     let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
 
     let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
-    const defaultAddress = addressData?.find(el => el.isDefault == true);
-    const otherAddresses = addressData?.filter(el => el.isDefault == false);
+    const defaultAddress = addressData?.find(el => el?.isDefault == true);
+    const otherAddresses = addressData?.filter(el => el?.isDefault == false);
 
     const handleRemoveAddress = async (id) => {
-        await Promise.all([
-            dispatch(deleteAddress(id)),
-            dispatch(getAddress())
-        ])
+        dispatch(deleteAddress(id))
     }
 
     const handleMakeDefault = async (id) => {
@@ -118,26 +121,40 @@ const Address = () => {
             if (defaultAddress) {
                 const obj = { isDefault: false };
                 const obj2 = { isDefault: true };
-                await Promise.all([
-                    dispatch(updateAddress(obj, defaultAddress.id)),
-                    dispatch(getAddress()),
-                    dispatch(updateAddress(obj2, id)),
-                    dispatch(getAddress())
-                ])
 
+                await dispatch(updateAddress(obj, defaultAddress.id));
+                await dispatch(updateAddress(obj2, id));
+                await dispatch(getAddress())
                 return;
             }
 
-            const obj = { isDefault: true }
-            await Promise.all([
-                dispatch(updateAddress(obj, id)),
-                dispatch(getAddress())
-            ])
+            const obj = { isDefault: true };
+            await dispatch(updateAddress(obj, id));
+            await dispatch(getAddress());
 
         } catch (error) {
             console.log(error.message);
         }
     }
+
+    const handleSelectedAddress = async (id) => {
+        const selectedAddress = addressData?.find(el => el?.isSelected === true);
+
+        if (selectedAddress) {
+            const data = { isSelected: false };
+            await dispatch(updateAddress(data, selectedAddress?.id));
+            await dispatch(updateAddress({ isSelected: true }, id));
+            await dispatch(getAddress());
+            return;
+        }
+
+        await dispatch(updateAddress({ isSelected: true }, id));
+        await dispatch(getAddress());
+    }
+
+    useEffect(() => {
+        dispatch(getAddress());
+    }, [isAdded, isDeleted, isUpdated, dispatch])
 
     return (
         <Flex minH="80vh" justifyContent={"center"} gap="10px">
@@ -163,16 +180,15 @@ const Address = () => {
                         border={"1px solid #eaeaec"}
                     >
                         <Flex alignItems={"center"} gap="10px">
+                            <Radio colorScheme='pink' isChecked={defaultAddress?.isSelected} onChange={() => handleSelectedAddress(defaultAddress?.id)} />
                             <Text fontWeight={"700"}>{defaultAddress?.name}</Text>
                             <Tag
                                 size={'sm'}
-
                                 borderRadius='full'
                                 variant='outline'
                                 colorScheme='green'
                             >
                                 <TagLabel>{defaultAddress?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
-
                             </Tag>
                         </Flex>
                         <Text fontSize={"sm"}>{defaultAddress?.address}</Text>
@@ -204,16 +220,15 @@ const Address = () => {
                             border={"1px solid #eaeaec"}
                         >
                             <Flex alignItems={"center"} gap="10px">
+                                <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id)} />
                                 <Text fontWeight={"700"}>{el?.name}</Text>
                                 <Tag
                                     size={'sm'}
-
                                     borderRadius='full'
                                     variant='outline'
                                     colorScheme='green'
                                 >
                                     <TagLabel>{el?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
-
                                 </Tag>
                             </Flex>
                             <Text fontSize={"sm"}>{el?.address}</Text>
@@ -319,12 +334,10 @@ const Address = () => {
             <Box
                 w="25%"
                 p="15px"
-                borderBottom={"1px solid #eaeaec"}
-                borderLeft={"1px solid #eaeaec"}
-                borderRight={"1px solid #eaeaec"}
+                mt={'10px'}
+                maxH={'320px'}
+                border={"1px solid #eaeaec"}
             >
-
-
                 <HStack>
 
                     <Text color="rgb(83, 87, 102)" fontSize={"sm"} textTransform={"uppercase"} fontWeight={"800"}>
@@ -445,4 +458,4 @@ const Address = () => {
     )
 }
 
-export default Address;
+export default memo(Address);

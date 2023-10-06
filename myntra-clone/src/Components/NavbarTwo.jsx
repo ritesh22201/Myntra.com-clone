@@ -88,11 +88,6 @@ export function NavbarTwo() {
                     <Text fontSize={'12px'} fontWeight={700}>1 0 0 % S E C U R E</Text>
                 </Flex>
             </Flex>
-
-            {/*        
-        <Collapse in={isOpen} animateOpacity>
-          <MobileNav />
-        </Collapse> */}
         </Box>
     );
 }

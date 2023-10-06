@@ -26,6 +26,10 @@ import {
     FormControl,
     FormLabel,
     ModalFooter,
+    Radio,
+    Tag,
+    TagLabel,
+    ListItem,
 } from "@chakra-ui/react";
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +46,7 @@ import giftImage from "../Assets/gift-big.webp";
 import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/CartReducer/action";
 import { CheckmarkIcon } from "react-hot-toast";
 import { addwishList } from "../Redux/ProductReducer/action";
+import { getAddress, updateAddress } from "../Redux/addressReducer/action";
 // import { PiKeyReturnBold } from "react-icons/pi";
 
 const Cart = () => {
@@ -53,6 +58,7 @@ const Cart = () => {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [coupon, setCoupon] = useState('');
+    const [openModal, setOpenModal] = useState(false);
 
     let couponArr = [{ title: 'FIRSTBUY10', desc: 'Get 10% discount on first buy.', discount: '10%' },
     { title: 'MISSEDYOU', desc: 'Get 10% discount on min purchase of ₹499.', discount: '10%' },
@@ -62,11 +68,11 @@ const Cart = () => {
     const [applyCoupon, setApplyCoupon] = useState(null);
     const [loading, setLoading] = useState(false);
     const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
-    const {addressData} = useSelector(store => store.addressReducer);
-
+    const { addressData } = useSelector(store => store?.addressReducer);
 
     useEffect(() => {
         dispatch(getCartProducts());
+        dispatch(getAddress())
     }, [])
 
     useEffect(() => {
@@ -131,8 +137,6 @@ const Cart = () => {
         }, 2000)
     }
 
-    const defaultAddress = addressData?.find(el => el.isDefault == true);
-
     let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
 
     const handleRemoveCoupon = () => {
@@ -141,22 +145,30 @@ const Cart = () => {
     }
 
     const handleMoveToWishlist = async (el) => {
-        try {
-            await Promise.all([
-                dispatch(addwishList(el, setLoading)),
-                dispatch(deleteCartProduct(el.id)),
-                dispatch(getCartProducts()),
-            ]);
-        } catch (error) {
-            console.error(error.message);
-        }
+        await dispatch(addwishList(el, setLoading))
+        await dispatch(deleteCartProduct(el.id))
+        await dispatch(getCartProducts())
     }
 
     useEffect(() => {
-        if(cart.length === 0){
+        if (cart.length === 0) {
             localStorage.setItem('coupon', JSON.stringify({ temp: null, discount: null }));
         }
     }, [cart])
+
+    const selectedAddress = addressData?.find(el => el.isSelected == true);
+
+    const handleSelectedAddress = async (id) => {
+        const selectedAdd = addressData?.find(el => el?.isSelected === true);
+
+        if (selectedAdd) {
+            const data = { isSelected: false };
+            await dispatch(updateAddress(data, selectedAdd?.id));
+            await dispatch(updateAddress({ isSelected: true }, id));
+            await dispatch(getAddress());
+            return;
+        }
+    }
 
     return (
         <>
@@ -165,7 +177,7 @@ const Cart = () => {
                     <Flex justifyContent={"center"} gap="10px">
                         <Box w="50%">
                             <Box maxW="container.sm" w="100%">
-                            {defaultAddress &&  <Box
+                                {selectedAddress?.address && <Box
                                     mt="10px"
                                     p="10px"
                                     borderRadius={"3px"}
@@ -173,8 +185,8 @@ const Cart = () => {
                                 >
                                     <Flex justifyContent={"space-between"} alignItems={"center"}>
                                         <Box >
-                                            <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>{defaultAddress?.name},{defaultAddress?.pincode}</span></Text>
-                                            <Text fontSize={"sm"}>{defaultAddress?.address}, {defaultAddress?.locality}, {defaultAddress?.city}</Text>
+                                            <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>{selectedAddress?.name},{selectedAddress?.pincode}</span></Text>
+                                            <Text fontSize={"sm"}>{selectedAddress?.address}, {selectedAddress?.locality}, {selectedAddress?.city}</Text>
                                         </Box>
                                         <Button
                                             fontSize={"12px"}
@@ -185,11 +197,10 @@ const Cart = () => {
                                             borderRadius={"none"}
                                             border={"1px solid #ff3f71"}
                                             variant="outline"
-
+                                            onClick={() => {onOpen(); setOpenModal(true)}}
                                         >
                                             Change Address
                                         </Button>
-
                                     </Flex>
                                 </Box>}
                             </Box>
@@ -522,7 +533,7 @@ const Cart = () => {
                                         _hover={{
                                             background: "#e6ccd1",
                                         }}
-                                        onClick={onOpen}
+                                        onClick={() => {setOpenModal(false); onOpen()}}
                                     >
                                         APPLY
                                     </Button>
@@ -549,17 +560,17 @@ const Cart = () => {
                             >
                                 <ModalOverlay />
                                 <ModalContent h={'450px'}>
-                                    <ModalHeader color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"sm"}>Apply Coupon</ModalHeader>
+                                    <ModalHeader color="rgb(83, 87, 102)" textTransform={"uppercase"} fontWeight={"700"} fontSize={"sm"}>{openModal ? 'Change Address' : 'Apply Coupon'}</ModalHeader>
                                     <Box>
                                         <Divider orientation="horizontal" />
                                     </Box>
                                     <ModalCloseButton />
                                     <ModalBody className='scrollbar' pb={6} overflowY={'scroll'}>
-                                        <FormControl position={'relative'}>
+                                        {!openModal && <FormControl position={'relative'}>
                                             <Input fontSize={'17px'} color={'gray.500'} value={coupon} onChange={(e) => setCoupon(e.target.value)} p={'22px 12px'} focusBorderColor='black' type="text" size="sm" placeholder='Enter coupon code' />
                                             <Button zIndex={'overlay'} textTransform={'uppercase'} right={'0px'} top={'3px'} _hover={'none'} _active={'none'} color={'#ff3f6c'} variant={'ghost'} position={'absolute'}>Check</Button>
-                                        </FormControl>
-                                        {couponArr.map((el, ind) => {
+                                        </FormControl>}
+                                        {!openModal ? couponArr.map((el, ind) => {
                                             return <FormControl opacity={el.title === 'MISSEDYOU' && discountedPrice < 499 ? '0.5' : ''} isDisabled={el.title === 'MISSEDYOU' && discountedPrice < 499} mt={'20px'}>
                                                 <Flex gap={'20px'}>
                                                     <Checkbox isChecked={couponValue.temp == ind} onChange={() => handleCouponChange(ind, el.discount)} _focusVisible={'none'} colorScheme="pink" />
@@ -576,18 +587,61 @@ const Cart = () => {
                                                 </Box>
                                                 <hr style={{ borderTop: 'dotted 1.7px', color: '#bababb', margin: '15px 0 0 37px' }} />
                                             </FormControl>
-                                        })}
-                                        {!couponArr.length && <FormControl color={'gray.500'} minH={'260px'} display={'grid'} placeItems={'center'}>
-                                            <Text>No other coupon is available</Text>
-                                        </FormControl>}
+                                        })
+                                            : addressData?.map(el => {
+                                                return <Box
+                                                    key={el?.id}
+                                                    cursor={"pointer"}
+                                                    mt="10px"
+                                                    p="10px"
+                                                    borderRadius={"3px"}
+                                                    border={"1px solid #eaeaec"}
+                                                >
+                                                    <Flex alignItems={"center"} gap="10px">
+                                                        <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id)} />
+                                                        <Text fontWeight={"700"}>{el?.name}</Text>
+                                                        <Tag
+                                                            size={'sm'}
+                                                            borderRadius='full'
+                                                            variant='outline'
+                                                            colorScheme='green'
+                                                        >
+                                                            <TagLabel>{el?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
+                                                        </Tag>
+                                                    </Flex>
+                                                    <Text fontSize={"sm"}>{el?.address}</Text>
+                                                    <Text fontSize={"sm"}>{`${el?.locality}, ${el?.city}, ${el?.state} - ${el?.pincode}`}</Text>
+                                                    <Text mt="10px" fontSize={"sm"}>Mobile :<span style={{ fontWeight: "700" }}> {el?.mobile}</span></Text>
+
+                                                    {/* <UnorderedList fontSize={"sm"}>
+                                                        <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
+                                                    </UnorderedList> */}
+                                                    {/* <Flex ml="10px" mt="20px" gap="10px">
+                                                        <Button onClick={() => handleRemoveAddress(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                                            Remove
+                                                        </Button>
+                                                        <Button onClick={() => handleMakeDefault(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                                            Make default
+                                                        </Button>
+                                                    </Flex> */}
+                                                </Box>
+                                            })}
+                                        {
+                                            !openModal && !couponArr.length && <FormControl color={'gray.500'} minH={'260px'} display={'grid'} placeItems={'center'}>
+                                                <Text>No other coupon is available</Text>
+                                            </FormControl>
+                                        }
+
                                     </ModalBody>
                                     <ModalFooter boxShadow="rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px">
-                                        <Flex alignItems={'center'} w={'100%'}>
+                                        {!openModal ? <Flex alignItems={'center'} w={'100%'}>
                                             <Flex alignItems={'center'} w={'60%'} gap={'10px'}>
                                                 <Text color={'gray.500'} fontWeight={'bold'} fontSize={'13px'}>Maximum Savings:</Text>
                                                 <Text fontWeight={'bold'}>₹{couponDiscount}</Text>
                                             </Flex>
-                                            {/* <Button
+                                        </Flex>
+                                            : <Button
+                                                type='submit'
                                                 w="100%"
                                                 fontSize={"13px"}
                                                 borderRadius={"none"}
@@ -598,9 +652,8 @@ const Cart = () => {
                                                 variant={"unstyled"}
                                                 onClick={onClose}
                                             >
-                                                Apply
-                                            </Button> */}
-                                        </Flex>
+                                                Change Address
+                                            </Button>}
                                     </ModalFooter>
                                 </ModalContent>
                             </Modal>

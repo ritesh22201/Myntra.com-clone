@@ -1,5 +1,5 @@
 import { Box, Image, Flex, Heading, Text, Grid, Button, useToast } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteWishlist, getwishlistproducts } from '../Redux/ProductReducer/action'
 import { FaStar } from 'react-icons/fa'
@@ -135,4 +135,4 @@ const Wishlist = () => {
   )
 }
 
-export default Wishlist;
+export default memo(Wishlist);

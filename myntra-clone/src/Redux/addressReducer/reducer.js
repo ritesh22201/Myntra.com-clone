@@ -18,7 +18,8 @@ export const reducer = (state = initialState, {type, payload}) => {
                 isLoading : true,
                 isError : false,
                 isAdded : false,
-                isUpdated : false
+                isUpdated : false,
+                isDeleted : false
             }
         }
 
@@ -47,7 +48,7 @@ export const reducer = (state = initialState, {type, payload}) => {
                 isLoading : false,
                 isError : false,
                 isAdded : true,
-                isUpdated : false
+                isUpdated : false,
             }
         }
 
@@ -56,7 +57,7 @@ export const reducer = (state = initialState, {type, payload}) => {
                 ...state,
                 isLoading : false,
                 isError : false,
-                isAdded : true,
+                isAdded : false,
                 isUpdated : true
             }
         }
@@ -68,7 +69,7 @@ export const reducer = (state = initialState, {type, payload}) => {
                 isError : false,
                 isAdded : false,
                 isUpdated : false,
-                isDeleted : true
+                isDeleted : true,
             }
         }
 

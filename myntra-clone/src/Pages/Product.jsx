@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading, Select, Text } from '@chakra-ui/react';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { memo, useContext, useEffect, useState } from 'react'
 import Sidebar from '../Components/Sidebar';
 import Men from './Men';
 import { BsChevronDown } from 'react-icons/bs';
@@ -14,9 +14,7 @@ const Product = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     let pageButton = Math.ceil(totalCount / 14);
-    const {paramVal} = useContext(GlobalContext);
     const [searchParams] = useSearchParams();
-    const {inputVal} = useContext(GlobalContext);
 
 
     useEffect(() => {
@@ -72,4 +70,4 @@ const Product = () => {
     )
 }
 
-export default Product;
+export default memo(Product);

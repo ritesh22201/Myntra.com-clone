@@ -37,7 +37,7 @@ export const updateAddress = (data, id) => (dispatch) => {
     return axios.patch(`https://myntra-clone-backend.onrender.com/address/${id}`, data)
         .then(res => {
             console.log(res.data);
-            dispatch({ type: UPDATE_ADDRESS});
+            // dispatch({ type: UPDATE_ADDRESS});
         })
         .catch(err => {
             console.log(err);
@@ -51,7 +51,7 @@ export const deleteAddress = (id) => (dispatch) => {
     return axios.delete(`https://myntra-clone-backend.onrender.com/address/${id}`)
         .then(res => {
             console.log(res.data);
-            dispatch({ type: DELETE_ADDRESS});
+            dispatch({ type: DELETE_ADDRESS}); 
         })
         .catch(err => {
             console.log(err);

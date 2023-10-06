@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Box, Heading, Image, Text, Flex, Button } from '@chakra-ui/react'
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -34,4 +34,4 @@ const ProductCard = ({ id, brand, count, discount, images, price, rating, title,
     )
 }
 
-export default ProductCard;
+export default memo(ProductCard);

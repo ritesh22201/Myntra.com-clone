@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, Flex, FormLabel, Heading, Text } from '@chakra-ui/react'
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -312,4 +312,4 @@ const Sidebar = () => {
     )
 }
 
-export default Sidebar
+export default memo(Sidebar);

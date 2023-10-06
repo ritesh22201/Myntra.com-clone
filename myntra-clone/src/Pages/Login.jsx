@@ -1,5 +1,5 @@
 import { Box, Button, Heading, Image, Text, Flex, Spinner, Toast, useToast } from '@chakra-ui/react'
-import React from 'react';
+import React, { memo } from 'react';
 import img from '../Assets/myntra-login-in-img.avif'
 import { useEffect, useRef, useState } from 'react';
 import otpImg from '../Assets/verify-otp-img.jpg';
@@ -147,4 +147,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default memo(Login);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { addwishList, getProductsSingleMen, getwishlistproducts } from "../Redux/ProductReducer/action";
@@ -35,11 +35,10 @@ const SingleProduct = () => {
   const [selectedSize, setSelectedSize] = useState({});
   const [pincode, setPincode] = useState("");
   const [deliveryStatus, setDeliveryStatus] = useState(null);
-  // const [addWishlistData,setAddWishlistData] = useState({})
   const toast = useToast()
   const dispatch = useDispatch()
-  const { wishlist, isLoading, isAdded } = useSelector((store) => store.productReducer);
-  const { cart, isLoadingCart, isAddedCart } = useSelector((store) => store.cartReducer);
+  const { wishlist, isLoading } = useSelector((store) => store.productReducer);
+  const { cart, isLoadingCart } = useSelector((store) => store.cartReducer);
   const [isProductAddedToWishlist, setIsProductAddedToWishlist] = useState(false);
   const [isProductAddedToCart, setIsProductAddedToCart] = useState(false);
   const wishListData = JSON.parse(localStorage.getItem('wishlist')) || [];
@@ -507,9 +506,7 @@ const SingleProduct = () => {
         </Box>
       </Box>
     </Flex>
-
-    // {/* </Box> */}
   );
 }
 
-export default SingleProduct;
+export default memo(SingleProduct);
