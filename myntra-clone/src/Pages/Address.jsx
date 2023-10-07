@@ -31,6 +31,8 @@ import '../CSS/Scrollbar.css'
 import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Scrollbar.css'
 import { addAddress, deleteAddress, getAddress, updateAddress } from '../Redux/addressReducer/action';
+import { deliverDate, handleSelectedAddress } from '../constants/deliverDate';
+import PaymentInfo from '../Components/PaymentInfo';
 
 const Address = () => {
     const navigate = useNavigate()
@@ -68,7 +70,6 @@ const Address = () => {
                 await dispatch(addAddress(data));
 
                 onClose();
-                setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
                 return;
             }
         }
@@ -77,14 +78,11 @@ const Address = () => {
             const data = { ...address, userMobile: token?.mobile, isSelected: true };
             await dispatch(addAddress(data));
             onClose();
-            setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
             return;
         }
 
         await dispatch(addAddress(data));
-
         onClose();
-        setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
     }
 
     useEffect(() => {
@@ -99,13 +97,13 @@ const Address = () => {
         setDiscountedPrice(discountPrice);
     }, [cart])
 
-    let currentDateArr = new Date().toISOString().split('T')[0];
-    let currentDate = new Date(currentDateArr);
-    let futureDate = new Date(currentDate);
+    // let currentDateArr = new Date().toISOString().split('T')[0];
+    // let currentDate = new Date(currentDateArr);
+    // let futureDate = new Date(currentDate);
 
-    futureDate.setDate(currentDate.getDate() + 6);
-    let formattedDate = futureDate.toString().split(' ').slice(0, 4);
-    let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
+    // futureDate.setDate(currentDate.getDate() + 6);
+    // let formattedDate = futureDate.toString().split(' ').slice(0, 4);
+    // let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
 
     let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
     const defaultAddress = addressData?.find(el => el?.isDefault == true);
@@ -137,22 +135,23 @@ const Address = () => {
         }
     }
 
-    const handleSelectedAddress = async (id) => {
-        const selectedAddress = addressData?.find(el => el?.isSelected === true);
+    // const handleSelectedAddress = async (id) => {
+    //     const selectedAddress = addressData?.find(el => el?.isSelected === true);
 
-        if (selectedAddress) {
-            const data = { isSelected: false };
-            await dispatch(updateAddress(data, selectedAddress?.id));
-            await dispatch(updateAddress({ isSelected: true }, id));
-            await dispatch(getAddress());
-            return;
-        }
+    //     if (selectedAddress) {
+    //         const data = { isSelected: false };
+    //         await dispatch(updateAddress(data, selectedAddress?.id));
+    //         await dispatch(updateAddress({ isSelected: true }, id));
+    //         await dispatch(getAddress());
+    //         return;
+    //     }
 
-        await dispatch(updateAddress({ isSelected: true }, id));
-        await dispatch(getAddress());
-    }
+    //     await dispatch(updateAddress({ isSelected: true }, id));
+    //     await dispatch(getAddress());
+    // }
 
     useEffect(() => {
+        setAddress({ name: '', mobile: '', pincode: '', isSelected: false, address: '', locality: '', city: '', state: '', addressType: '', isDefault: false })
         dispatch(getAddress());
     }, [isAdded, isDeleted, isUpdated, dispatch])
 
@@ -166,9 +165,7 @@ const Address = () => {
                             Add New Address
                         </Button>
                     </Flex>
-
                 </Box>
-
                 {defaultAddress && <Text fontWeight={"700"} fontSize={"13px"} textTransform={"uppercase"} >Default Address</Text>}
 
                 <Box maxW="container.sm">
@@ -180,7 +177,7 @@ const Address = () => {
                         border={"1px solid #eaeaec"}
                     >
                         <Flex alignItems={"center"} gap="10px">
-                            <Radio colorScheme='pink' isChecked={defaultAddress?.isSelected} onChange={() => handleSelectedAddress(defaultAddress?.id)} />
+                            <Radio colorScheme='pink' isChecked={defaultAddress?.isSelected} onChange={() => handleSelectedAddress(defaultAddress?.id, dispatch, addressData)} />
                             <Text fontWeight={"700"}>{defaultAddress?.name}</Text>
                             <Tag
                                 size={'sm'}
@@ -220,7 +217,7 @@ const Address = () => {
                             border={"1px solid #eaeaec"}
                         >
                             <Flex alignItems={"center"} gap="10px">
-                                <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id)} />
+                                <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id, dispatch, addressData)} />
                                 <Text fontWeight={"700"}>{el?.name}</Text>
                                 <Tag
                                     size={'sm'}
@@ -330,130 +327,7 @@ const Address = () => {
                     </Modal>
                 </Box>
             </Box>
-
-            <Box
-                w="25%"
-                p="15px"
-                mt={'10px'}
-                maxH={'320px'}
-                border={"1px solid #eaeaec"}
-            >
-                <HStack>
-
-                    <Text color="rgb(83, 87, 102)" fontSize={"sm"} textTransform={"uppercase"} fontWeight={"800"}>
-                        Delivery Estimates
-                    </Text>
-                </HStack>
-
-                {cart.map((el, ind) => {
-                    return <Box mt="10px" key={ind} className='scrollbar' overflowY={'scroll'} minH={'50px'}>
-                        <Flex alignItems={"center"} gap="15px">
-                            <Image w="35px" src={el?.images?.image1} />
-                            <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>{day}</span></Text>
-                        </Flex>
-                    </Box>
-                })}
-
-                <Divider
-                    m="10px"
-                    orientation="horizontal"
-                    borderColor="#d4d5d9"
-                />
-
-                <Text
-                    textTransform={"uppercase"}
-                    fontSize={"sm"}
-                    color={"#535766"}
-                    fontWeight={"700"}
-                >
-                    Price Details (3 Items)
-                </Text>
-
-                <Flex
-                    mt="8px"
-                    fontSize={"md"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    color={"#909390"}
-                >
-                    <Text>Total MRP</Text>
-                    <Text>₹{totalPrice.toLocaleString()}</Text>
-                </Flex>
-
-                <Flex
-                    mt="8px"
-                    fontSize={"md"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    color={"#909390"}
-                >
-                    <Text>Discount on MRP</Text>
-                    <Text color={"#65b8a5"}>-₹{(totalPrice - discountedPrice).toLocaleString()}</Text>
-                </Flex>
-                {couponValue.temp != null && <Flex
-                    mt="8px"
-                    fontSize={"md"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    color={"#909390"}
-                >
-                    <Flex alignItems={'center'} gap={'20px'}>
-                        <Text>Coupon Discount</Text>
-                    </Flex>
-                    {couponValue.temp == null ?
-                        <Text cursor={'pointer'} onClick={onOpen} color={"#ff5d71"}>Apply Coupon</Text>
-                        :
-                        <Text color={'#65b8a5'}>-₹{couponDiscount}</Text>
-                    }
-                </Flex>}
-                <Flex
-                    mt="8px"
-                    fontSize={"md"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    color={"#909390"}
-                >
-                    <Text>
-                        Convinience Fee
-                        <span
-                            style={{
-                                marginLeft: "5px",
-                                fontWeight: "700",
-                                color: "#ff5d71",
-                            }}
-                        >
-                            Know More
-                        </span>
-                    </Text>
-                    <Text>₹{discountedPrice === 0 ? 0 : 20}</Text>
-                </Flex>
-
-                <Divider orientation="horizontal" borderColor="#d4d5d9" mx={3} />
-
-                <Flex
-                    mt="8px"
-                    fontSize={"md"}
-                    fontWeight={"700"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    color={"#3e4152"}
-                >
-                    <Text>Total Amount</Text>
-                    <Text>₹{discountedPrice === 0 ? 0 : couponValue.temp != null ? (discountedPrice + 20 - couponDiscount).toLocaleString() : (discountedPrice + 20).toLocaleString()}</Text>
-                </Flex>
-
-                <Button
-                    w="100%"
-                    borderRadius={"none"}
-                    mt="10px"
-                    color="white"
-                    bg="#ff3f6c"
-                    variant={"unstyled"}
-                    onClick={() => navigate('/payment')}
-                >
-                    Continue
-                </Button>
-            </Box>
+            <PaymentInfo cart={cart} totalPrice={totalPrice} discountedPrice={discountedPrice} couponValue={couponValue} couponDiscount={couponDiscount}>{window.location.pathname === '/payment' ? 'Pay Now' : 'Continue'}</PaymentInfo>
         </Flex>
     )
 }

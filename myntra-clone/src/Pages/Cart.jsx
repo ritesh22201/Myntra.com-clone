@@ -47,6 +47,7 @@ import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/Cart
 import { CheckmarkIcon } from "react-hot-toast";
 import { addwishList } from "../Redux/ProductReducer/action";
 import { getAddress, updateAddress } from "../Redux/addressReducer/action";
+import { deliverDate, handleSelectedAddress } from "../constants/deliverDate";
 // import { PiKeyReturnBold } from "react-icons/pi";
 
 const Cart = () => {
@@ -104,14 +105,6 @@ const Cart = () => {
         await dispatch(getCartProducts());
     }
 
-    let currentDateArr = new Date().toISOString().split('T')[0];
-    let currentDate = new Date(currentDateArr);
-    let futureDate = new Date(currentDate);
-
-    futureDate.setDate(currentDate.getDate() + 6);
-    let formattedDate = futureDate.toString().split(' ').slice(0, 4);
-    let day = formattedDate[0] + ',' + ' ' + formattedDate.slice(1).join(' ');
-
     const handleDelete = async (id) => {
         dispatch(deleteCartProduct(id)).then(() => {
             dispatch(getCartProducts());
@@ -158,17 +151,17 @@ const Cart = () => {
 
     const selectedAddress = addressData?.find(el => el.isSelected == true);
 
-    const handleSelectedAddress = async (id) => {
-        const selectedAdd = addressData?.find(el => el?.isSelected === true);
+    // const handleSelectedAddress = async (id) => {
+    //     const selectedAdd = addressData?.find(el => el?.isSelected === true);
 
-        if (selectedAdd) {
-            const data = { isSelected: false };
-            await dispatch(updateAddress(data, selectedAdd?.id));
-            await dispatch(updateAddress({ isSelected: true }, id));
-            await dispatch(getAddress());
-            return;
-        }
-    }
+    //     if (selectedAdd) {
+    //         const data = { isSelected: false };
+    //         await dispatch(updateAddress(data, selectedAdd?.id));
+    //         await dispatch(updateAddress({ isSelected: true }, id));
+    //         await dispatch(getAddress());
+    //         return;
+    //     }
+    // }
 
     return (
         <>
@@ -184,7 +177,7 @@ const Cart = () => {
                                     border={"1px solid #eaeaec"}
                                 >
                                     <Flex justifyContent={"space-between"} alignItems={"center"}>
-                                        <Box >
+                                        <Box>
                                             <Text fontSize={"md"}>Deliver to: <span style={{ fontWeight: "700" }}>{selectedAddress?.name},{selectedAddress?.pincode}</span></Text>
                                             <Text fontSize={"sm"}>{selectedAddress?.address}, {selectedAddress?.locality}, {selectedAddress?.city}</Text>
                                         </Box>
@@ -197,7 +190,7 @@ const Cart = () => {
                                             borderRadius={"none"}
                                             border={"1px solid #ff3f71"}
                                             variant="outline"
-                                            onClick={() => {onOpen(); setOpenModal(true)}}
+                                            onClick={() => { onOpen(); setOpenModal(true) }}
                                         >
                                             Change Address
                                         </Button>
@@ -456,7 +449,7 @@ const Cart = () => {
                                                                         fontWeight: "700",
                                                                     }}
                                                                 >
-                                                                    {day}
+                                                                    {deliverDate()}
                                                                 </span>
                                                             </Text>
                                                         </Flex>
@@ -533,7 +526,7 @@ const Cart = () => {
                                         _hover={{
                                             background: "#e6ccd1",
                                         }}
-                                        onClick={() => {setOpenModal(false); onOpen()}}
+                                        onClick={() => { setOpenModal(false); onOpen() }}
                                     >
                                         APPLY
                                     </Button>
@@ -598,7 +591,7 @@ const Cart = () => {
                                                     border={"1px solid #eaeaec"}
                                                 >
                                                     <Flex alignItems={"center"} gap="10px">
-                                                        <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id)} />
+                                                        <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id, dispatch, addressData)} />
                                                         <Text fontWeight={"700"}>{el?.name}</Text>
                                                         <Tag
                                                             size={'sm'}

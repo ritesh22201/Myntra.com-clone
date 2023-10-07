@@ -92,7 +92,7 @@ const SingleProduct = () => {
   }
 
 
-  const handleAdd = async(id) => {
+  const handleAdd = async (id) => {
     if (!selectedSize[id]) {
       toast({
         title: 'Please select a size!',
@@ -115,32 +115,32 @@ const SingleProduct = () => {
         position: 'top'
       })
     }
-    else 
-    if (!existedProduct) {
-      let productData = {
-        title,
-        brand,
-        color,
-        rating,
-        price,
-        gender,
-        categories,
-        description,
-        discount,
-        off_price,
-        images,
-        productId: id,
-        size: selectedSize[id],
-        quantity: 1,
-        mobile : token?.mobile
-      };
+    else
+      if (!existedProduct) {
+        let productData = {
+          title,
+          brand,
+          color,
+          rating,
+          price,
+          gender,
+          categories,
+          description,
+          discount,
+          off_price,
+          images,
+          productId: id,
+          size: selectedSize[id],
+          quantity: 1,
+          mobile: token?.mobile
+        };
 
-      dispatch(addProductToCart(productData, setCartLoading)).then(() => {
-        dispatch(getCartProducts());
-      })
+        dispatch(addProductToCart(productData, setCartLoading)).then(() => {
+          dispatch(getCartProducts());
+        })
 
-      localStorage.setItem('cart', JSON.stringify([...cart, productData]));
-    }
+        localStorage.setItem('cart', JSON.stringify([...cart, productData]));
+      }
   }
 
   const handleWishList = (id) => {
@@ -182,7 +182,7 @@ const SingleProduct = () => {
         images,
         productId: id,
         size: selectedSize[id],
-        mobile : token?.mobile
+        mobile: token?.mobile
       };
 
       dispatch(addwishList(productData, setLoading));
@@ -201,12 +201,15 @@ const SingleProduct = () => {
   }, [cartData]);
 
   useEffect(() => {
-    const existedProduct = wishListData?.find(el => el.id === id || el.title === title);
-    if (existedProduct && !loading) {
-      setIsProductAddedToWishlist(true);
-    }
-    else {
-      setIsProductAddedToWishlist(false);
+    if (Array.isArray(wishListData) && wishListData.length > 0) {
+      const existedProduct = wishListData?.find(el => el.id === id || el.title === title);
+
+      if (existedProduct && !loading) {
+        setIsProductAddedToWishlist(true);
+      }
+      else {
+        setIsProductAddedToWishlist(false);
+      }
     }
   }, [wishListData])
 
@@ -390,7 +393,7 @@ const SingleProduct = () => {
                   </Flex>
                 </HStack>
               </Button>
-              : <Button bg={'#D14D72'} rightIcon={<BsArrowRight style={{fontWeight : 'bold'}}/>} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'19px'} p="30px 60px" onClick={() => navigate('/cart')}>
+              : <Button bg={'#D14D72'} rightIcon={<BsArrowRight style={{ fontWeight: 'bold' }} />} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'19px'} p="30px 60px" onClick={() => navigate('/cart')}>
                 GO TO BAG
               </Button>
             }
@@ -414,7 +417,7 @@ const SingleProduct = () => {
                 </HStack>
               </Button>
               :
-              <Button bg={'#535766'} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'20px'} p="30px 60px" leftIcon={<BsFillHeartFill style={{color : '#e34975'}} />}>Wishlisted</Button>
+              <Button bg={'#535766'} color={'white'} _hover={'none'} _active={'none'} ml="10px" fontSize={'20px'} p="30px 60px" leftIcon={<BsFillHeartFill style={{ color: '#e34975' }} />}>Wishlisted</Button>
             }
           </Flex>
         </Box>

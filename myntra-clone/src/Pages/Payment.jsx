@@ -10,20 +10,68 @@ import {
   UnorderedList,
   AccordionIcon,
   Divider,
+  Image,
+  useDisclosure,
 } from '@chakra-ui/react'
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { BsBank, BsCreditCard2Back, BsTerminalDash } from 'react-icons/bs'
 import { BiGift } from 'react-icons/bi'
 import { CiPercent, CiStar } from 'react-icons/ci'
 import { FaLaptopFile } from 'react-icons/fa'
 import { GiMoneyStack, GiWallet } from 'react-icons/gi'
+import { useSelector } from 'react-redux'
+import { deliverDate } from '../constants/deliverDate'
+import { useNavigate } from 'react-router-dom'
+import PaymentInfo from '../Components/PaymentInfo'
+// import Razorpay from 'razorpay';
+// import CryptoJS from 'crypto-js';
 
 
 const Payment = () => {
+  const { cart } = useSelector(store => store.cartReducer);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [discountedPrice, setDiscountedPrice] = useState(0);
+  const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
+  // const [paymentError, setPaymentError] = useState(false);
+
+  useEffect(() => {
+    let price = 0;
+    let discountPrice = 0;
+
+    cart.map(el => {
+      price += +el.off_price * el.quantity;
+      discountPrice += +el.price * el.quantity;
+    });
+    setTotalPrice(price);
+    setDiscountedPrice(discountPrice);
+  }, [cart])
+
+  let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
+
+  // const handlePayment = async() => {
+    // const razorpay = new Razorpay({
+    //   key_id: process.env.keyId,
+    //   key_secret: process.env.keySecret
+    // })
+
+    // const options = {
+    //   amount : discountedPrice * 100,
+    //   currency : 'INR',
+    //   receipt : CryptoJS.AES.encrypt(process.env.receipt, 'secretKey').toString(),
+    //   payment_capture : 1,
+    // }
+
+  //   try {
+  //     const response = await razorpay.orders.create(options);
+  //     response.open();
+  //   } catch (error) {
+  //     setPaymentError(error.message);
+  //   }
+  // }
+
   return (
     <Box w="80%" m="40px auto" >
-      <Flex justifyContent={"space-around"}>
-
+      <Flex gap={'50px'}>
         <Box maxW='container.sm' w="60%">
           <Box mt="10px" p="10px" borderRadius={"3px"} border={"1px solid #C1D0B5"}>
             <Flex alignItems={"center"}>
@@ -49,7 +97,6 @@ const Payment = () => {
                     <Text color={"gray.600"} fontSize={"13px"}>Flat 10% Cashback upto Rs 200 on Airtel Payments Bank transactions on a min spend of Rs 1000. TCA</Text>
                     <Text color={"gray.600"} fontSize={"13px"}>10% Cashback upto Rs 150 on FreeCharge PayLater transaction. TCA</Text>
                   </UnorderedList>
-
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
@@ -98,15 +145,12 @@ const Payment = () => {
                     <Heading size={"xs"}>Paytm/Wallets</Heading>
                   </Flex>
                 </Box>
-
                 <Box p="10px">
                   <Flex>
                     <BsBank />
                     <Heading size={"xs"}>Net Banking</Heading>
                   </Flex>
-
                 </Box>
-
                 <Box p="10px">
                   <Flex>
                     {/* <GiMoneyStack/> */}
@@ -114,55 +158,23 @@ const Payment = () => {
                     <Heading size={"xs"}>EMI/Pay Later</Heading>
                   </Flex>
                 </Box>
-
                 <Box>
-
                 </Box>
               </Flex>
             </Box>
           </Box>
-
           <Box color={"gray.700"} mt="10px" p="10px" borderRadius={"3px"} border={"1px solid #C1D0B5"}>
             <Flex justifyContent={"space-between"}>
-
               <Flex alignItems={"center"}>
                 <BiGift fontSize={"18px"} />
                 <Text fontWeight={"700"} ml="5px">Have a Gift Card?</Text>
-
               </Flex>
               <Button variant={"link"} color={"#D14D72"} _hover={{ textDecoration: "none" }} textTransform={"uppercase"} fontSize={"14px"}  >Apply Gift Card</Button>
             </Flex>
-
           </Box>
-
-
-
         </Box>
         <Divider orientation='vertical' h={"500px"} />
-
-        <Box w="25%">
-          <Text color={"gray.600"} textTransform={"uppercase"} fontSize={"13px"} fontWeight={"700"}>Price Details(5 Items)</Text>
-          <Box color={"gray.600"}>
-            <Flex justifyContent={"space-between"}>
-              <Text>Total MRP</Text>
-              <Text>₹8,354</Text>
-            </Flex>
-            <Flex justifyContent={"space-between"}>
-              <Text>Discount MRP</Text>
-              <Text>-₹5,654</Text>
-            </Flex>
-            <Flex justifyContent={"space-between"}>
-              <Text>Convinience Fee <span style={{ color: '#d65e80', fontWeight: "600" }}> Know More</span> </Text>
-              <Text>₹10</Text>
-            </Flex>
-            <Divider m="10px" />
-            <Flex color={"black"} justifyContent={"space-between"}>
-              <Heading size={"sm"}>Total Amount</Heading>
-              <Heading size={"sm"}>₹2,897</Heading>
-            </Flex>
-          </Box>
-        </Box>
-
+        <PaymentInfo cart={cart} totalPrice={totalPrice} discountedPrice={discountedPrice} couponValue={couponValue} couponDiscount={couponDiscount} >{window.location.pathname === '/payment' ? 'Pay Now' : 'Continue'}</PaymentInfo>
       </Flex>
     </Box>
   )

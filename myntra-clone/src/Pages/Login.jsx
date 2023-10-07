@@ -17,16 +17,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
     const [otpCount, setOtpCount] = useState(25);
     const [otp, setOtp] = useState('');
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [showOtp, setShowOtp] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [ph, setPh] = useState('');
-    const toaster = useToast();
     const dispatch = useDispatch();
     const { isLoading, token } = useSelector(store => store.authReducer);
-    const tokenVal = JSON.parse(localStorage.getItem('google-login')) || {};
+    // const tokenVal = JSON.parse(localStorage.getItem('google-login')) || {};
 
     function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
@@ -62,7 +61,7 @@ const Login = () => {
                 setShowOtp(true);
                 toast.success("OTP sent successfully!");
             }).catch((error) => {
-                // console.log(error)
+                console.log(error)
                 // setLoading(false);
                 dispatch({ type: LOGIN_FAILURE });
             });
