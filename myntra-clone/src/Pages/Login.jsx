@@ -81,9 +81,15 @@ const Login = () => {
     const handleSendCode = async () => {
         const phoneNumberFormatted = `+${ph}`;
         dispatch({ type: LOGIN_REQUEST });
-        
+
         try {
-            const userRecaptcha = new RecaptchaVerifier('recaptcha', {});
+            const userRecaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
+                'size': 'invisible',
+                'callback': (response) => {
+                    // reCAPTCHA solved, allow signInWithPhoneNumber.
+                    // ...
+                }
+            });
             const confirmation = await signInWithPhoneNumber(auth, phoneNumberFormatted, userRecaptcha);
             if (confirmation) {
                 setUser(confirmation);
@@ -133,7 +139,7 @@ const Login = () => {
                                 <PhoneInput inputStyle={{ width: '100%' }} country={"in"} value={ph} onChange={setPh} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
                                 <Button onClick={handleSendCode} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
-                                <div id='recaptcha'></div>
+                                <div id="recaptcha-container"></div>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
                             </Box>
                         </Box>
