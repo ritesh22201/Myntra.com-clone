@@ -1,10 +1,10 @@
 import { Box, Button, Heading, Image, Text, Flex, Spinner, Toast, useToast } from '@chakra-ui/react'
 import React, { memo } from 'react';
 import img from '../Assets/myntra-login-in-img.avif'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import otpImg from '../Assets/verify-otp-img.jpg';
 import OtpInput from 'otp-input-react';
-import {auth} from '../firebase.config';
+import { auth } from '../firebase.config';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -23,7 +23,7 @@ const Login = () => {
     const [ph, setPh] = useState('');
     const dispatch = useDispatch();
     // const [confirmationResult, setConfirmationResult] = useState(null);
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const { isLoading, token } = useSelector(store => store.authReducer);
 
     // function onCaptchaVerify() {
@@ -78,21 +78,30 @@ const Login = () => {
     //         })
     // }
 
+    const createRecaptcha = async () => {
+
+    }
+
     const handleSendCode = async () => {
-        const phoneNumberFormatted = `+${ph}`;
+        const phoneNumberFormatted = '+' + ph;
         dispatch({ type: LOGIN_REQUEST });
 
         try {
-            const userRecaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
+            // const recaptchaContainer = document.getElementById("recaptcha");
+            const recaptchaContainer = document.getElementById("recaptcha-container");
+            window.recaptchaVerifier = new RecaptchaVerifier(recaptchaContainer, {
                 'size': 'invisible',
                 'callback': (response) => {
                     // reCAPTCHA solved, allow signInWithPhoneNumber.
                     // ...
                 }
-            });
-            const confirmation = await signInWithPhoneNumber(auth, phoneNumberFormatted, userRecaptcha);
+            }, auth)
+            // const recaptcha = new RecaptchaVerifier(auth, recaptchaContainer, {});
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, phoneNumberFormatted, appVerifier);
+            // console.log(confirmation)
             if (confirmation) {
-                setUser(confirmation);
+                window.confirmationResult = confirmation;
                 dispatch({ type: LOADER_FALSE });
                 setShowOtp(true);
                 toast.success("OTP sent successfully!");
@@ -104,29 +113,41 @@ const Login = () => {
     }
 
     const handleVerifyCode = async () => {
-
         dispatch({ type: LOGIN_REQUEST });
+
+        // window.confirmationResult.confirm(otp).then(async (res) => {
+        //     const userDetails = res.user;
+        //     localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
+        //     toast.success('User logged in successfully');
+        //     dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
+        //     navigate(location.state, { replace: true });
+        // })
+        //     .catch(error => {
+        //         console.log(error.message);
+        //         dispatch({ type: LOGIN_FAILURE });
+        //         toast.error("OTP is Incorrect!");
+        //     })
+
         try {
-            const verify = await user.confirm(otp);
-            if (verify) {
-                const userDetails = verify.user;
-                localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
-                toast.success('User logged in successfully');
-                dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
-                navigate(location.state, { replace: true });
-            }
+            const res = await window.confirmationResult.confirm(otp);
+            const userDetails = res.user;
+            localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
+            toast.success('User logged in successfully');
+            dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
+            navigate(location.state, { replace: true });
         } catch (error) {
             console.log(error.message);
             dispatch({ type: LOGIN_FAILURE });
             toast.error("OTP is Incorrect!");
         }
+
     }
 
 
     return (
         <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} h={'83.5vh'}>
             <Toaster toastOptions={{ duration: 4000 }} />
-            <Box id="recaptcha-container"></Box>
+            {/* <Box id="recaptcha-container"></Box> */}
             {!token &&
                 <Box>
                     {!showOtp ?
@@ -139,7 +160,7 @@ const Login = () => {
                                 <PhoneInput inputStyle={{ width: '100%' }} country={"in"} value={ph} onChange={setPh} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
                                 <Button onClick={handleSendCode} type='submit' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
-                                <div id="recaptcha-container"></div>
+                                <Box id='recaptcha'></Box>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
                             </Box>
                         </Box>
