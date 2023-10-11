@@ -42,27 +42,6 @@ const Payment = () => {
 
   let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
 
-  // const handlePayment = async() => {
-  //   const razorpay = new Razorpay({
-  //     key_id: "rzp_test_IBwRzym43ZuMfy",
-  //     key_secret: 'M9cP0VEp5toP3WUGwLEg51jN'
-  //   })
-
-  //   const options = {
-  //     amount : discountedPrice * 100,
-  //     currency : 'INR',
-  //     receipt : CryptoJS.AES.encrypt(process.env.receipt, 'secretKey').toString(),
-  //     payment_capture : 1,
-  //   }
-
-  //   try {
-  //     const response = await razorpay.orders.create(options);
-  //     response.open();
-  //   } catch (error) {
-  //     setPaymentError(error.message);
-  //   }
-  // }
-
   const loadScript = async (url) => {
     return new Promise((resolve) => {
       const scriptEle = document.createElement('script');
