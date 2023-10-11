@@ -13,24 +13,24 @@ import {
     Divider,
     Image,
     useDisclosure,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
 import { useSelector } from 'react-redux'
 import { deliverDate } from '../constants/deliverDate';
 import { useNavigate } from 'react-router-dom';
 
-const PaymentInfo = ({totalPrice, discountedPrice, couponValue, couponDiscount, children, handlePayment}) => {
-    const {cart} = useSelector(store => store.cartReducer);
-    const {onOpen} = useDisclosure();
+const PaymentInfo = ({ totalPrice, discountedPrice, couponValue, couponDiscount, children, handlePayment }) => {
+    const { cart } = useSelector(store => store.cartReducer);
+    const { onOpen } = useDisclosure();
     const navigate = useNavigate();
 
     const finalPrice = discountedPrice === 0 ? 0 : couponValue.temp != null ? (discountedPrice + 20 - couponDiscount) : (discountedPrice + 20);
 
     return (
         <Box
-            w= {window.location.pathname === '/payment' ? '40%' : "25%"}
+            w={window.location.pathname === '/payment' ? '40%' : "25%"}
             p="15px"
             mt={'10px'}
-            maxH={'370px'}
+            maxH={'400px'}
             border={"1px solid #eaeaec"}
         >
             <HStack>
@@ -38,16 +38,16 @@ const PaymentInfo = ({totalPrice, discountedPrice, couponValue, couponDiscount, 
                     Delivery Estimates
                 </Text>
             </HStack>
-
-            {cart.map((el, ind) => {
-                return <Box mt="10px" key={ind} className='scrollbar' overflowY={'scroll'} minH={'50px'}>
-                    <Flex alignItems={"center"} gap="15px">
-                        <Image w="35px" src={el?.images?.image1} />
-                        <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>{deliverDate()}</span></Text>
-                    </Flex>
-                </Box>
-            })}
-
+            <Box overflowY={'scroll'} h={'100px'}>
+                {cart.map((el, ind) => {
+                    return <Box mt="10px" key={ind} className='scrollbar'>
+                        <Flex alignItems={"center"} gap="15px">
+                            <Image w="35px" src={el?.images?.image1} />
+                            <Text color="rgb(83, 87, 102)">Estimated delivery by <span style={{ fontWeight: "700", color: "rgb(83, 87, 102)" }}>{deliverDate()}</span></Text>
+                        </Flex>
+                    </Box>
+                })}
+            </Box>
             <Divider
                 m="10px"
                 orientation="horizontal"
