@@ -44,7 +44,7 @@ import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiBookmarkLine } from "react-icons/ri";
 import giftImage from "../Assets/gift-big.webp";
 import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/CartReducer/action";
-import { CheckmarkIcon } from "react-hot-toast";
+import toast, { CheckmarkIcon } from "react-hot-toast";
 import { addwishList } from "../Redux/ProductReducer/action";
 import { getAddress, updateAddress } from "../Redux/addressReducer/action";
 import { deliverDate, handleSelectedAddress } from "../constants/deliverDate";
@@ -68,6 +68,7 @@ const Cart = () => {
     ]
     const [applyCoupon, setApplyCoupon] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { wishlist } = useSelector(store => store.productReducer);
     const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
     const { addressData } = useSelector(store => store?.addressReducer);
 
@@ -138,6 +139,18 @@ const Cart = () => {
     }
 
     const handleMoveToWishlist = async (el) => {
+        const existedProduct = wishlist?.find(elem => elem.productId === el.productId);
+        if (existedProduct) {
+            toast({
+                title: 'Product is already in the wishlist!',
+                status: 'warning',
+                duration: 3000,
+                isClosable: true,
+                position: 'top'
+            })
+            return;
+        }
+
         await dispatch(addwishList(el, setLoading))
         await dispatch(deleteCartProduct(el.id))
         await dispatch(getCartProducts())

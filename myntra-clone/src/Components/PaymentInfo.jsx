@@ -23,6 +23,8 @@ const PaymentInfo = ({totalPrice, discountedPrice, couponValue, couponDiscount, 
     const {onOpen} = useDisclosure();
     const navigate = useNavigate();
 
+    const finalPrice = discountedPrice === 0 ? 0 : couponValue.temp != null ? (discountedPrice + 20 - couponDiscount) : (discountedPrice + 20);
+
     return (
         <Box
             w= {window.location.pathname === '/payment' ? '40%' : "25%"}
@@ -142,7 +144,7 @@ const PaymentInfo = ({totalPrice, discountedPrice, couponValue, couponDiscount, 
                 bg="#ff3f6c"
                 variant={"unstyled"}
                 onClick={() => {
-                    window.location.pathname === '/payment' ? handlePayment() : navigate('/payment');
+                    window.location.pathname === '/payment' ? handlePayment(finalPrice) : navigate('/payment');
                 }}
             >
                 {children}

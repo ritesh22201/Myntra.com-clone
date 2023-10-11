@@ -92,7 +92,7 @@ const SingleProduct = () => {
   }
 
 
-  const handleAdd = async (id) => {
+ const handleAdd = async (id) => {
     if (!selectedSize[id]) {
       toast({
         title: 'Please select a size!',

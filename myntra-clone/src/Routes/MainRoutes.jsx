@@ -12,6 +12,7 @@ import Wishlist from '../Pages/Wishlist'
 import Payment from '../Pages/Payment'
 import Address from '../Pages/Address'
 import PrivateRoutes from './PrivateRoutes'
+import Orders from '../Pages/Orders'
 
 const MainRoutes = () => {
   return (
@@ -35,6 +36,9 @@ const MainRoutes = () => {
       </PrivateRoutes>} />
       <Route path='/payment' element={<PrivateRoutes>
         <Payment />
+      </PrivateRoutes>} />
+      <Route path='/orders' element={<PrivateRoutes>
+        <Orders />
       </PrivateRoutes>} />
       <Route path='*' element={<ErrorPage />} />
     </Routes>

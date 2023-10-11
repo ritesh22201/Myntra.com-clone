@@ -23,46 +23,47 @@ const Login = () => {
     const [ph, setPh] = useState('');
     const dispatch = useDispatch();
     const { isLoading, token } = useSelector(store => store.authReducer);
-    const [user, setUser] = useState(null);
+
+    const generateRecaptcha = () => {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
+            'size': 'invisible',
+            'callback': (response) => {
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                // handleSendCode();
+            }
+        });
+    }
 
     const handleSendCode = async (e) => {
-
-        try {
-            const recaptcha = new RecaptchaVerifier(auth, 'recaptcha', {});
-            const confirmation = await signInWithPhoneNumber(auth, ph, recaptcha);
-            console.log('yess')
-            console.log(confirmation)
-        } catch (error) {
-            console.log(error.message);
-        }
+        dispatch({ type: LOGIN_REQUEST });
+        // generateRecaptcha();
+        const recaptcha = window.recaptchaVerifier;
+        signInWithPhoneNumber(auth, ph, recaptcha)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+                dispatch({ type: LOADER_FALSE });
+                setShowOtp(true);
+                toast.success("OTP sent successfully!");
+            }).catch((error) => {
+                toast.error(error.message);
+                dispatch({ type: LOGIN_FAILURE })
+            });
     }
 
     const handleVerifyCode = async () => {
-        try {
-            const verifyOtp = await user.confirm(otp)
-            console.log(verifyOtp);
-        } catch (error) {
-            console.log(error)
-        }
+        dispatch({ type: LOGIN_REQUEST });
+
+        window.confirmationResult.confirm(otp).then((result) => {
+            const userDetails = result.user;
+            localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
+            toast.success('User logged in successfully');
+            dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
+            navigate('/cart');
+        }).catch((error) => {
+            dispatch({type : LOGIN_FAILURE});
+            toast.error('Otp is incorrect!');
+        });
     }
-
-    // const confirmation = await signInWithPhoneNumber(auth, phoneNumberFormatted, appVerifier);
-    // // console.log(confirmation)
-    // if (confirmation) {
-    //     window.confirmationResult = confirmation;
-    //     dispatch({ type: LOADER_FALSE });
-    //     setShowOtp(true);
-    //     toast.success("OTP sent successfully!");
-    // }
-
-    // Verify 
-
-    // const res = await window.confirmationResult.confirm(otp);
-    // const userDetails = res.user;
-    // localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
-    // toast.success('User logged in successfully');
-    // dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
-    // navigate(location.state, { replace: true });
 
     return (
         <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} minH={'100vh'}>
@@ -76,12 +77,12 @@ const Login = () => {
                             </Box>
                             <Box style={{ width: '33%', padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
                                 <Heading mb={'25px'} color={'#161515'} fontSize={'18px'}>Login <span>or</span> Signup</Heading>
-                                {/* <form onSubmit={handleSendCode}> */}
                                 <PhoneInput inputStyle={{ width: '100%' }} country={"in"} value={ph} onChange={(ph) => setPh('+' + ph)} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
-                                <Button onClick={handleSendCode} fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
-                                <Box w={'85%'} m={'15px auto'} id='recaptcha'></Box>
-                                {/* </form> */}
+                                <Button onClick={() => {
+                                    generateRecaptcha();
+                                    handleSendCode();
+                                }} id='sign-in-button' fontWeight={'bold'} borderRadius={'none'} w={'100%'} fontSize={'15px'} _hover={"none"} color={'white'} bg={'#FF3F6C'}>{isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />}CONTINUE</Button>
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>Have trouble logging in? <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Get Help</span></Text>
                             </Box>
                         </Box>
@@ -93,7 +94,6 @@ const Login = () => {
                                 </Box>
                                 <Heading mb={'10px'} fontSize={'20px'}>Verify with OTP</Heading>
                                 <Text color={'gray.500'} fontSize={'14px'}>Sent to +{ph}</Text>
-                                {/* <form onSubmit={handleVerifyCode}> */}
                                 <OtpInput
                                     value={otp}
                                     onChange={setOtp}
@@ -105,7 +105,6 @@ const Login = () => {
                                     className='opt-container'>
                                 </OtpInput>
                                 <Button onClick={handleVerifyCode} borderRadius={'none'} w={'84%'} mt={'20px'} _hover={'none'} bg={'#FF3F6C'} color={'white'} fontWeight={'bold'}> {isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />} <span>Verify OTP</span></Button>
-                                {/* </form> */}
                                 <Flex m={'30px 0 20px 0'} alignItems={'center'}>
                                     <Text color={'gray.500'} fontSize={'14px'}>Resend OTP in:</Text>
                                     {otpCount !== 0 ?

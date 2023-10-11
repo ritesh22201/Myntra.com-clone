@@ -74,10 +74,10 @@ export function NavbarTwo() {
                         <Text color={location.pathname == '/cart' && 'green.500'} borderBottom={location.pathname == '/cart' && '3px solid #22b600'} fontWeight={location.pathname == '/cart' && 'bold'} _hover={{cursor : 'pointer'}} onClick={() => handleBag('/cart')}>Bag</Text>
                         <Text>----------</Text>
 
-                        <Text color={location.pathname == '/address' ? 'green.500' : ''} borderBottom={location.pathname == '/address' && '3px solid #22b600'} fontWeight={location.pathname == '/address' && 'bold'}  _hover={{cursor : 'pointer'}} onClick={() => handleBag('/address')}>Address</Text>
+                        <Text color={location.pathname == '/address' ? 'green.500' : ''} pointerEvents={location.pathname === '/cart' ? 'none' : 'all'} borderBottom={location.pathname == '/address' && '3px solid #22b600'} fontWeight={location.pathname == '/address' && 'bold'}  _hover={{cursor : 'pointer'}} onClick={() => handleBag('/address')}>Address</Text>
 
                         <Text>----------</Text>
-                        <Text color={location.pathname == '/payment' && 'green.500'} borderBottom={location.pathname == '/payment' && '3px solid #22b600'} fontWeight={location.pathname == '/payment' && 'bold'}  _hover={{cursor : 'pointer'}} onClick={() => handleBag('/payment')}>Payment</Text>
+                        <Text color={location.pathname == '/payment' && 'green.500'} pointerEvents={location.pathname === '/cart' || location.pathname === '/address' ? 'none' : 'all'} borderBottom={location.pathname == '/payment' && '3px solid #22b600'} fontWeight={location.pathname == '/payment' && 'bold'}  _hover={{cursor : 'pointer'}} onClick={() => handleBag('/payment')}>Payment</Text>
                     </Flex>
                 </Flex>
 
