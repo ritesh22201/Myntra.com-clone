@@ -5,7 +5,7 @@ const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
 export const getProductsMen = (setTotalCount, page, obj) => (dispatch) => {
     dispatch({ type: PRODUCT_REQ });
-    axios.get(`https://myntra-clone-backend.onrender.com/products?_limit=14&_page=${page}`, obj)
+    axios.get(`https://petal-shining-falcon.glitch.me/products?_limit=14&_page=${page}`, obj)
         .then(res => {
             setTotalCount(res.headers['x-total-count']);
             dispatch({ type: PRODUCT_SUCCESS, payload: res.data })
@@ -17,7 +17,7 @@ export const getProductsMen = (setTotalCount, page, obj) => (dispatch) => {
 
 export const getProductsSingleMen = (setSingleData, id, value = '') => {
 
-    axios.get(`https://myntra-clone-backend.onrender.com/products/${id}`).then((res) => {
+    axios.get(`https://petal-shining-falcon.glitch.me/products/${id}`).then((res) => {
         // console.log(res.data)
         setSingleData(res.data)
     }).catch((err) => {
@@ -28,7 +28,7 @@ export const getProductsSingleMen = (setSingleData, id, value = '') => {
 export const addwishList = (products, setLoading = false) => (dispatch) => {
     dispatch({ type: ADD_WISHLIST_PRODUCTS_SUCCESS })
     setLoading(true);
-    return axios.post("https://myntra-clone-backend.onrender.com/wishlist", products).then((res) => {
+    return axios.post("https://petal-shining-falcon.glitch.me/wishlist", products).then((res) => {
         dispatch({ type: ADD_WISHLIST_PRODUCTS })
         setLoading(false);
     }).catch((err) => {
@@ -38,7 +38,7 @@ export const addwishList = (products, setLoading = false) => (dispatch) => {
 }
 
 export const getwishlistproducts = () => (dispatch) => {
-    return axios.get("https://myntra-clone-backend.onrender.com/wishlist").then((res) => {
+    return axios.get("https://petal-shining-falcon.glitch.me/wishlist").then((res) => {
         // console.log(res.data)
         const products = res.data.filter(el => el.mobile == token?.mobile);
         dispatch({ type: GET_WISHLIST_PRODUCTS, payload: products });
@@ -49,7 +49,7 @@ export const getwishlistproducts = () => (dispatch) => {
 
 export const deleteWishlist = (id) => (dispatch) => {
     dispatch({ type: PRODUCT_REQ })
-    return axios.delete(`https://myntra-clone-backend.onrender.com/wishlist/${id}`).then((res) => {
+    return axios.delete(`https://petal-shining-falcon.glitch.me/wishlist/${id}`).then((res) => {
         // console.log(res)
         dispatch({ type: DELETE_WISHLIST_PRODUCTS })
     }).catch((err) => {
@@ -61,7 +61,7 @@ export const deleteWishlist = (id) => (dispatch) => {
 export const getSearchProducts = (query) => (dispatch) => {
     // console.log(page)
     dispatch({ type: PRODUCT_REQ })
-    axios.get(`https://myntra-clone-backend.onrender.com/products?q=${query}&_limit=14`).then((res) => {
+    axios.get(`https://petal-shining-falcon.glitch.me/products?q=${query}&_limit=14`).then((res) => {
         dispatch({ type: PRODUCT_SUCCESS, payload: res.data })
     }).catch(() => {
         dispatch({ type: PRODUCT_FAILURE })

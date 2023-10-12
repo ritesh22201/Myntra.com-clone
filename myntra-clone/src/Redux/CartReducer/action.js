@@ -6,7 +6,7 @@ const token = JSON.parse(localStorage.getItem('google-login')) || {};
 export const getCartProducts = () => (dispatch) => {
     dispatch({ type: CART_REQ });
 
-    axios.get('https://myntra-clone-backend.onrender.com/cart')
+    axios.get('https://petal-shining-falcon.glitch.me/cart')
         .then(res => {
             console.log(res.data);
             const products = res.data.filter(el => el.mobile == token?.mobile);
@@ -21,7 +21,7 @@ export const getCartProducts = () => (dispatch) => {
 export const addProductToCart = (data, setCartLoading) => (dispatch) => {
     dispatch({ type: CART_REQ });
     setCartLoading(true);
-    return axios.post('https://myntra-clone-backend.onrender.com/cart', data)
+    return axios.post('https://petal-shining-falcon.glitch.me/cart', data)
         .then(res => {
             console.log(res.data);
             dispatch({ type: CART_POST_SUCCESS });
@@ -37,7 +37,7 @@ export const addProductToCart = (data, setCartLoading) => (dispatch) => {
 export const updateDetails = (data, itemId) => (dispatch) => {
     dispatch({ type: CART_REQ });
 
-    return axios.patch(`https://myntra-clone-backend.onrender.com/cart/${itemId}`, data)
+    return axios.patch(`https://petal-shining-falcon.glitch.me/cart/${itemId}`, data)
         .then(res => {
             console.log(res.data);
             dispatch({ type: CART_UPDATE_SUCCESS });
@@ -51,7 +51,7 @@ export const updateDetails = (data, itemId) => (dispatch) => {
 export const deleteCartProduct = (id) => (dispatch) => {
     dispatch({ type: CART_REQ });
 
-    return axios.delete(`https://myntra-clone-backend.onrender.com/cart/${id}`)
+    return axios.delete(`https://petal-shining-falcon.glitch.me/cart/${id}`)
         .then(res => {
             console.log(res.data);
             dispatch({ type: CART_DELETE_SUCCESS });

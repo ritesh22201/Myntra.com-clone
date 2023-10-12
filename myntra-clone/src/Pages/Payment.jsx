@@ -12,13 +12,12 @@ import { BiGift } from 'react-icons/bi'
 import { CiPercent, CiStar } from 'react-icons/ci'
 import { FaLaptopFile } from 'react-icons/fa'
 import { GiMoneyStack, GiWallet } from 'react-icons/gi'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deliverDate } from '../constants/deliverDate'
 import { useNavigate } from 'react-router-dom'
 import PaymentInfo from '../Components/PaymentInfo'
 import toast, { Toaster } from 'react-hot-toast'
-// import Razorpay from 'razorpay';
-// import CryptoJS from 'crypto-js';
+import { addOrders } from '../Redux/paymentReducer/action'
 
 
 const Payment = () => {
@@ -27,6 +26,8 @@ const Payment = () => {
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
   useEffect(() => {
     let price = 0;
@@ -41,6 +42,7 @@ const Payment = () => {
   }, [cart])
 
   let couponDiscount = couponValue.discount == '10%' ? (discountedPrice * 0.1).toFixed() : couponValue.discount == '20%' ? (discountedPrice * 0.2).toFixed() : couponValue.discount == '5%' ? (discountedPrice * 0.05).toFixed() : 0;
+  const finalPrice = discountedPrice === 0 ? 0 : couponValue.temp != null ? (discountedPrice + 20 - couponDiscount) : (discountedPrice + 20);
 
   const loadScript = async (url) => {
     return new Promise((resolve) => {
@@ -67,21 +69,25 @@ const Payment = () => {
     }
 
     const options = {
-      key : 'rzp_test_IBwRzym43ZuMfy',
-      currency : 'INR',
-      amount : price * 100,
-      name : 'Myntra-clone',
-      description : 'Payment Successful',
+      key: 'rzp_test_IBwRzym43ZuMfy',
+      currency: 'INR',
+      amount: price * 100,
+      name: 'Myntra-clone',
+      description: 'Payment Successful',
 
-      handler : (response) => {
-        if(response.razorpay_payment_id){
+      handler: (response) => {
+        if (response.razorpay_payment_id) {
           toast.success('Payment Successful');
+          const payload = {
+            ...cart,
+            rating: 0,
+            mobile: token?.mobile,
+            totalPrice: finalPrice
+          }
+
+          dispatch(addOrders(payload));
           navigate('/orders');
         }
-      },
-
-      prefill : {
-        name : 'Myntra-clone'
       }
     }
 

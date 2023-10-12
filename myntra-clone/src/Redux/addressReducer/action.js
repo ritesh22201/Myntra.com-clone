@@ -5,7 +5,7 @@ const token = JSON.parse(localStorage.getItem('google-login')) || {};
 export const getAddress = () => (dispatch) => {
     dispatch({ type: ADDRESS_REQ });
 
-    return axios.get('https://myntra-clone-backend.onrender.com/address')
+    return axios.get('https://petal-shining-falcon.glitch.me/address')
         .then(res => {
             console.log(res.data);
             const address = res.data.filter(el => el.userMobile == token?.mobile);
@@ -20,7 +20,7 @@ export const getAddress = () => (dispatch) => {
 export const addAddress = (data) => (dispatch) => {
     dispatch({ type: ADDRESS_REQ });
 
-    return axios.post('https://myntra-clone-backend.onrender.com/address', data)
+    return axios.post('https://petal-shining-falcon.glitch.me/address', data)
         .then(res => {
             console.log(res.data);
             dispatch({ type: ADD_NEW_ADDRESS});
@@ -34,7 +34,7 @@ export const addAddress = (data) => (dispatch) => {
 export const updateAddress = (data, id) => (dispatch) => {
     dispatch({ type: ADDRESS_REQ });
 
-    return axios.patch(`https://myntra-clone-backend.onrender.com/address/${id}`, data)
+    return axios.patch(`https://petal-shining-falcon.glitch.me/address/${id}`, data)
         .then(res => {
             console.log(res.data);
             // dispatch({ type: UPDATE_ADDRESS});
@@ -48,7 +48,7 @@ export const updateAddress = (data, id) => (dispatch) => {
 export const deleteAddress = (id) => (dispatch) => {
     dispatch({ type: ADDRESS_REQ });
 
-    return axios.delete(`https://myntra-clone-backend.onrender.com/address/${id}`)
+    return axios.delete(`https://petal-shining-falcon.glitch.me/address/${id}`)
         .then(res => {
             console.log(res.data);
             dispatch({ type: DELETE_ADDRESS}); 
