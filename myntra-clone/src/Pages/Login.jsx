@@ -29,7 +29,6 @@ const Login = () => {
             'size': 'invisible',
             'callback': (response) => {
                 // reCAPTCHA solved, allow signInWithPhoneNumber.
-                // handleSendCode();
             }
         });
     }
@@ -64,6 +63,10 @@ const Login = () => {
             toast.error('Otp is incorrect!');
         });
     }
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0 });
+    }, [])
 
     return (
         <Box className='scrollbar' pt={'12px'} bg={'#F9ECEC'} minH={'100vh'}>

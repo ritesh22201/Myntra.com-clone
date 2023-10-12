@@ -113,9 +113,11 @@ import img96 from '../Assets/Home/Section5/35.jpg';
 
 const Home = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0 });
   }, [])
+
   return (
     <Box cursor={'pointer'}>
       <Box onClick={() => navigate('/products')} style={{ width: '93%', margin: '30px auto' }}>

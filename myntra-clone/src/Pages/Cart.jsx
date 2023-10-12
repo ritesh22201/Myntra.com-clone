@@ -48,10 +48,11 @@ import toast, { CheckmarkIcon } from "react-hot-toast";
 import { addwishList } from "../Redux/ProductReducer/action";
 import { getAddress, updateAddress } from "../Redux/addressReducer/action";
 import { deliverDate, handleSelectedAddress } from "../constants/deliverDate";
+import ContentLoader from "../Components/ContentLoader";
 // import { PiKeyReturnBold } from "react-icons/pi";
 
 const Cart = () => {
-    const { cart } = useSelector((store) => store.cartReducer);
+    const { cart, isLoadingCart } = useSelector((store) => store.cartReducer);
     const [showStatus, setShowStatus] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
@@ -75,6 +76,7 @@ const Cart = () => {
     useEffect(() => {
         dispatch(getCartProducts());
         dispatch(getAddress())
+        window.scrollTo({ top: 0, left: 0 });
     }, [])
 
     useEffect(() => {
@@ -164,21 +166,12 @@ const Cart = () => {
 
     const selectedAddress = addressData?.find(el => el.isSelected == true);
 
-    // const handleSelectedAddress = async (id) => {
-    //     const selectedAdd = addressData?.find(el => el?.isSelected === true);
-
-    //     if (selectedAdd) {
-    //         const data = { isSelected: false };
-    //         await dispatch(updateAddress(data, selectedAdd?.id));
-    //         await dispatch(updateAddress({ isSelected: true }, id));
-    //         await dispatch(getAddress());
-    //         return;
-    //     }
-    // }
 
     return (
         <>
-            {cart?.length ? (
+        {isLoadingCart ? <ContentLoader/>
+           :
+            cart?.length ? (
                 <>
                     <Flex justifyContent={"center"} gap="10px">
                         <Box w="50%">
@@ -837,7 +830,8 @@ const Cart = () => {
                         </Flex>
                     </Container>
                 </Box>
-            )}
+            )
+        }
         </>
     );
 };

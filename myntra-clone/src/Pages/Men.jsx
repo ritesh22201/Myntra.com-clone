@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen } from '../Redux/ProductReducer/action';
 import ProductCard from '../Components/ProductCard';
@@ -33,4 +33,4 @@ const Men = ({ }) => {
     )
 }
 
-export default Men;
+export default memo(Men);

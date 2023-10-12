@@ -8,6 +8,9 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { store } from './Redux/store';
 import { Provider } from 'react-redux';
 import GlobalContextProvider from './Context/GlobalContextProvider';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

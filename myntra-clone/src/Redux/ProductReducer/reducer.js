@@ -45,7 +45,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         case ADD_WISHLIST_PRODUCTS_SUCCESS: {
             return {
                 ...state,
-                isLoading: true,
+                isLoading: false,
                 isError: false,
                 isAdded: false,
             }
