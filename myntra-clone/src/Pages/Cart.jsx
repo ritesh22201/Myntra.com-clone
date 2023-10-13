@@ -80,6 +80,11 @@ const Cart = () => {
     }, [])
 
     useEffect(() => {
+        dispatch(getCartProducts());
+        dispatch(getAddress())
+    }, [dispatch])
+
+    useEffect(() => {
         let price = 0;
         let discountPrice = 0;
 
@@ -302,33 +307,8 @@ const Cart = () => {
                                                 Total {cart?.length} Items
                                             </Text>
                                         </Flex>
-
-                                        <Flex alignItems={"center"} fontSize={"13px"}>
-                                            <Text
-                                                color={"#535766"}
-                                                fontWeight={"700"}
-                                                textTransform={"uppercase"}
-                                            >
-                                                Remove
-                                            </Text>
-                                            {/* <Divider color={"#eaeaec"} /> */}
-                                            <Divider
-                                                orientation="vertical"
-                                                borderColor="#d4d5d9"
-                                                height="30px"
-                                                mx={3}
-                                            />
-                                            <Text
-                                                color={"#535766"}
-                                                fontWeight={"700"}
-                                                textTransform={"uppercase"}
-                                            >
-                                                Move To Wishlist
-                                            </Text>
-                                        </Flex>
                                     </Flex>
 
-                                    {/* map here  */}
                                     {cart?.map(el => {
                                         // console.log(el)
                                         return <Box key={el.id} maxW="container.sm" w="100%">

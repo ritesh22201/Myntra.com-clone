@@ -13,6 +13,7 @@ import Payment from '../Pages/Payment'
 import Address from '../Pages/Address'
 import PrivateRoutes from './PrivateRoutes'
 import Orders from '../Pages/Orders'
+import Profile from '../Pages/Profile'
 
 const MainRoutes = () => {
   return (
@@ -39,6 +40,9 @@ const MainRoutes = () => {
       </PrivateRoutes>} />
       <Route path='/orders' element={<PrivateRoutes>
         <Orders />
+      </PrivateRoutes>} />
+      <Route path='/profile' element={<PrivateRoutes>
+        <Profile />
       </PrivateRoutes>} />
       <Route path='*' element={<ErrorPage />} />
     </Routes>

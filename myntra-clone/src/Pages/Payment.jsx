@@ -19,6 +19,7 @@ import PaymentInfo from '../Components/PaymentInfo'
 import toast, { Toaster } from 'react-hot-toast'
 import { addOrders } from '../Redux/paymentReducer/action'
 import ContentLoader from '../Components/ContentLoader';
+import { addProductToCart } from '../Redux/CartReducer/action'
 
 const Payment = () => {
   const { cart } = useSelector(store => store.cartReducer);
@@ -27,9 +28,9 @@ const Payment = () => {
   const couponValue = JSON.parse(localStorage.getItem('coupon')) || {};
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [cartLoading, setCartLoading] = useState(false);
   const { isLoading } = useSelector(store => store.paymentReducer);
   const token = JSON.parse(localStorage.getItem('google-login')) || {};
-  const razorPayKey = process.env.REACT_APP_SECRET_KEY;
 
   useEffect(() => {
     let price = 0;
@@ -71,23 +72,25 @@ const Payment = () => {
     }
 
     const options = {
-      key: razorPayKey,
+      key: "rzp_test_IBwRzym43ZuMfy",
       currency: 'INR',
       amount: price * 100,
       name: 'Myntra-clone',
       description: 'Payment Successful',
 
-      handler: (response) => {
+      handler: async(response) => {
         if (response.razorpay_payment_id) {
           toast.success('Payment Successful');
           const payload = {
             ...cart,
             rating: 0,
             mobile: token?.mobile,
-            totalPrice: finalPrice
+            totalPrice: finalPrice,
+            orderedAt : Date.now()
           }
 
-          dispatch(addOrders(payload));
+          await dispatch(addOrders(payload));
+          await dispatch(addProductToCart([], setCartLoading));
           navigate('/orders');
         }
       }

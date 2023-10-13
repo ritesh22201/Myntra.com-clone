@@ -96,7 +96,7 @@ const Login = () => {
                                     <Image w={'100px'} src={otpImg} alt='otpImg' />
                                 </Box>
                                 <Heading mb={'10px'} fontSize={'20px'}>Verify with OTP</Heading>
-                                <Text color={'gray.500'} fontSize={'14px'}>Sent to +{ph}</Text>
+                                <Text color={'gray.500'} fontSize={'14px'}>Sent to {ph}</Text>
                                 <OtpInput
                                     value={otp}
                                     onChange={setOtp}
@@ -110,9 +110,6 @@ const Login = () => {
                                 <Button onClick={handleVerifyCode} borderRadius={'none'} w={'84%'} mt={'20px'} _hover={'none'} bg={'#FF3F6C'} color={'white'} fontWeight={'bold'}> {isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />} <span>Verify OTP</span></Button>
                                 <Flex m={'30px 0 20px 0'} alignItems={'center'}>
                                     <Text color={'gray.500'} fontSize={'14px'}>Resend OTP in:</Text>
-                                    {otpCount !== 0 ?
-                                        <Heading ml={'5px'} fontSize={'14px'}>00:{otpCount < 10 ? `0${otpCount}` : otpCount}</Heading> :
-                                        <Heading fontSize={'15px'}>RESEND OTP</Heading>}
                                 </Flex>
                                 <Flex alignItems={'center'}>
                                     <Text fontSize={'14px'}>Log in using</Text>

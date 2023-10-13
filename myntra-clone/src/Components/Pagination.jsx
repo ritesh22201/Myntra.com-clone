@@ -8,7 +8,7 @@ const Pagination = ({page, setPage, pageButton, totalCount}) => {
             {new Array(pageButton).fill(0).map((el, i) => {
                 return <Button w={'15px'} h={'45px'} fontWeight={'bold'} _hover={{border : '1px solid #e5e5e5'}} bg={page === i + 1 ? '#2A2F4F' : 'white'} color={page === i + 1 ? 'white' : '#2A2F4F'} onClick={() => setPage(i + 1)}>{i + 1}</Button>
             })}
-            <Button fontWeight={'bold'} variant={'outline'} disabled={page === totalCount} onClick={() => setPage(page + 1)}>{"Next >"}</Button>
+            <Button fontWeight={'bold'} variant={'outline'} isDisabled={page === Math.ceil(totalCount/3)} onClick={() => setPage(page + 1)}>{"Next >"}</Button>
         </Flex>
     )
 }

@@ -12,9 +12,22 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
+  Menu,
+  MenuButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  MenuItem,
+  FormControl,
+  FormLabel,
+  MenuList,
   useDisclosure,
   Input,
+  Divider,
   VStack,
   Image,
 } from '@chakra-ui/react';
@@ -37,11 +50,12 @@ import { GlobalContext } from '../Context/GlobalContextProvider';
 import logo from '../Assets/myntra-logo.webp';
 
 export default function Navbar() {
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const { inputVal, setInputVal } = useContext(GlobalContext);
   const { cart } = useSelector(store => store.cartReducer);
   const { wishlist } = useSelector(store => store.productReducer);
+  const { users } = useSelector(store => store.profileReducer);
   const dispatch = useDispatch();
   const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
@@ -53,6 +67,13 @@ export default function Navbar() {
 
     return () => clearTimeout(id);
   }, [inputVal])
+
+  const existedUser = users?.find(el => el?.mobile === token.mobile);
+
+  const handleLogout = () => {
+    localStorage.removeItem('google-login');
+    window.location.reload();
+  }
 
   return (
     <Box position={'sticky'} top={0} zIndex={'overlay'} boxShadow='rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'>
@@ -80,7 +101,7 @@ export default function Navbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} alignItems={'center'} justify={{ base: 'center', md: 'start' }}>
-          <Image onClick={() => navigate('/')} cursor={'pointer'} w={'60px'} src={logo} alt='logo' />
+          <Image _hover={{ cursor: 'pointer' }} onClick={() => navigate('/')} w={'60px'} src={logo} alt='logo' />
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -97,19 +118,55 @@ export default function Navbar() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <VStack cursor={'pointer'} _hover={{ borderBottom: '4px solid pink', boxSizing: 'border-box' }}>
-            <FiUser style={{ fontSize: '20px' }} />
-            <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Profile</label>
-          </VStack>
-          <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/wishlist')}>
+          <Menu>
+            <MenuButton as='Button' rightIcon={<ChevronDownIcon />}>
+              <VStack cursor={'pointer'}>
+                <FiUser style={{ fontSize: '20px' }} />
+                <Text style={{ fontSize: '15px', fontWeight: 'bold' }}>Profile</Text>
+              </VStack>
+            </MenuButton>
+            <MenuList _hover='none' fontSize='14px'>
+              {token?.token ?
+                <>
+                  <MenuItem fontSize='14px' fontWeight='bold'>{existedUser ? existedUser?.name : 'Hello Myntra User!'}</MenuItem>
+                  <MenuItem mt='-10px' fontSize='14px'>{token?.mobile.slice(3)}</MenuItem>
+                </>
+                :
+                <MenuItem w='48%' _hover='none' _active='none' m='0 0 10px 10px' bg='#ff3f71' color='white' borderRadius='3px' fontWeight='bold' onClick={() => navigate('/login')}>Login/Signup</MenuItem>
+              }
+              <Box h='1px'>
+                <Divider orientation='horizontal' />
+              </Box>
+              {token?.token && <MenuItem onClick={() => navigate('/orders')}>Orders</MenuItem>}
+              {token?.token && <MenuItem onClick={() => navigate('/wishlist')} mt='-5px'>Wishlist</MenuItem>}
+              <MenuItem mt='-5px'>Gift Card</MenuItem>
+              <MenuItem mt='-5px'>Contact Us</MenuItem>
+              <Flex position='relative' alignItems='center'>
+                <MenuItem mt='-5px'>Myntra Insider</MenuItem>
+                <Text position='absolute' fontSize='13px' right='30px' p='0 8px' bg='#ff3f6c' color='white'>New</Text>
+              </Flex>
+              <Box h='1px'>
+                <Divider orientation='horizontal' />
+              </Box>
+              <MenuItem>Myntra Credit</MenuItem>
+              <MenuItem mt='-5px'>Coupons</MenuItem>
+              <MenuItem mt='-5px'>Saved Cards</MenuItem>
+              <MenuItem mt='-5px'>Saved Addresses</MenuItem>
+              <Box h='1px'>
+                <Divider orientation='horizontal' />
+              </Box>
+              {token?.token && <MenuItem onClick={() => navigate('/profile')}>Edit Profile</MenuItem>}
+              {token?.token && <MenuItem onClick={handleLogout} mt='-5px'>Logout</MenuItem>}
+            </MenuList>
+          </Menu>
+          <VStack cursor={'pointer'} onClick={() => navigate('/wishlist')}>
             <FiHeart style={{ fontSize: '20px' }} />
-            {/* {wishlist?.length && <Box bg={'#ff3f71'} top={'-20px'} left={'29px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{wishlist?.length}</Box>} */}
-            <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Wishlist</label>
+            <Text style={{ fontSize: '15px', fontWeight: 'bold' }}>Wishlist</Text>
           </VStack>
-          <VStack position={'relative'} cursor={'pointer'} onClick={() => navigate('/cart')}>
+          <VStack position='relative' cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
-            {cart?.length && token.token && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
-            <label style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</label>
+            {cart?.length && token?.token && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
+            <Text style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</Text>
           </VStack>
         </Stack>
       </Flex>
