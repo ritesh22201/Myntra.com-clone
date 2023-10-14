@@ -34,8 +34,26 @@ const Product = () => {
     }
 
     useEffect(() => {
-        dispatch(getProductsMen(setTotalCount, page, obj));
+        dispatch(getProductsMen(setTotalCount, page, obj, '', ''));
     }, [page, searchParams])
+
+    const handleSort = (value) => {
+        if(value === 'discount'){
+            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc'));
+        }
+        else if(value === 'pricea'){
+            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'asc'));
+        }
+        else if(value === 'priced'){
+            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'desc'));
+        }
+        else if(value === 'rating'){
+            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc'));
+        }
+        else{
+            dispatch(getProductsMen(setTotalCount, page, obj, '', ''));
+        }
+    }
 
     return (
         <>
@@ -46,26 +64,26 @@ const Product = () => {
                 </Flex>
                 <Flex alignItems={'center'} m={'10px 0 20px 0'} justifyContent={'flex-end'}>
                     <Flex p={'0 15px'} justifyContent={'space-between'} alignItems={'center'} w={'25%'}>
-                        {/* <Heading fontSize={'16px'}>FILTERS</Heading>
-                    <Heading color='#eb1c95' fontSize={'13px'}>CLEAR ALL</Heading> */}
                     </Flex>
                     <Flex w={'100%'} justifyContent={'space-between'}>
-                        <Flex w={'35%'}>
+                        <Flex w={{base : '65%', sm : '65%', md : '35%', lg : '35%', xl : '35%', '2xl' : '35%'}} justifyContent="space-between">
                             <Button _hover={{ bg: 'gray.200', borderRadius: '20px', p: '-4px 18px' }} variant={'ghost'}>Bundles<BsChevronDown /></Button>
                             <Button _hover={{ bg: 'gray.200', borderRadius: '20px', p: '-4px 18px' }} variant={'ghost'}>Country of Origin <BsChevronDown /></Button>
                             <Button _hover={{ bg: 'gray.200', borderRadius: '20px', p: '-4px 18px' }} variant={'ghost'}>Size <BsChevronDown /></Button>
                         </Flex>
-                        <Select _focusVisible={'none'} w={'27%'} borderRadius={'none'}>
+                        <Select _focusVisible={'none'} onChange={(e) => handleSort(e.target.value)} w={{base : '35%', sm : '35%', md : '27%', lg : '27%', xl : '27%', '2xl' : '27%'}} borderRadius={'none'}>
                             <option value="">Recommended</option>
-                            <option value="dicount">Better Discount</option>
-                            <option value="off_price">Price: Low to High</option>
-                            <option value="off_price">Price: High to Low</option>
+                            <option value="discount">Better Discount</option>
+                            <option value="pricea">Price: Low to High</option>
+                            <option value="priced">Price: High to Low</option>
                             <option value="rating">Customer Rating</option>
                         </Select>
                     </Flex>
                 </Flex>
                 <Flex gap={'25px'}>
-                    <Sidebar />
+                    <Box w='20%' display={{base : 'none', sm : 'none', md : 'block', lg : 'block', xl : 'block', '2xl' : 'block'}}>
+                        <Sidebar />
+                    </Box>
                     <Men />
                 </Flex>
                 <Pagination page={page} pageButton={pageButton} totalCount={totalCount} setPage={setPage} />

@@ -20,9 +20,8 @@ const MainRoutes = () => {
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
-      {/* <Route path='/admin' element={<Admin />} /> */}
       <Route path='/products' element={<Product />} />
-      <Route path='/men' element={<Men />} />
+      {/* <Route path='/men' element={<Men />} /> */}
       <Route path='/products/:id' element={<PrivateRoutes>
         <SingleProduct />
       </PrivateRoutes>} />

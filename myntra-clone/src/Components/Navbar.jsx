@@ -90,6 +90,7 @@ export default function Navbar() {
         <Flex
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
+          gap='10px'
           display={{ base: 'flex', md: 'none' }}>
           <IconButton
             onClick={onToggle}
@@ -99,9 +100,9 @@ export default function Navbar() {
             variant={'ghost'}
             aria-label={'Toggle Navigation'}
           />
+          <Image _hover={{ cursor: 'pointer' }} onClick={() => navigate('/')} w={'60px'} src={logo} alt='logo' />
         </Flex>
         <Flex flex={{ base: 1 }} alignItems={'center'} justify={{ base: 'center', md: 'start' }}>
-          <Image _hover={{ cursor: 'pointer' }} onClick={() => navigate('/')} w={'60px'} src={logo} alt='logo' />
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav />
           </Flex>

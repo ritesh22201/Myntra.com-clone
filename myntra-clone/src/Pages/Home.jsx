@@ -109,6 +109,14 @@ import img93 from '../Assets/Home/Section5/32.webp';
 import img94 from '../Assets/Home/Section5/33.jpg';
 import img95 from '../Assets/Home/Section5/34.jpg';
 import img96 from '../Assets/Home/Section5/35.jpg';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
+import cover2 from '../Assets/cover2.jpg'
+import cover3 from '../Assets/cover3.jpg'
+import cover4 from '../Assets/cover4.jpg'
+import cover5 from '../Assets/cover5.jpg'
+import cover6 from '../Assets/cover6.jpg'
+import { displayProp, gridTemplate, gridTemplateSec4, imageHeight, overflowXAxis } from '../constants/responsiveness';
 
 
 const Home = () => {
@@ -120,12 +128,31 @@ const Home = () => {
 
   return (
     <Box cursor={'pointer'}>
-      <Box onClick={() => navigate('/products')} style={{ width: '93%', margin: '30px auto' }}>
-        <Image w={'100%'} src={coverImg} alt='coverImg' />
+      <Box style={{ width: '93%', margin: '30px auto' }}>
+        <Carousel autoFocus='true' infiniteLoop='true' autoPlay='true'>
+          <Box>
+            <Image w={'100%'} src={coverImg} alt='coverImg' />
+          </Box>
+          <Box>
+            <Image w={'100%'} src={cover2} alt='coverImg' />
+          </Box>
+          <Box>
+            <Image w={'100%'} src={cover3} alt='coverImg' />
+          </Box>
+          <Box>
+            <Image w={'100%'} src={cover4} alt='coverImg' />
+          </Box>
+          <Box>
+            <Image w={'100%'} src={cover5} alt='coverImg' />
+          </Box>
+          <Box>
+            <Image w={'100%'} src={cover6} alt='coverImg' />
+          </Box>
+        </Carousel>
       </Box>
       <section>
         <Image src={img1} alt='img1' />
-        <Box onClick={() => navigate('/products')} id='sec-1-grid' display={'grid'} gridTemplateColumns={'repeat(10, 1fr)'}>
+        <Box onClick={() => navigate('/products')} overflowX={overflowXAxis} id='sec-1-grid' display={displayProp} gridTemplateColumns={gridTemplate}>
           <Image src={img2} alt='img2' />
           <Image src={img3} alt='img3' />
           <Image src={img4} alt='img4' />
@@ -150,7 +177,7 @@ const Home = () => {
       </section>
       <section>
         <Image src={img26} alt='img26' />
-        <Box onClick={() => navigate('/products')} display={'grid'} gridTemplateColumns={'repeat(10, 1fr)'}>
+        <Box onClick={() => navigate('/products')} h={imageHeight} overflowX={overflowXAxis} display={displayProp} gridTemplateColumns={gridTemplate}>
           <Image src={img22} alt='img22' />
           <Image src={img23} alt='img23' />
           <Image src={img24} alt='img24' />
@@ -165,7 +192,7 @@ const Home = () => {
       </section>
       <section>
         <Image src={img29} alt='img29' />
-        <Box onClick={() => navigate('/products')} display={'grid'} gridTemplateColumns={'repeat(10, 1fr)'}>
+        <Box onClick={() => navigate('/products')} h={imageHeight} overflowX={overflowXAxis} display={displayProp} gridTemplateColumns={gridTemplate}>
           <Image src={img30} alt='img30' />
           <Image src={img31} alt='img31' />
           <Image src={img32} alt='img32' />
@@ -190,7 +217,7 @@ const Home = () => {
       </section>
       <section>
         <Image src={img50} alt='img50' />
-        <Box onClick={() => navigate('/products')} display={'grid'} gridTemplateColumns={'repeat(10, 1fr)'}>
+        <Box onClick={() => navigate('/products')} h={imageHeight} overflowX={overflowXAxis} display={displayProp} gridTemplateColumns={gridTemplate}>
           <Image src={img51} alt='img51' />
           <Image src={img52} alt='img52' />
           <Image src={img53} alt='img53' />
@@ -205,7 +232,7 @@ const Home = () => {
       </section>
       <section>
         <Image src={img61} alt='cover' />
-        <Box onClick={() => navigate('/products')} display={'grid'} justifyContent={'center'} gridTemplateColumns={'repeat(6, 1fr)'}>
+        <Box onClick={() => navigate('/products')} h={imageHeight} overflowX={overflowXAxis} display={displayProp} justifyContent={'center'} gridTemplateColumns={gridTemplateSec4}>
           <Image src={img62} alt='img53' />
           <Image src={img63} alt='img54' />
           <Image src={img64} alt='img55' />

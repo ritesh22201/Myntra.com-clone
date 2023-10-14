@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
-export const getProductsMen = (setTotalCount, page, obj) => (dispatch) => {
+export const getProductsMen = (setTotalCount, page, obj, sortBy='', orderBy='') => (dispatch) => {
     dispatch({ type: PRODUCT_REQ });
-    axios.get(`https://petal-shining-falcon.glitch.me/products?_limit=14&_page=${page}`, obj)
+    axios.get(`https://petal-shining-falcon.glitch.me/products?_sort=${sortBy}&_order=${orderBy}&_limit=14&_page=${page}`, obj)
         .then(res => {
             setTotalCount(res.headers['x-total-count']);
             dispatch({ type: PRODUCT_SUCCESS, payload: res.data })

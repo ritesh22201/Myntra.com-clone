@@ -1,7 +1,7 @@
 import { Box, Button, Checkbox, Flex, FormLabel, Heading, Text } from '@chakra-ui/react'
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { BsCircleFill } from 'react-icons/bs';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getProductsMen } from '../Redux/ProductReducer/action';
 import { GlobalContext } from '../Context/GlobalContextProvider';
@@ -18,6 +18,8 @@ const Sidebar = () => {
     const [color, setColor] = useState(initialColor || [])
     const [brand, setBrand] = useState(initialBrand || []);
     const [price, setPrice] = useState(initialPrice || []);
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
     const { paramVal, setParamVal } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -57,43 +59,31 @@ const Sidebar = () => {
     }
 
     const handleColor = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         let newColor = [...color];
-        if(newColor.includes(value)){
+        if (newColor.includes(value)) {
             newColor = newColor.filter(el => el !== value);
         }
-        else{
+        else {
             newColor.push(value);
         }
         setColor(newColor);
     }
 
     const handleBrand = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         let newBrand = [...brand];
-        if(newBrand.includes(value)){
+        if (newBrand.includes(value)) {
             newBrand = newBrand.filter(el => el !== value);
         }
-        else{
+        else {
             newBrand.push(value)
         }
         setBrand(newBrand);
     }
 
-    let priceArr = [
-        {p1 : 22, p1 : 200},
-        {p1 : 201, p1 : 499},
-         
-    ]
-
-    const handlePrice = (p1, p2) => {
-        let newPrice = [...price];
-        newPrice = newPrice.filter(el => el >= p1 && el <= p2);
-        setPrice(newPrice);
-    }
-
     return (
-        <Box w={'20%'}>
+        <Box>
             <Flex p={'0 10px'} justifyContent="space-between">
                 <FormLabel fontWeight={"700"} >FILTERS</FormLabel>
                 <FormLabel fontWeight={"700"} fontSize={"15px"} color={"pink.500"} >CLEAR ALL</FormLabel>
@@ -202,37 +192,37 @@ const Sidebar = () => {
             <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
                 <Heading mb={'15px'} fontSize={'15px'}>BRAND</Heading>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Roadster')} value={'Roadster'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Roadster</Checkbox>
+                    <Checkbox isChecked={brand.includes('Roadster')} value={'Roadster'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Roadster</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('HERE&NOW')} value={'HERE&NOW'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Here&Now</Checkbox>
+                    <Checkbox isChecked={brand.includes('HERE&NOW')} value={'HERE&NOW'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Here&Now</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Clovia')} value={'Clovia'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Clovia</Checkbox>
+                    <Checkbox isChecked={brand.includes('Clovia')} value={'Clovia'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Clovia</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Mast & Harbour')} value={'Mast & Harbour'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Mast & Harbour</Checkbox>
+                    <Checkbox isChecked={brand.includes('Mast & Harbour')} value={'Mast & Harbour'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Mast & Harbour</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Dressberry')} value={'Dressberry'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Dressberry</Checkbox>
+                    <Checkbox isChecked={brand.includes('Dressberry')} value={'Dressberry'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Dressberry</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Celfie Design')} value={'Celfie Design'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Celfie Design</Checkbox>
+                    <Checkbox isChecked={brand.includes('Celfie Design')} value={'Celfie Design'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Celfie Design</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('KALINI')} value={'KALINI'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Kalini</Checkbox>
+                    <Checkbox isChecked={brand.includes('KALINI')} value={'KALINI'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Kalini</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('Street Armor by Pantaloons')} value={'Street Armor by Pantaloons'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>Street Armor by Pantaloons</Checkbox>
+                    <Checkbox isChecked={brand.includes('Street Armor by Pantaloons')} value={'Street Armor by Pantaloons'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>Street Armor by Pantaloons</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('HRX')} value={'HRX'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>HRX</Checkbox>
+                    <Checkbox isChecked={brand.includes('HRX')} value={'HRX'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>HRX</Checkbox>
                 </Box>
                 <Box>
-                    <Checkbox isChecked={brand.includes('H&M')} value={'H&M'} onChange = {(e) => handleBrand(e)} colorScheme={'pink'}>H&M</Checkbox>
+                    <Checkbox isChecked={brand.includes('H&M')} value={'H&M'} onChange={(e) => handleBrand(e)} colorScheme={'pink'}>H&M</Checkbox>
                 </Box>
             </Box>
-            <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
+            {/* <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
                 <Heading mb={'15px'} fontSize={'15px'}>PRICE</Heading>
                 <Box>
                     <Checkbox onChange={(e) => handlePrice(22, 200)} colorScheme={'pink'}>Rs. 22 to Rs. 200</Checkbox>
@@ -246,7 +236,7 @@ const Sidebar = () => {
                 <Box>
                     <Checkbox onChange={() => handlePrice(1300, 10000)} colorScheme={'pink'}>Rs. 1300 to Rs. 10000</Checkbox>
                 </Box>
-            </Box>
+            </Box> */}
             <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
                 <Heading mb={'15px'} fontSize={'15px'}>COLOR</Heading>
                 <Box>
@@ -278,7 +268,7 @@ const Sidebar = () => {
                     <Checkbox isChecked={color.includes('yellow')} value={'yellow'} onChange={(e) => handleColor(e)} colorScheme={'pink'}>🟡Yellow</Checkbox>
                 </Box>
             </Box>
-            <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
+            {/* <Box border={'1px solid #e5e5e5'} lineHeight={'28px'} p={'10px'}>
                 <Heading mb={'15px'} fontSize={'15px'}>DISCOUNT RANGE</Heading>
                 <Box>
                     <Checkbox colorScheme={'pink'}>10% and above</Checkbox>
@@ -307,7 +297,7 @@ const Sidebar = () => {
                 <Box>
                     <Checkbox colorScheme={'pink'}>90% and above</Checkbox>
                 </Box>
-            </Box>
+            </Box> */}
         </Box>
     )
 }

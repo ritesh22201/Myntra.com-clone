@@ -90,7 +90,6 @@ const Payment = () => {
           }
 
           await dispatch(addOrders(payload));
-          await dispatch(addProductToCart([], setCartLoading));
           navigate('/orders');
         }
       }

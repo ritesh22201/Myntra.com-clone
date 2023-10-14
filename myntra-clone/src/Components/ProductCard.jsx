@@ -14,8 +14,8 @@ const ProductCard = ({ id, brand, count, discount, images, price, rating, title,
     return (
         <Box h={'400px'} position={'relative'} onClick={handleClick} w={'100%'} boxSizing='border-box' _hover={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
             <Image src={images.image1} w="100%" h={'270px'} />
-            <Box >
-                <Flex opacity={"0.7"} bg={"white"} w="36%" borderRadius={"2px"} justifyContent={"center"} position={"relative"} bottom={7} left={2} fontSize={"14px"} alignItems={"center"} p="0 4px">
+            <Box boxSizing='border-box'>
+                <Flex opacity={"0.7"} bg={"white"} w="36%" borderRadius={"2px"} justifyContent={"center"} position={"relative"} left={2} fontSize={"14px"} alignItems={"center"} p="0 4px">
                     <Heading fontSize={"14px"}> {rating} </Heading>
                     <span style={{ marginLeft: "3px" }} >
                         <FaStar color="#00695C" />

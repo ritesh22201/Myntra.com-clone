@@ -13,6 +13,7 @@ import '../index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOADER_FALSE, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS } from '../Redux/AuthReducer/actionTypes';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { width } from '../constants/responsiveness';
 
 const Login = () => {
     const [otpCount, setOtpCount] = useState(25);
@@ -74,11 +75,12 @@ const Login = () => {
             {!token &&
                 <Box>
                     {!showOtp ?
-                        <Box>
-                            <Box w={'33%'} m={'10px auto 0 auto'}>
+                        <Box w={width} m={'auto'}>
+                            <Box id='sign-in-button'></Box>
+                            <Box w='100%' m={'10px auto 0 auto'}>
                                 <Image src={img} />
                             </Box>
-                            <Box style={{ width: '33%', padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
+                            <Box style={{ padding: '30px 30px 0 30px', margin: 'auto', background: 'white' }}>
                                 <Heading mb={'25px'} color={'#161515'} fontSize={'18px'}>Login <span>or</span> Signup</Heading>
                                 <PhoneInput inputStyle={{ width: '100%' }} country={"in"} value={ph} onChange={(ph) => setPh('+' + ph)} />
                                 <Text fontSize={'13px'} m={'24px 0'} color={'gray.500'}>By continuing, I agree to the <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Terms of Use</span> & <span style={{ color: '#FF3F6C', fontWeight: 'bold' }}>Privacy Policy</span></Text>
@@ -91,7 +93,7 @@ const Login = () => {
                         </Box>
                         :
                         <Box h={'100vh'} pt={'20px'} bg={'#F9ECEC'}>
-                            <Box p={'35px'} w={{ base: '100%', sm: '100%', md: '60%', lg: '33%', xl: '33%', '2xl': '33%' }} m={'10px auto'} bg={'white'}>
+                            <Box p={'35px'} w={width} m={'10px auto'} bg={'white'}>
                                 <Box mb={'20px'}>
                                     <Image w={'100px'} src={otpImg} alt='otpImg' />
                                 </Box>
@@ -108,10 +110,7 @@ const Login = () => {
                                     className='opt-container'>
                                 </OtpInput>
                                 <Button onClick={handleVerifyCode} borderRadius={'none'} w={'84%'} mt={'20px'} _hover={'none'} bg={'#FF3F6C'} color={'white'} fontWeight={'bold'}> {isLoading && <Spinner mr={'5px'} thickness='3px' speed='0.65s' emptyColor='gray.200' color='pink.300' size='sm' />} <span>Verify OTP</span></Button>
-                                <Flex m={'30px 0 20px 0'} alignItems={'center'}>
-                                    <Text color={'gray.500'} fontSize={'14px'}>Resend OTP in:</Text>
-                                </Flex>
-                                <Flex alignItems={'center'}>
+                                <Flex mt='20px' alignItems={'center'}>
                                     <Text fontSize={'14px'}>Log in using</Text>
                                     <Heading ml={'5px'} fontSize={'14px'} color={'#FF3F6C'}>Password</Heading>
                                 </Flex>
