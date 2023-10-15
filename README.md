@@ -46,7 +46,7 @@ Checkout the above live demo link to use the website.
 
 ## Installation
 
-Provide step-by-step instructions for setting up the project locally. Include prerequisites, dependencies, and any configuration that is required to run the application.
+Step-by-step instructions for setting up the project locally. 
 
 ```bash
 # Clone the repository
