@@ -128,7 +128,7 @@ const Home = () => {
 
   return (
     <Box cursor={'pointer'}>
-      <Box style={{ width: '93%', margin: '30px auto' }}>
+      <Box style={{ width: '97%', margin: '30px auto' }}>
         <Carousel autoFocus='true' infiniteLoop='true' autoPlay='true'>
           <Box>
             <Image w={'100%'} src={coverImg} alt='coverImg' />

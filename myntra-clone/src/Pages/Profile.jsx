@@ -29,7 +29,7 @@ const Profile = () => {
         setFormDetails({ ...formDetails, [name]: value });
     }
 
-    const handleUpdateProfile = (e) => {
+    const handleUpdateProfile = async(e) => {
         e.preventDefault();
 
         if (!formDetails.name || !formDetails.email) {
@@ -38,10 +38,12 @@ const Profile = () => {
         }
 
         if (existedUser) {
-            dispatch(updateProfile(existedUser.id, { ...formDetails }));
+            await dispatch(updateProfile(existedUser.id, { ...formDetails }));
+            await dispatch(getProfile());
         }
         else if (!existedUser) {
-            dispatch(addUserProfile({ ...formDetails }))
+            await dispatch(addUserProfile({ ...formDetails }))
+            await dispatch(getProfile());
         }
     }
 
