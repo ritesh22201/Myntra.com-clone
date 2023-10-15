@@ -91,9 +91,12 @@ export default function Navbar() {
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
           gap='10px'
-          display={{ base: 'flex', md: 'none' }}>
+          w={{base : '120px', md : '80px'}}
+          >
           <IconButton
             onClick={onToggle}
+            display={{ base: 'flex', md: 'none' }}
+            w='70px'
             icon={
               isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
             }
@@ -333,80 +336,41 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: 'MEN',
-    href: '/men',
+    href: '/products?gender=men',
     children: [
       {
-        label: 'Explore Design Work',
-        subLabel: 'Trending Design to inspire you',
-        href: '#',
+        label: 'Shirts',
+        href: '/products?gender=men&categories=shirt',
       },
       {
-        label: 'New & Noteworthy',
-        subLabel: 'Up-and-coming Designers',
-        href: '#',
+        label: 'Jackets',
+        href: '/products?gender=men&categories=jackets',
       },
     ],
   },
   {
     label: 'WOMEN',
-    href: '/women',
+    href: '/products?gender=women',
     children: [
       {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#',
+        label: 'Sweatshirt',
+        href: '/products?gender=women&categories=sweatshirt',
       },
       {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#',
+        label: 'Jeans',
+        href: 'products?gender=women&categories=jeans',
       },
     ],
   },
   {
     label: 'HOME&LIVING',
-    href: '/home&living',
-    children: [
-      {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#',
-      },
-      {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#',
-      },
-    ],
+    href: '/products',
   },
   {
     label: 'BEAUTY',
-    children: [
-      {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#',
-      },
-      {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#',
-      },
-    ],
+    href : '/products?categories=beautycare'
   },
   {
     label: 'STUDIO',
-    children: [
-      {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#',
-      },
-      {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#',
-      },
-    ],
   }
 ];

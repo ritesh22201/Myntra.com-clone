@@ -88,26 +88,27 @@ const Wishlist = () => {
         <Box>
           {
             wishlist && wishlist?.length > 0 ? <Box
-              w="90%"
+              w="87%"
               display={"grid"}
-              gap="20px"
+              gap="80px"
               p="20px"
               gridTemplateColumns={{
                 base: "repeat(1,1fr)",
                 sm: "repeat(1,1fr)",
                 md: "repeat(2,1fr)",
                 lg: "repeat(3,1fr)",
-                xl: "repeat(5,1fr)",
-                "2xl": "repeat(5,1fr)",
+                xl: "repeat(4,1fr)",
+                "2xl": "repeat(4,1fr)",
               }}
+              m='0 auto'
             >
 
               {
                 wishlist?.map((el) => {
-                  return <Box border={'1px solid #e0dfdf'} key={el?.id} position={"relative"} w="100%" >
+                  return <Box border={'1px solid #e0dfdf'} key={el?.id} position={"relative"} w="100%" m='0 auto'>
                     <Image src={el?.images?.image1} w="100%" />
                     <Box  >
-                      <Flex opacity={"0.7"} bg={"white"} w="36%" borderRadius={"2px"} justifyContent={"center"} position={"absolute"} top={"250px"} left={2} fontSize={"14px"} alignItems={"center"} p="0 4px">
+                      <Flex opacity={"0.7"} bg={"white"} w={{base : '25%', sm : '25%', md : "30%", lg : "30%", xl : "30%", '2xl' : "30%"}} borderRadius={"2px"} justifyContent={"center"} position={"absolute"} bottom={{base : '26%', sm : '26%', md : '27%', lg : '35%', xl : '35%', '2xl' : '35%'}} left={'2%'} fontSize={"14px"} alignItems={"center"} p="0 4px">
                         <Heading fontSize={"14px"}> {el?.rating} </Heading>
                         <span style={{ marginLeft: "3px" }} >
                           <FaStar color="#00695C" />
@@ -154,9 +155,9 @@ const Wishlist = () => {
               }
             </Box> :
               <Box minH="90vh" display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Box w="20%" >
-                  <Flex w="100%" justifyContent={'end'}>
-                    <Image src={wishImg} w="80%" alt={"Empty wishlist"} />
+                <Box  w={{base : '85%', sm : '85%', md : '75%', lg : '40%', xl : '30%', '2xl' : '30%'}} >
+                  <Flex w="100%" justifyContent={'center'}>
+                    <Image src={wishImg} w={{base : '50%', sm : '50%', md : "35%", lg : '35%', xl : '35%', '2xl' : '35%'}} alt={"Empty wishlist"} />
                   </Flex>
                   <Box>
                     <Text fontSize={"30px"} color="gray" textAlign={"center"}>Oh!</Text>

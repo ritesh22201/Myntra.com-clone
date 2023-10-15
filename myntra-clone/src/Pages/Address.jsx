@@ -138,8 +138,8 @@ const Address = () => {
     return (
         <>
             {isLoading ? <ContentLoader /> :
-                <Flex minH="80vh" justifyContent={"center"} gap="10px">
-                    <Box maxW="container.sm" w="100%">
+                <Flex minH="80vh" justifyContent={"center"} m='10px auto' w={{ base: '100%', sm: '100%', md: '95%', lg: '75%', xl: '75%', '2xl': '75%' }} direction={{ base: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row', '2xl': 'row' }} gap="10px">
+                    <Box maxW="container.sm" w={{ base: '100%', sm: '100%', md: "65%", lg: "65%", xl: "65%", '2xl': "65%" }}>
                         <Box mt="10px">
                             <Flex justifyContent={"space-between"} alignItems={"center"}>
                                 <Heading size={"md"}>Select Delivery Address</Heading>
@@ -188,45 +188,46 @@ const Address = () => {
                             </Box>}
 
                             {otherAddresses.length !== 0 && <Text fontWeight={"700"} mt={'15px'} fontSize={"13px"} textTransform={"uppercase"} >Other Addresses</Text>}
+                            <Box overflowY='scroll' h='380px' className='scrollbar'>
+                                {otherAddresses?.map(el => {
+                                    return <Box
+                                        key={el?.id}
+                                        cursor={"pointer"}
+                                        mt="10px"
+                                        p="10px"
+                                        borderRadius={"3px"}
+                                        border={"1px solid #eaeaec"}
+                                    >
+                                        <Flex alignItems={"center"} gap="10px">
+                                            <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id, dispatch, addressData)} />
+                                            <Text fontWeight={"700"}>{el?.name}</Text>
+                                            <Tag
+                                                size={'sm'}
+                                                borderRadius='full'
+                                                variant='outline'
+                                                colorScheme='green'
+                                            >
+                                                <TagLabel>{el?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
+                                            </Tag>
+                                        </Flex>
+                                        <Text fontSize={"sm"}>{el?.address}</Text>
+                                        <Text fontSize={"sm"}>{`${el?.locality}, ${el?.city}, ${el?.state} - ${el?.pincode}`}</Text>
+                                        <Text mt="10px" fontSize={"sm"}>Mobile :<span style={{ fontWeight: "700" }}> {el?.mobile}</span></Text>
 
-                            {otherAddresses?.map(el => {
-                                return <Box
-                                    key={el?.id}
-                                    cursor={"pointer"}
-                                    mt="10px"
-                                    p="10px"
-                                    borderRadius={"3px"}
-                                    border={"1px solid #eaeaec"}
-                                >
-                                    <Flex alignItems={"center"} gap="10px">
-                                        <Radio colorScheme='pink' isChecked={el?.isSelected} onChange={() => handleSelectedAddress(el?.id, dispatch, addressData)} />
-                                        <Text fontWeight={"700"}>{el?.name}</Text>
-                                        <Tag
-                                            size={'sm'}
-                                            borderRadius='full'
-                                            variant='outline'
-                                            colorScheme='green'
-                                        >
-                                            <TagLabel>{el?.addressType == 'home' ? 'HOME' : 'WORK'}</TagLabel>
-                                        </Tag>
-                                    </Flex>
-                                    <Text fontSize={"sm"}>{el?.address}</Text>
-                                    <Text fontSize={"sm"}>{`${el?.locality}, ${el?.city}, ${el?.state} - ${el?.pincode}`}</Text>
-                                    <Text mt="10px" fontSize={"sm"}>Mobile :<span style={{ fontWeight: "700" }}> {el?.mobile}</span></Text>
-
-                                    <UnorderedList fontSize={"sm"}>
-                                        <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
-                                    </UnorderedList>
-                                    <Flex ml="10px" mt="20px" gap="10px">
-                                        <Button onClick={() => handleRemoveAddress(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
-                                            Remove
-                                        </Button>
-                                        <Button onClick={() => handleMakeDefault(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
-                                            Make default
-                                        </Button>
-                                    </Flex>
-                                </Box>
-                            })}
+                                        <UnorderedList fontSize={"sm"}>
+                                            <ListItem ml="10px" mt="12px">Pay on Delivery available</ListItem>
+                                        </UnorderedList>
+                                        <Flex ml="10px" mt="20px" gap="10px">
+                                            <Button onClick={() => handleRemoveAddress(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                                Remove
+                                            </Button>
+                                            <Button onClick={() => handleMakeDefault(el?.id)} fontWeight={"700"} fontSize={"12px"} textTransform={"uppercase"} colorScheme='black' variant='outline'>
+                                                Make default
+                                            </Button>
+                                        </Flex>
+                                    </Box>
+                                })}
+                            </Box>
 
                             <Box maxW="container.sm">
                                 <Box

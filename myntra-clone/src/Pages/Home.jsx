@@ -232,7 +232,7 @@ const Home = () => {
       </section>
       <section>
         <Image src={img61} alt='cover' />
-        <Box onClick={() => navigate('/products')} h={imageHeight} overflowX={overflowXAxis} display={displayProp} justifyContent={'center'} gridTemplateColumns={gridTemplateSec4}>
+        <Box onClick={() => navigate('/products')} display={'grid'} justifyContent={'center'} gridTemplateColumns={'repeat(6, 1fr)'}>
           <Image src={img62} alt='img53' />
           <Image src={img63} alt='img54' />
           <Image src={img64} alt='img55' />

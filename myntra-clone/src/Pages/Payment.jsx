@@ -106,10 +106,10 @@ const Payment = () => {
   return (
     <>
       {isLoading ? <ContentLoader /> :
-        <Box w="80%" m="40px auto" >
+        <Box w={{ base: '100%', sm: '100%', md: '95%', lg: '80%', xl: '80%', '2xl': '80%' }} m="0 auto" >
           <Toaster toastOptions={{ duration: 4000 }} />
-          <Flex gap={'50px'}>
-            <Box maxW='container.sm' w="60%">
+          <Flex gap={'10px'} direction={{ base: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row', '2xl': 'row' }}>
+            <Box maxW='container.sm' w={{ base: '100%', sm: '100%', md: "65%", lg: "65%", xl: "65%", '2xl': "65%" }}>
               <Box mt="10px" p="10px" borderRadius={"3px"} border={"1px solid #C1D0B5"}>
                 <Flex alignItems={"center"}>
                   <CiPercent />
@@ -141,58 +141,43 @@ const Payment = () => {
               </Box>
 
               <Box>
-                <Heading size={"sm"} m="15px 0px" fontWeight={"700"}>Choose Payment Mode</Heading>
+                <Heading size={"sm"} m="15px 0px" fontWeight={"700"}>Payment Info</Heading>
               </Box>
               <Box borderRadius={"3px"} border={"1px solid #C1D0B5"} color={"gray.700"} p="10px">
                 <Box >
                   <Flex justifyContent={"space-between"} flexDirection={"column"}>
-
-
                     <Box p="10px" border={"1px solid #C1D0B5"}>
-                      <Flex>
+                      <Flex gap='5px' alignItems='center'>
                         <CiStar />
-                        <Heading size={"xs"}>Recommended</Heading>
+                        <Heading size={"md"} color='red.500'>For the next slide use card number as:-</Heading>
                       </Flex>
                     </Box>
 
                     <Box p="10px">
-                      <Flex>
+                      <Flex gap='5px'>
                         <GiMoneyStack />
-                        <Heading size={"xs"}>Cash on Delivery</Heading>
+                        <Heading size={"xs"}>Card Number :- 4111 1111 1111 1111</Heading>
                       </Flex>
                     </Box>
 
                     <Box p="10px">
-                      <Flex>
+                      <Flex gap='5px'>
                         <BsCreditCard2Back />
-                        <Heading size={"xs"}>Credit/Debit Card</Heading>
+                        <Heading size={"xs"}>Expiry :- Any expiry which exceeds the current date {'(e.g. 11/25)'}</Heading>
                       </Flex>
                     </Box>
 
                     <Box p="10px">
-                      <Flex>
-                        <Text fontSize={"10px"} border={"1px solid black"} >UPI</Text>
-                        <Heading size={"xs"}>PhonePe/Google Pay/BHIM UPI</Heading>
+                      <Flex gap='5px'>
+                        <Text fontSize={"10px"} border={"1px solid black"} >CVV</Text>
+                        <Heading size={"xs"}>Enter random 3 digit number {'(e.g. 359)'}</Heading>
                       </Flex>
                     </Box>
 
                     <Box p="10px">
-                      <Flex>
+                      <Flex gap='5px'>
                         <GiWallet />
-                        <Heading size={"xs"}>Paytm/Wallets</Heading>
-                      </Flex>
-                    </Box>
-                    <Box p="10px">
-                      <Flex>
-                        <BsBank />
-                        <Heading size={"xs"}>Net Banking</Heading>
-                      </Flex>
-                    </Box>
-                    <Box p="10px">
-                      <Flex>
-                        {/* <GiMoneyStack/> */}
-                        <BsTerminalDash />
-                        <Heading size={"xs"}>EMI/Pay Later</Heading>
+                        <Heading size={"xs"}>And for OTP in the next slide enter a random 4 digit number</Heading>
                       </Flex>
                     </Box>
                     <Box>
@@ -200,7 +185,7 @@ const Payment = () => {
                   </Flex>
                 </Box>
               </Box>
-              <Box color={"gray.700"} mt="10px" p="10px" borderRadius={"3px"} border={"1px solid #C1D0B5"}>
+              <Box color={"gray.700"} mb='10px' mt="10px" p="10px" borderRadius={"3px"} border={"1px solid #C1D0B5"}>
                 <Flex justifyContent={"space-between"}>
                   <Flex alignItems={"center"}>
                     <BiGift fontSize={"18px"} />
@@ -210,7 +195,6 @@ const Payment = () => {
                 </Flex>
               </Box>
             </Box>
-            <Divider orientation='vertical' h={"500px"} />
             <PaymentInfo cart={cart} totalPrice={totalPrice} discountedPrice={discountedPrice} couponValue={couponValue} couponDiscount={couponDiscount} handlePayment={handlePayment}>{window.location.pathname === '/payment' ? 'Pay Now' : 'Continue'}</PaymentInfo>
           </Flex>
         </Box>

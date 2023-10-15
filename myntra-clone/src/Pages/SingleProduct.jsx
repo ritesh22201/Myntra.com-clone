@@ -28,6 +28,7 @@ import { AiFillCheckCircle, AiFillHeart } from "react-icons/ai";
 import { addProductToCart, getCartProducts } from "../Redux/CartReducer/action";
 import { BiRightArrow } from "react-icons/bi";
 import Loader from "../Components/Loader";
+import { width } from "../constants/responsiveness";
 
 
 const SingleProduct = () => {
@@ -238,30 +239,34 @@ const SingleProduct = () => {
     window.scrollTo({ top: 0 });
   }, [])
 
+  console.log(window.screen.width)
+
   return (
     <>
       {!singleData.title ? <Loader /> :
-        <Flex p={'0 20px'} mt={'30px'} justifyContent={'center'} gap={'60px'}>
-          <Box w="50%">
-            <VStack>
-              {
-                images &&
-                <HStack>
+        <Flex p={'0 20px'} m={'30px auto 0 auto'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row', xl: 'row', '2xl': 'row' }} justifyContent={'center'} gap={'60px'}>
+          <Box w={{base : '95%', sm : '95%', md : '70%', lg : '50%', xl : '50%', '2xl' : '50%'}} m='0 auto'>
+            {window.screen.availWidth >= 350 && window.screen.availWidth < 450 ?
+              <VStack w='100%'>
+                {images && <HStack w='100%'>
+                  <Image w="100%" src={images?.image1} />
+                </HStack>}
+              </VStack>
+              :
+              <VStack>
+                {images && <HStack>
                   <Image w="300px" src={images?.image1} />
                   <Image w="300px" src={images?.image2} />
-                </HStack>
-              }
-              {
-                images && <HStack>
+                </HStack>}
 
+                {images && <HStack>
                   <Image w="300px" src={images?.image3} />
                   <Image w="300px" src={images?.image4} />
-                </HStack>
-              }
-
-            </VStack>
+                </HStack>}
+              </VStack>
+            }
           </Box>
-          <Box w="50%">
+          <Box w={{base : '95%', sm : '95%', md : '70%', lg : '50%', xl : '50%', '2xl' : '50%'}} m='auto'>
             <Box p="10px">
               {/* <VStack> */}
               <Heading size={"md"}>{brand}</Heading>
@@ -276,11 +281,9 @@ const SingleProduct = () => {
                   opacity={"0.7"}
                   bg={"white"}
                   w="36%"
-
                   borderRadius={"2px"}
                   fontSize={"14px"}
                   alignItems={"center"}
-                  p="0 5px"
                 >
                   <Heading fontSize={"14px"}> {rating} </Heading>
                   <span style={{ marginLeft: "3px" }}>
@@ -370,7 +373,7 @@ const SingleProduct = () => {
               </Box>
             </Box>
 
-            <Box mt="20px">
+            <Box mt="20px" ml='-7px'>
               <Flex>
                 {!isProductAddedToCart ?
                   <Button
@@ -430,21 +433,16 @@ const SingleProduct = () => {
             </Box>
             <Box mt="20px" >
               <Flex >
-                {/* <Input w="55%" focusBorderColor="#d6d1d1" placeholder="Enter pincode" type="number" />
-               <Button position={"relative"} bg={"white"}  right={"70px"} variant={"ghost"} color={"#D14D72"} >Check</Button> */}
-                <InputGroup size='md' w="50%">
+                <InputGroup size='md' w={width}>
                   <Input
                     pr='4.5rem'
-                    // type={show ? 'text' : 'password'}
-                    // mask="999999"
-                    // maskChar=""
                     type="text"
                     value={pincode}
                     maxLength={6}
                     onChange={handlePincodeChange}
                     placeholder='Enter pincode'
                     focusBorderColor="#d6d1d1"
-
+                    mb='10px'
                   />
                   <InputRightElement width='4.5rem'>
                     <Button h='1.75rem' size='sm' color={"#D14D72"} isDisabled={pincode.length < 6} onClick={handleDelivery} _hover={{ bg: "white" }} bg="white">
@@ -483,15 +481,12 @@ const SingleProduct = () => {
               <HStack>
                 <Text>Color | <HStack><BsFillCircleFill color={color} /> </HStack> {color}</Text>
               </HStack>
-
             </Box>
-
-            <Box>
+            <Box mt='10px'>
               <Flex alignItems={"center"}>
                 <Heading mr="10px" textTransform={"uppercase"} size={"md"}>
                   Ratings
                 </Heading>
-                {/* <BsTruck fontSize={"20px"} /> */}
                 <RiStarSLine fontSize={"26px"} />
 
               </Flex>
@@ -501,7 +496,7 @@ const SingleProduct = () => {
               </Flex>
             </Box>
 
-            <Box mt="10px">
+            <Box m="10px 0">
               <Text>Product Code: 10398123</Text>
             </Box>
           </Box>

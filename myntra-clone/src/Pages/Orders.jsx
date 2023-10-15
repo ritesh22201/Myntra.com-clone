@@ -44,11 +44,11 @@ const Orders = () => {
         <>
             {isLoading ? <ContentLoader /> :
                 orders.length > 0 ?
-                    <Box minH={'100vh'} w={'77%'} m={'50px auto'}>
+                    <Box minH={{base : '60vh', sm : '60vh', md : '100vh', lg : '100vh', xl : '100vh', '2xl' : '100vh'}} w={{base : '98%', sm : '98%', md : '85%', lg : '77%', xl : '77%', '2xl' : '77%'}} m={'50px auto'}>
                         <Heading fontSize={'18px'}>Account</Heading>
                         <Text fontSize={'12px'}>{existedUser?.name}</Text>
                         <Flex w={'100%'} borderTop={'1px solid #cccbcb'} mt={'13px'}>
-                            <Box w={'18%'} borderRight={'1px solid #cccbcb'} minH={'83vh'}>
+                            <Box w={{md : '25%', lg : '18%', xl : '18%', '2xl' : '18%'}} display={{base : 'none', sm : 'none', md : 'block', lg : 'block', xl : 'block', '2xl' : 'block'}} borderRight={'1px solid #cccbcb'} minH={'83vh'}>
                                 <Box w={'80%'} borderBottom={'1px solid #cccbcb'} p={'20px 0'} color={'gray.600'}>
                                     <Text>Overview</Text>
                                 </Box>
@@ -70,7 +70,7 @@ const Orders = () => {
                                     <Text>Myntra Insider</Text>
                                 </Box>
                             </Box>
-                            <Box p={'20px 0 20px 30px'} w={'70%'}>
+                            <Box pl='10px' w={{base : '98%', sm : '98%', md : '80%', lg : '77%', xl : '77%', '2xl' : '77%'}} m='10px auto 0 auto'>
                                 <Flex justifyContent={'space-between'}>
                                     <Box>
                                         <Heading size={'sm'}>All orders</Heading>
@@ -109,9 +109,9 @@ const Orders = () => {
                         {orders.length > 3 && <Pagination page={page} pageButton={pageButton} totalCount={totalCount} setPage={setPage} />}
                     </Box>
                     :
-                    <Grid minH={'90vh'} placeItems={'center'}>
-                        <Box fontSize={'20px'} w={'50%'} textAlign='center' m={'0 auto'}>
-                            <Image w={'18%'} m={'auto'} src={wishImg} />
+                    <Grid minH={'90vh'} w={{base : '75%', sm : '75%', md : '60%'}} m='auto' placeItems={'center'}>
+                        <Box fontSize={'20px'} textAlign='center' m={'0 auto'}>
+                            <Image w={{base : '35%', sm : '35%', md : '25%', lg : '18%', xl : '18%', '2xl' : '18%'}} m={'auto'} src={wishImg} />
                             <Text>Oh!</Text>
                             <Text>You haven't ordered yet</Text>
                             <Button onClick={() => cart?.length > 0 ? navigate('/cart') : navigate("/products")} color={"#D14D72"} border={"1px solid #D14D72"} mt={'10px'} variant="outline" textTransform="uppercase">

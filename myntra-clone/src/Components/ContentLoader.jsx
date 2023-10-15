@@ -3,7 +3,7 @@ import React from 'react'
 
 const ContentLoader = () => {
     return (
-        <Flex minH={'80vh'} gap={'20px'} w={'70%'} m={'10px auto'}>
+        <Flex minH={'80vh'} gap={'20px'} w={{base : '95%', sm : '95%', md : '90%', lg : '70%', xl : '70%', '2xl' : '70%'}} m={'10px auto'}>
             <Box w={'70%'}>
                 <Skeleton mb={'10px'} h={'90px'}>
                     <Box>contents wrapped</Box>

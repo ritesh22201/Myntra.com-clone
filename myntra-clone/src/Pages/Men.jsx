@@ -14,7 +14,7 @@ const Men = ({ }) => {
     
     return (
         <Box
-            w="80%"
+            w="78%"
             display={"grid"}
             gap={{base : '0', sm : '0', md : "20px", lg : "20px", xl : "20px", '2xl' : "20px"}}
             gridTemplateColumns={{

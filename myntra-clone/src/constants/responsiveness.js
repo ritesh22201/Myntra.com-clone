@@ -5,7 +5,7 @@ export const displayProp={base : 'flex', sm : 'flex', md : 'grid', lg : 'grid', 
 
 export const gridTemplate={md : 'repeat(10, 1fr)', lg : 'repeat(10, 1fr)', xl : 'repeat(10, 1fr)', '2xl' : 'repeat(10, 1fr)'};
 
-export const imageHeight={base : '140px', sm : '140px'};
+export const imageHeight={base : '140px', sm : '140px', md : 'fit-content', lg : 'fit-content', xl : 'fit-content', '2xl' : 'fit-content'};
 
 export const gridTemplateSec4 = {base : 'repeat(17, 1fr)', sm : 'repeat(17, 1fr)',md : 'repeat(6, 1fr)', lg : 'repeat(6, 1fr)', xl : 'repeat(6, 1fr)', '2xl' : 'repeat(6, 1fr)'};
 

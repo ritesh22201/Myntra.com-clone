@@ -27,7 +27,7 @@ const PaymentInfo = ({ totalPrice, discountedPrice, couponValue, couponDiscount,
 
     return (
         <Box
-            w={window.location.pathname === '/payment' ? '40%' : "25%"}
+            w={{ base: '100%', sm: '100%', md: "35%", lg: "35%", xl: "35%", '2xl': "35%" }}
             p="15px"
             mt={'10px'}
             maxH={'400px'}
