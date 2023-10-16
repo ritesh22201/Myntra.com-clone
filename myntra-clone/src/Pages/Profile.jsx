@@ -20,6 +20,7 @@ const Profile = () => {
 
     useEffect(() => {
         dispatch(getProfile());
+        window.scrollTo({ top: 0, left: 0 });
     }, [])
 
     const existedUser = users?.find(el => el.mobile === token?.mobile);
@@ -29,7 +30,7 @@ const Profile = () => {
         setFormDetails({ ...formDetails, [name]: value });
     }
 
-    const handleUpdateProfile = async(e) => {
+    const handleUpdateProfile = (e) => {
         e.preventDefault();
 
         if (!formDetails.name || !formDetails.email) {
@@ -38,12 +39,10 @@ const Profile = () => {
         }
 
         if (existedUser) {
-            await dispatch(updateProfile(existedUser.id, { ...formDetails }));
-            await dispatch(getProfile());
+            dispatch(updateProfile(existedUser.id, { ...formDetails }));
         }
         else if (!existedUser) {
-            await dispatch(addUserProfile({ ...formDetails }))
-            await dispatch(getProfile());
+            dispatch(addUserProfile({ ...formDetails }))
         }
     }
 
@@ -51,21 +50,22 @@ const Profile = () => {
         if (isAdded || isUpdated) {
             toast.success('User details saved successfully');
         }
+        dispatch(getProfile());
     }, [isAdded, isUpdated])
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0 });
-    }, [])
+    }, [dispatch])
 
     return (
         <Box minH='90vh'>
             <Toaster toastOptions={{ duration: 4000 }} />
             {isLoading ? <ContentLoader /> :
-                <Box minH={{base : '60vh', sm : '60vh', md : '90vh', lg : '90vh', xl : '100vh', '2xl' : '100vh'}} w={{base : '98%', sm : '98%', md : '85%', lg : '77%', xl : '77%', '2xl' : '77%'}} m={'50px auto'}>
+                <Box minH={{ base: '60vh', sm: '60vh', md: '90vh', lg: '90vh', xl: '100vh', '2xl': '100vh' }} w={{ base: '98%', sm: '98%', md: '85%', lg: '77%', xl: '77%', '2xl': '77%' }} m={'50px auto'}>
                     <Heading fontSize={'18px'}>Account</Heading>
                     <Text fontSize={'12px'}>{existedUser?.name}</Text>
                     <Flex w={'100%'} borderTop={'1px solid #cccbcb'} mt={'13px'}>
-                        <Box w={{md : '25%', lg : '18%', xl : '18%', '2xl' : '18%'}} display={{base : 'none', sm : 'none', md : 'block', lg : 'block', xl : 'block', '2xl' : 'block'}} borderRight={'1px solid #cccbcb'} minH={'83vh'}>
+                        <Box w={{ md: '25%', lg: '18%', xl: '18%', '2xl': '18%' }} display={{ base: 'none', sm: 'none', md: 'block', lg: 'block', xl: 'block', '2xl': 'block' }} borderRight={'1px solid #cccbcb'} minH={'83vh'}>
                             <Box w={'80%'} borderBottom={'1px solid #cccbcb'} p={'20px 0'} color={'gray.600'}>
                                 <Text>Overview</Text>
                             </Box>
@@ -87,7 +87,7 @@ const Profile = () => {
                                 <Text>Myntra Insider</Text>
                             </Box>
                         </Box>
-                        <Box p={{base : '8px', sm : '8px', md : '40px', lg : '40px', xl : '40px', '2xl' : '40px'}} w={{base : '98%', sm : '98%', md : '75%', lg : '80%', xl : '80%', '2xl' : '80%'}} boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' border='1px solid #cccbcb' m='30px 10px'>
+                        <Box p={{ base: '8px', sm: '8px', md: '40px', lg: '40px', xl: '40px', '2xl': '40px' }} w={{ base: '98%', sm: '98%', md: '75%', lg: '80%', xl: '80%', '2xl': '80%' }} boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' border='1px solid #cccbcb' m='30px 10px'>
                             <Box m='20px 0 20px 15px' w='90%'>
                                 <Heading size='md' color='gray.700'>Edit Details</Heading>
                                 <Box h='1px' m='20px 0'>
