@@ -3,21 +3,14 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const PrivateRoutes = ({ children }) => {
   const location = useLocation();
-  const token = JSON.parse(localStorage.getItem('google-login')) || {};
-  // return token?.token ? children : <Navigate to={'/login'} state={location.pathname} replace={true}/>;
+  const loginToken = JSON.parse(localStorage.getItem('google-login')) || {};
+  const isAuthenticated = loginToken.token;
 
-  if (token.token) {
-    console.log('yess')
-    if (location.pathname == '/login') {
-      const previousPath = location.state || '/';
-      return <Navigate to={previousPath} replace={true} />;
-    } else {
-      return children;
-    }
+  if (isAuthenticated && location.pathname === '/login') {
+    return <Navigate to={location.state} replace={true} />;
   }
-  else{
-    return <Navigate to="/login" state={location.pathname} replace={true} />;
-  }
+
+  return isAuthenticated ? children : <Navigate to={'/login'} state={location.pathname} replace={true} />;
 }
 
 export default PrivateRoutes;
