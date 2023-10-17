@@ -47,7 +47,7 @@ const Wishlist = () => {
 
   const handleAdd = async (elem) => {
 
-    const existedProduct = cart?.find(el => el.productId == elem.id || el.title == elem.title);
+    const existedProduct = cart?.find(el => el.productId == elem.productId || el.title == elem.title);
 
     if (existedProduct) {
       toast({
@@ -61,11 +61,12 @@ const Wishlist = () => {
     else
       if (!existedProduct) {
 
-        const wishlistProduct = wishlist?.find(el => el.productId === elem.productId);
+        const wishlistProduct = wishlist?.find(el => el.productId == elem.productId);
 
         if (wishlistProduct) {
           const productData = {
             ...wishlistProduct,
+            id : null,
             quantity: 1
           }
           await dispatch(addProductToCart(productData, setCartLoading));
@@ -105,7 +106,7 @@ const Wishlist = () => {
 
               {
                 wishlist?.map((el) => {
-                  return <Box border={'1px solid #e0dfdf'} key={el?.id} position={"relative"} w="100%" m='0 auto'>
+                  return <Box border={'1px solid #e0dfdf'} key={el.id} position={"relative"} w="100%" m='0 auto'>
                     <Image src={el?.images?.image1} w="100%" />
                     <Box  >
                       <Flex opacity={"0.7"} bg={"white"} w={{base : '25%', sm : '25%', md : "30%", lg : "30%", xl : "30%", '2xl' : "30%"}} borderRadius={"2px"} justifyContent={"center"} position={"absolute"} bottom={{base : '26%', sm : '26%', md : '27%', lg : '35%', xl : '35%', '2xl' : '35%'}} left={'2%'} fontSize={"14px"} alignItems={"center"} p="0 4px">

@@ -13,7 +13,7 @@ export const getOrders = (setTotalCount, page) => (dispatch) => {
             dispatch({ type: ORDER_REQ_SUCCESS, payload : orders });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ORDER_REQ_FAILURE });
         })
 }
@@ -27,7 +27,7 @@ export const addOrders = (payload) => (dispatch) => {
             dispatch({ type: ADD_ORDER_SUCCESS });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ORDER_REQ_FAILURE });
         })
 }
@@ -41,7 +41,7 @@ export const updateOrders = (payload, id) => (dispatch) => {
             dispatch({ type: UPDATE_ORDER_SUCCESS });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ORDER_REQ_FAILURE });
         })
 }

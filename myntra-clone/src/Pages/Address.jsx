@@ -34,6 +34,7 @@ import { addAddress, deleteAddress, getAddress, updateAddress } from '../Redux/a
 import { deliverDate, handleSelectedAddress } from '../constants/deliverDate';
 import PaymentInfo from '../Components/PaymentInfo';
 import ContentLoader from '../Components/ContentLoader';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Address = () => {
     const navigate = useNavigate()
@@ -62,6 +63,17 @@ const Address = () => {
         e.preventDefault();
 
         const data = { ...address, userMobile: token?.mobile };
+
+        if(!address.name || !address.mobile || !address.pincode || !address.address || !address.locality || !address.city || !address.state || !address.addressType){
+            toast.error('Please fill all required fields!');
+            return;
+        }
+
+        const addressExisted = addressData?.find(el => el.mobile.slice(3) == address.mobile);
+        if(addressExisted){
+            toast.error('Address already added!');
+            return;
+        }
 
         if (address.isDefault) {
             const defaultAddress = addressData?.find(el => el.isDefault == true);
@@ -139,6 +151,7 @@ const Address = () => {
         <>
             {isLoading ? <ContentLoader /> :
                 <Flex minH="80vh" justifyContent={"center"} m='10px auto' w={{ base: '100%', sm: '100%', md: '95%', lg: '75%', xl: '75%', '2xl': '75%' }} direction={{ base: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row', '2xl': 'row' }} gap="10px">
+                    <Toaster toastOptions={{ duration: 4000 }} />
                     <Box maxW="container.sm" w={{ base: '100%', sm: '100%', md: "65%", lg: "65%", xl: "65%", '2xl': "65%" }}>
                         <Box mt="10px">
                             <Flex justifyContent={"space-between"} alignItems={"center"}>

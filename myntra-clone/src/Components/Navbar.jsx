@@ -42,7 +42,7 @@ import {
 import { FaHeart, FaUserAlt } from 'react-icons/fa'
 import { FiHeart, FiUser } from 'react-icons/fi'
 import { HiOutlineShoppingBag } from 'react-icons/hi'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen, getSearchProducts } from '../Redux/ProductReducer/action';
@@ -52,6 +52,7 @@ import logo from '../Assets/myntra-logo.webp';
 export default function Navbar() {
   const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const location = useLocation();
   const { inputVal, setInputVal } = useContext(GlobalContext);
   const { cart } = useSelector(store => store.cartReducer);
   const { wishlist } = useSelector(store => store.productReducer);
@@ -169,7 +170,7 @@ export default function Navbar() {
           </VStack>
           <VStack position='relative' cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
-            {cart?.length && token?.token && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
+            {cart?.length && token.token && location.pathname !== ('/orders' || '/profile') && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
             <Text style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</Text>
           </VStack>
         </Stack>

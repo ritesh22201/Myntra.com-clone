@@ -8,12 +8,12 @@ export const getCartProducts = () => (dispatch) => {
 
     axios.get('https://petal-shining-falcon.glitch.me/cart')
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             const products = res.data.filter(el => el.mobile == token?.mobile);
             dispatch({ type: CART_REQ_SUCCESS, payload: products });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: CART_REQ_FAILURE });
         })
 }
@@ -23,7 +23,7 @@ export const addProductToCart = (data, setCartLoading) => (dispatch) => {
     setCartLoading(true);
     return axios.post('https://petal-shining-falcon.glitch.me/cart', data)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             dispatch({ type: CART_POST_SUCCESS });
             setCartLoading(false);
         })
@@ -39,11 +39,11 @@ export const updateDetails = (data, itemId) => (dispatch) => {
 
     return axios.patch(`https://petal-shining-falcon.glitch.me/cart/${itemId}`, data)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             dispatch({ type: CART_UPDATE_SUCCESS });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: CART_REQ_FAILURE });
         })
 }

@@ -86,8 +86,7 @@ const Sidebar = () => {
         <Box>
             <Flex p={'0 10px'} justifyContent="space-between">
                 <FormLabel fontWeight={"700"} >FILTERS</FormLabel>
-                <FormLabel fontWeight={"700"} fontSize={"15px"} color={"pink.500"} >CLEAR ALL</FormLabel>
-
+                {/* <FormLabel fontWeight={"700"} fontSize={"15px"} color={"pink.500"} >CLEAR ALL</FormLabel> */}
             </Flex>
             <Box p={'10px'}>
                 <Box>

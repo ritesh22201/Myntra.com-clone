@@ -21,7 +21,7 @@ export const getProductsSingleMen = (setSingleData, id, value = '') => {
         // console.log(res.data)
         setSingleData(res.data)
     }).catch((err) => {
-        console.log(err);
+        // console.log(err);
     })
 }
 

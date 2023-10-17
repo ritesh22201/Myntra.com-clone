@@ -38,8 +38,8 @@ const SingleProduct = () => {
   const [deliveryStatus, setDeliveryStatus] = useState(null);
   const toast = useToast()
   const dispatch = useDispatch()
-  const { wishlist, isLoading } = useSelector((store) => store.productReducer);
-  const { cart, isLoadingCart } = useSelector((store) => store.cartReducer);
+  const { wishlist, isLoading, isAdded, isDeleted } = useSelector((store) => store.productReducer);
+  const { cart, isLoadingCart, isAddedCart } = useSelector((store) => store.cartReducer);
   const [isProductAddedToWishlist, setIsProductAddedToWishlist] = useState(false);
   const [isProductAddedToCart, setIsProductAddedToCart] = useState(false);
   const wishListData = JSON.parse(localStorage.getItem('wishlist')) || [];
@@ -57,7 +57,6 @@ const SingleProduct = () => {
       setSelectedSize({ ...selectedSize, [id]: storedSize });
     }
   }, [id]);
-
 
   let {
     brand,
@@ -136,15 +135,12 @@ const SingleProduct = () => {
           mobile: token?.mobile
         };
 
-        dispatch(addProductToCart(productData, setCartLoading)).then(() => {
-          dispatch(getCartProducts());
-        })
-
+        dispatch(addProductToCart(productData, setCartLoading));
         localStorage.setItem('cart', JSON.stringify([...cart, productData]));
       }
   }
 
-  const handleWishList = (id) => {
+  const handleWishList = async (id) => {
 
     if (!selectedSize[id]) {
       toast({
@@ -239,13 +235,17 @@ const SingleProduct = () => {
     window.scrollTo({ top: 0 });
   }, [])
 
-  console.log(window.screen.width)
+
+  useEffect(() => {
+    dispatch(getwishlistproducts());
+    dispatch(getCartProducts());
+  }, [isAdded, isDeleted, isAddedCart])
 
   return (
     <>
       {!singleData.title ? <Loader /> :
         <Flex p={'0 20px'} m={'30px auto 0 auto'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row', xl: 'row', '2xl': 'row' }} justifyContent={'center'} gap={'60px'}>
-          <Box w={{base : '95%', sm : '95%', md : '70%', lg : '50%', xl : '50%', '2xl' : '50%'}} m='0 auto'>
+          <Box w={{ base: '95%', sm: '95%', md: '70%', lg: '50%', xl: '50%', '2xl': '50%' }} m='0 auto'>
             {window.screen.availWidth >= 350 && window.screen.availWidth < 450 ?
               <VStack w='100%'>
                 {images && <HStack w='100%'>
@@ -266,7 +266,7 @@ const SingleProduct = () => {
               </VStack>
             }
           </Box>
-          <Box w={{base : '95%', sm : '95%', md : '70%', lg : '50%', xl : '50%', '2xl' : '50%'}} m='auto'>
+          <Box w={{ base: '95%', sm: '95%', md: '70%', lg: '50%', xl: '50%', '2xl': '50%' }} m='auto'>
             <Box p="10px">
               {/* <VStack> */}
               <Heading size={"md"}>{brand}</Heading>

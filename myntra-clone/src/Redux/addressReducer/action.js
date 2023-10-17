@@ -7,12 +7,12 @@ export const getAddress = () => (dispatch) => {
 
     return axios.get('https://petal-shining-falcon.glitch.me/address')
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             const address = res.data.filter(el => el.userMobile == token?.mobile);
             dispatch({ type: ADDRESS_GET_SUCCESS, payload : address});
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ADDRESS_FAILURE });
         })
 }
@@ -22,11 +22,11 @@ export const addAddress = (data) => (dispatch) => {
 
     return axios.post('https://petal-shining-falcon.glitch.me/address', data)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             dispatch({ type: ADD_NEW_ADDRESS});
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ADDRESS_FAILURE });
         })
 }
@@ -36,11 +36,11 @@ export const updateAddress = (data, id) => (dispatch) => {
 
     return axios.patch(`https://petal-shining-falcon.glitch.me/address/${id}`, data)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             // dispatch({ type: UPDATE_ADDRESS});
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ADDRESS_FAILURE });
         })
 }
@@ -50,11 +50,11 @@ export const deleteAddress = (id) => (dispatch) => {
 
     return axios.delete(`https://petal-shining-falcon.glitch.me/address/${id}`)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             dispatch({ type: DELETE_ADDRESS}); 
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             dispatch({ type: ADDRESS_FAILURE });
         })
 }

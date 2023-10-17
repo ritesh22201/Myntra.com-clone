@@ -70,7 +70,7 @@ export function NavbarTwo() {
                         color={useColorModeValue('gray.800', 'white')} src={logo} w={{ base: "80px", sm: "80px", md: "80px", lg: "60px", xl: "60px", "2xl": "60px" }} />
                 </Flex>
                 <Flex>
-                    <Flex gap="10px" display={{base : 'none', sm : 'none'}}>
+                    <Flex gap="10px" display={{base : 'none', sm : 'none', md : 'flex', lg : 'flex', xl : 'flex', '2xl' : 'flex'}}>
                         <Text color={location.pathname == '/cart' && 'green.500'} borderBottom={location.pathname == '/cart' && '3px solid #22b600'} fontWeight={location.pathname == '/cart' && 'bold'} _hover={{cursor : 'pointer'}} onClick={() => handleBag('/cart')}>Bag</Text>
                         <Text>----------</Text>
 

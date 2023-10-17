@@ -44,7 +44,7 @@ import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiBookmarkLine } from "react-icons/ri";
 import giftImage from "../Assets/gift-big.webp";
 import { deleteCartProduct, getCartProducts, updateDetails } from "../Redux/CartReducer/action";
-import toast, { CheckmarkIcon } from "react-hot-toast";
+import toast, { CheckmarkIcon, Toaster } from "react-hot-toast";
 import { addwishList } from "../Redux/ProductReducer/action";
 import { getAddress, updateAddress } from "../Redux/addressReducer/action";
 import { deliverDate, handleSelectedAddress } from "../constants/deliverDate";
@@ -114,9 +114,8 @@ const Cart = () => {
     }
 
     const handleDelete = async (id) => {
-        dispatch(deleteCartProduct(id)).then(() => {
-            dispatch(getCartProducts());
-        })
+        await dispatch(deleteCartProduct(id));
+        await dispatch(getCartProducts());
     }
 
     useEffect(() => {
@@ -146,15 +145,9 @@ const Cart = () => {
     }
 
     const handleMoveToWishlist = async (el) => {
-        const existedProduct = wishlist?.find(elem => elem.productId === el.productId);
+        const existedProduct = wishlist?.find(elem => elem.productId == el.productId);
         if (existedProduct) {
-            toast({
-                title: 'Product is already in the wishlist!',
-                status: 'warning',
-                duration: 3000,
-                isClosable: true,
-                position: 'top'
-            })
+            toast.error('Product is already in the wishlist!');
             return;
         }
 
@@ -178,8 +171,9 @@ const Cart = () => {
                 :
                 cart?.length ? (
                     <>
-                        <Flex w={{base : '100%', sm : '100%', md : '95%', lg : '75%', xl : '75%', '2xl' : '75%'}} justifyContent={"center"} className='scrollbar' direction = {{base : 'column', sm : 'column', md : 'row', lg : 'row', xl : 'row', '2xl' : 'row'}} m='0 auto' gap="10px">
-                            <Box w={{base : '100%', sm : '100%', md : "65%", lg : "65%", xl : "65%", '2xl' : "65%"}}>
+                        <Flex w={{ base: '100%', sm: '100%', md: '95%', lg: '75%', xl: '75%', '2xl': '75%' }} justifyContent={"center"} className='scrollbar' direction={{ base: 'column', sm: 'column', md: 'row', lg: 'row', xl: 'row', '2xl': 'row' }} m='0 auto' gap="10px">
+                            <Toaster toastOptions={{ duration: 4000 }} />
+                            <Box w={{ base: '100%', sm: '100%', md: "65%", lg: "65%", xl: "65%", '2xl': "65%" }}>
                                 <Box maxW="container.sm" w="100%">
                                     {selectedAddress?.address && <Box
                                         mt="10px"
@@ -295,7 +289,7 @@ const Cart = () => {
                                         mt="10px"
                                         borderRadius={"3px"}
                                         border={"1px solid #eaeaec"}
-                                        p={{base : 0, sm : 0, md : '10px', lg : '10px', xl : '10px', '2xl' : '10px'}}
+                                        p={{ base: 0, sm: 0, md: '10px', lg: '10px', xl: '10px', '2xl': '10px' }}
                                     >
                                         <Flex alignItems={"center"} justifyContent={"space-between"}>
                                             <Flex>
@@ -308,14 +302,14 @@ const Cart = () => {
                                                 </Text>
                                             </Flex>
                                         </Flex>
-                                        <Box w='100%' overflowY='scroll' h='450px' className='scrollbar'>
+                                        <Box w='100%' overflowY='scroll' h={cart?.length === 1 ? '230px' : '450px'} className='scrollbar'>
                                             {cart?.map(el => {
                                                 // console.log(el)
                                                 return <Box key={el.id} maxW="container.sm" w="100%">
                                                     <Box
                                                         cursor={"pointer"}
                                                         mt="10px"
-                                                        p={{base : 0, sm : 0, md : '10px', lg : '10px', xl : '10px', '2xl' : '10px'}}
+                                                        p={{ base: 0, sm: 0, md: '10px', lg: '10px', xl: '10px', '2xl': '10px' }}
                                                         borderRadius={"3px"}
                                                         border={"1px solid #eaeaec"}
                                                     >
@@ -323,7 +317,7 @@ const Cart = () => {
                                                         <Flex justifyContent={"space-around"}>
                                                             {/* <Box> */}
                                                             <Image
-                                                                w={{base : '90px', sm : '90px', md : "120px", lg : "120px", xl : "120px", '2xl' : "120px"}}
+                                                                w={{ base: '90px', sm: '90px', md: "120px", lg: "120px", xl: "120px", '2xl': "120px" }}
                                                                 src={el?.images?.image1}
                                                                 alt="productImage"
                                                                 onClick={() => navigate(`/products/${el.productId}`)}
@@ -337,14 +331,13 @@ const Cart = () => {
                                                                     <Text fontSize={"md"} fontWeight={"700"}>
                                                                         {el?.brand}
                                                                     </Text>{" "}
-                                                                    {/* {Add brand} */}
-                                                                    <CloseIcon onClick={() => handleDelete(el.id)} />
+                                                                    <Box onClick={() => handleDelete(el.id)}>
+                                                                        <CloseIcon />
+                                                                    </Box>
                                                                 </Flex>
                                                                 <Text>
                                                                     {el?.title}
                                                                 </Text>{" "}
-                                                                {/* {Add title} */}
-                                                                {/* size add here */}
                                                                 <Flex gap="10px">
                                                                     <Select
                                                                         defaultValue={el?.size}
@@ -384,7 +377,7 @@ const Cart = () => {
                                                                         fontWeight={"800"}
                                                                         colorScheme="pink"
                                                                         borderRadius={"none"}
-                                                                        p={{base : '5px', sm : '5px'}}
+                                                                        p={{ base: '5px', sm: '5px' }}
                                                                         border={"1px solid #ff3f71"}
                                                                         _hover={{
                                                                             background: "#f6ecee",
@@ -482,7 +475,7 @@ const Cart = () => {
                             </Box>
 
                             <Box
-                                w={{base : '100%', sm : '100%', md : "35%", lg : "35%", xl : "35%", '2xl' : "35%"}}
+                                w={{ base: '100%', sm: '100%', md: "35%", lg: "35%", xl: "35%", '2xl': "35%" }}
                                 p="15px"
                                 mt={'10px'}
                                 h={'50%'}
