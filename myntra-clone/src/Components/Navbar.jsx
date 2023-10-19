@@ -42,7 +42,7 @@ import {
 import { FaHeart, FaUserAlt } from 'react-icons/fa'
 import { FiHeart, FiUser } from 'react-icons/fi'
 import { HiOutlineShoppingBag } from 'react-icons/hi'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen, getSearchProducts } from '../Redux/ProductReducer/action';
@@ -69,7 +69,7 @@ export default function Navbar() {
     return () => clearTimeout(id);
   }, [inputVal])
 
-  const existedUser = users?.find(el => el?.mobile === token.mobile);
+  const existedUser = users.find(el => el.mobile === token.mobile);
 
   const handleLogout = () => {
     localStorage.removeItem('google-login');
@@ -187,6 +187,7 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <Stack direction={'row'} spacing={4}>

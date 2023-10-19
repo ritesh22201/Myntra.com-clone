@@ -15,9 +15,9 @@ const Product = () => {
     const dispatch = useDispatch();
     const { isLoading } = useSelector(store => store.productReducer);
     const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
     let pageButton = Math.ceil(totalCount / 14);
     const [searchParams] = useSearchParams();
-
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0 });
@@ -34,24 +34,24 @@ const Product = () => {
     }
 
     useEffect(() => {
-        dispatch(getProductsMen(setTotalCount, page, obj, '', ''));
+        dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
     }, [page, searchParams])
 
     const handleSort = (value) => {
         if(value === 'discount'){
-            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc'));
+            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc', setLoading));
         }
         else if(value === 'pricea'){
-            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'asc'));
+            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'asc', setLoading));
         }
         else if(value === 'priced'){
-            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'desc'));
+            dispatch(getProductsMen(setTotalCount, page, obj, 'price', 'desc', setLoading));
         }
         else if(value === 'rating'){
-            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc'));
+            dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc', setLoading));
         }
         else{
-            dispatch(getProductsMen(setTotalCount, page, obj, '', ''));
+            dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
         }
     }
 
@@ -71,7 +71,7 @@ const Product = () => {
                             <Button _hover={{ bg: 'gray.200', borderRadius: '20px', p: '-4px 18px' }} variant={'ghost'}>Country of Origin <BsChevronDown /></Button>
                             <Button _hover={{ bg: 'gray.200', borderRadius: '20px', p: '-4px 18px' }} variant={'ghost'}>Size <BsChevronDown /></Button>
                         </Flex>
-                        <Select _focusVisible={'none'} onChange={(e) => handleSort(e.target.value)} w={{base : '35%', sm : '35%', md : '27%', lg : '27%', xl : '27%', '2xl' : '27%'}} borderRadius={'none'}>
+                        <Select mr='5px' _focusVisible={'none'} onChange={(e) => handleSort(e.target.value)} w={{base : '35%', sm : '35%', md : '27%', lg : '27%', xl : '27%', '2xl' : '27%'}} borderRadius={'none'}>
                             <option value="">Recommended</option>
                             <option value="discount">Better Discount</option>
                             <option value="pricea">Price: Low to High</option>
@@ -80,13 +80,13 @@ const Product = () => {
                         </Select>
                     </Flex>
                 </Flex>
-                <Flex gap={'25px'}>
+                <Flex gap='20px'>
                     <Box w='20%' display={{base : 'none', sm : 'none', md : 'block', lg : 'block', xl : 'block', '2xl' : 'block'}}>
                         <Sidebar />
                     </Box>
-                    <Men />
+                    {loading ? <Loader/> : <Men />}
                 </Flex>
-                <Pagination page={page} pageButton={pageButton} totalCount={totalCount} setPage={setPage} />
+                {pageButton > 1 && <Pagination page={page} pageButton={pageButton} totalCount={totalCount} setPage={setPage} />}
             </Box>
         </>
     )

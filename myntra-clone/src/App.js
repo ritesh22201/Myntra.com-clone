@@ -6,6 +6,8 @@ import Footer from './Components/Footer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavbarTwo } from './Components/NavbarTwo';
 import { useEffect, useLayoutEffect } from 'react';
+import { getProfile } from './Redux/profileReducer/action';
+import { useDispatch } from 'react-redux';
 
 function App() {
   const location = useLocation();
@@ -16,10 +18,13 @@ function App() {
   const isPayment = location.pathname.includes("/payment")
   const isLoggedIn = location.pathname.includes("/login");
   const path = localStorage.getItem('path') || '';
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    localStorage.setItem('path', location.pathname);
-  }, [location.pathname !== '/login']);
+    if(location.pathname !== '/login'){
+      localStorage.setItem('path', location.pathname);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.pathname !== '/login') {
@@ -32,6 +37,11 @@ function App() {
       navigate(path);
     }
   }, [loginToken, location.pathname, path])
+
+  useEffect(() => {
+    dispatch(getProfile());
+    window.scrollTo({ top: 0, left: 0 });
+}, [])
 
   return (
     <div className="App">

@@ -3,20 +3,22 @@ import axios from 'axios';
 
 const token = JSON.parse(localStorage.getItem('google-login')) || {};
 
-export const getProductsMen = (setTotalCount, page, obj, sortBy='', orderBy='') => (dispatch) => {
+export const getProductsMen = (setTotalCount, page, obj, sortBy='', orderBy='', setLoading) => (dispatch) => {
     dispatch({ type: PRODUCT_REQ });
+    setLoading(true);
     axios.get(`https://petal-shining-falcon.glitch.me/products?_sort=${sortBy}&_order=${orderBy}&_limit=14&_page=${page}`, obj)
         .then(res => {
             setTotalCount(res.headers['x-total-count']);
             dispatch({ type: PRODUCT_SUCCESS, payload: res.data })
+            setLoading(false);
         })
         .catch(err => {
             dispatch({ type: PRODUCT_FAILURE });
+            setLoading(false);
         })
 }
 
 export const getProductsSingleMen = (setSingleData, id, value = '') => {
-
     axios.get(`https://petal-shining-falcon.glitch.me/products/${id}`).then((res) => {
         // console.log(res.data)
         setSingleData(res.data)
