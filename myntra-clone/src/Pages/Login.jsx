@@ -58,7 +58,7 @@ const Login = () => {
             localStorage.setItem('google-login', JSON.stringify({ mobile: userDetails.phoneNumber, token: userDetails.accessToken }));
             toast.success('User logged in successfully');
             dispatch({ type: LOGIN_SUCCESS, payload: userDetails.accessToken });
-            navigate(location.state, {replace : true});
+            // navigate(location.state, {replace : true});
         }).catch((error) => {
             dispatch({type : LOGIN_FAILURE});
             toast.error('Otp is incorrect!');

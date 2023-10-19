@@ -7,7 +7,7 @@ const PrivateRoutes = ({ children }) => {
   const isAuthenticated = loginToken.token;
 
   if (isAuthenticated && location.pathname === '/login') {
-    return <Navigate to={location.state} replace={true} />;
+    return <Navigate to={location.state === children} replace={true} />;
   }
 
   return isAuthenticated ? children : <Navigate to={'/login'} state={location.pathname} replace={true} />;

@@ -18,8 +18,8 @@ export const getAddress = () => (dispatch) => {
 }
 
 export const addAddress = (data) => (dispatch) => {
+    console.log('yess')
     dispatch({ type: ADDRESS_REQ });
-
     return axios.post('https://petal-shining-falcon.glitch.me/address', data)
         .then(res => {
             // console.log(res.data);
@@ -32,6 +32,7 @@ export const addAddress = (data) => (dispatch) => {
 }
 
 export const updateAddress = (data, id) => (dispatch) => {
+    console.log('yess')
     dispatch({ type: ADDRESS_REQ });
 
     return axios.patch(`https://petal-shining-falcon.glitch.me/address/${id}`, data)
@@ -40,7 +41,7 @@ export const updateAddress = (data, id) => (dispatch) => {
             // dispatch({ type: UPDATE_ADDRESS});
         })
         .catch(err => {
-            // console.log(err);
+            console.log(err);
             dispatch({ type: ADDRESS_FAILURE });
         })
 }
