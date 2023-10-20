@@ -36,3 +36,4 @@ export const updateProfile = (id, payload) => (dispatch) => {
             dispatch({ type: PROFILE_REQ_FAILURE });
         })
 }
+

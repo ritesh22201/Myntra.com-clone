@@ -16,17 +16,32 @@ const Profile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { users, isLoading, isAdded, isUpdated } = useSelector(store => store.profileReducer);
-    const [formDetails, setFormDetails] = useState({ name: '', mobile: token?.mobile, gender: '', email: '', birthday: '', alternateMobile: '' });
+    const existedUser = users?.find(el => el.mobile === token.mobile);
+
+    const [formDetails, setFormDetails] = useState({
+        name: '',
+        mobile: token?.mobile,
+        gender: '',
+        email: '',
+        birthday: '',
+        alternateMobile: ''
+    });
 
     useEffect(() => {
-        dispatch(getProfile());
-        window.scrollTo({ top: 0, left: 0 });
-    }, [])
-
-    const existedUser = users?.find(el => el.mobile === token?.mobile);
+        if (existedUser) {
+            setFormDetails({
+                name: existedUser.name || '',
+                mobile: token?.mobile,
+                gender: existedUser.gender || '',
+                email: existedUser.email || '',
+                birthday: existedUser.birthday || '',
+                alternateMobile: existedUser.alternateMobile || ''
+            });
+        }
+    }, [existedUser]);
 
     const handleChange = (e) => {
-        const { name, value } = e?.target;
+        const { name, value } = e.target;
         setFormDetails({ ...formDetails, [name]: value });
     }
 
@@ -39,10 +54,9 @@ const Profile = () => {
         }
 
         if (existedUser) {
-            dispatch(updateProfile(existedUser.id, { ...formDetails }));
-        }
-        else if (!existedUser) {
-            dispatch(addUserProfile({ ...formDetails }))
+            dispatch(updateProfile(+existedUser.id, formDetails));
+        } else {
+            dispatch(addUserProfile(formDetails));
         }
     }
 
@@ -102,11 +116,11 @@ const Profile = () => {
                                         </Flex>
                                     </Box>
                                     <Box className='input-container'>
-                                        <Input name='name' value={existedUser?.name} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
+                                        <Input name='name' value={formDetails.name} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
                                         <label>Full Name*</label>
                                     </Box>
                                     <Box className='input-container'>
-                                        <Input name='email' value={existedUser?.email} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
+                                        <Input name='email' value={formDetails.email} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
                                         <label>Email*</label>
                                     </Box>
                                     <Flex w='100%' mt='20px'>
@@ -114,12 +128,12 @@ const Profile = () => {
                                         <Button leftIcon={existedUser?.gender === 'female' && !formDetails.gender && <ImCheckmark style={{ color: '#ff3f6c' }} />} name='gender' onClick={() => setFormDetails({ ...formDetails, gender: 'female' })} bg='white' _hover='none' _active='none' borderRadius='0' outline='1px solid #cbc9c9' w='50%'>{formDetails.gender === 'female' && <ImCheckmark style={{ color: '#ff3f6c' }} />} {' '} Female</Button>
                                     </Flex>
                                     <Box mt='25px' className='input-container'>
-                                        <Input name='birthday' value={existedUser?.birthday} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
+                                        <Input name='birthday' value={formDetails.birthday || ''} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
                                         <label className='birthday-label'>Birthday(dd/mm/yyyy)</label>
                                     </Box>
                                     <Heading fontSize='14px' m='25px 0' color='gray.600'>Alternate mobile details</Heading>
                                     <Box position='relative'>
-                                        <Input name='alternateMobile' value={existedUser?.alternateMobile} onChange={(e) => handleChange(e)} pl='35px' type='text' color='#777' fontSize='15px' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' placeholder='Mobile Number' />
+                                        <Input name='alternateMobile' value={formDetails.alternateMobile || ''} onChange={(e) => handleChange(e)} pl='35px' type='text' color='#777' fontSize='15px' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' placeholder='Mobile Number' />
                                         <Text position='absolute' top='11px' left='5px' color='#777' fontSize='13px'>+91  |</Text>
                                     </Box>
                                     <Button type='submit' w='100%' mt='25px' _hover='none' _active='none' borderRadius='2px' fontSize='14px' fontWeight='bold' textTransform='uppercase' bg='#ff3f6c' color='white'>Save Details</Button>

@@ -34,7 +34,7 @@ const Men = ({ }) => {
                 <Box
                     w="78%"
                     display={"grid"}
-                    justifyContent='end'
+                    // justifyContent='end'
                     h='fit-content'
                     gap={{ base: '0', sm: '0', md: "20px", lg: "20px", xl: "20px", '2xl': "20px" }}
                     gridTemplateColumns={{
