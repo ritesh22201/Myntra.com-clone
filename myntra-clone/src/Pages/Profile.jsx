@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Box, Flex, Heading, Image, Text, Button, Divider, Input } from '@chakra-ui/react';
 import ContentLoader from '../Components/ContentLoader';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdVerified } from 'react-icons/md';
 import '../CSS/customInput.css';
-import { addUserProfile, getProfile } from '../Redux/profileReducer/action';
+import { addUserProfile, getProfile, updateUserProfile } from '../Redux/profileReducer/action';
 import { updateAddress } from '../Redux/addressReducer/action';
-import { updateProfile } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
 import { ImCheckmark } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
@@ -53,8 +52,8 @@ const Profile = () => {
             return;
         }
 
-        if (existedUser) {
-            dispatch(updateProfile(+existedUser.id, formDetails));
+        if (existedUser?.id) {
+            dispatch(updateUserProfile(existedUser.id, formDetails))
         } else {
             dispatch(addUserProfile(formDetails));
         }
@@ -69,7 +68,7 @@ const Profile = () => {
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0 });
-    }, [dispatch])
+    }, [dispatch, isLoading])
 
     return (
         <Box minH='90vh'>
@@ -124,8 +123,8 @@ const Profile = () => {
                                         <label>Email*</label>
                                     </Box>
                                     <Flex w='100%' mt='20px'>
-                                        <Button leftIcon={existedUser?.gender === 'male' && !formDetails.gender && <ImCheckmark style={{ color: '#ff3f6c' }} />} name='gender' onClick={() => setFormDetails({ ...formDetails, gender: 'male' })} bg='white' _hover='none' _active='none' borderRadius='0' outline='1px solid #cbc9c9' w='50%'>{formDetails.gender === 'male' && <ImCheckmark style={{ color: '#ff3f6c' }} />} {' '} Male</Button>
-                                        <Button leftIcon={existedUser?.gender === 'female' && !formDetails.gender && <ImCheckmark style={{ color: '#ff3f6c' }} />} name='gender' onClick={() => setFormDetails({ ...formDetails, gender: 'female' })} bg='white' _hover='none' _active='none' borderRadius='0' outline='1px solid #cbc9c9' w='50%'>{formDetails.gender === 'female' && <ImCheckmark style={{ color: '#ff3f6c' }} />} {' '} Female</Button>
+                                        <Button leftIcon={existedUser?.gender === 'male' && !formDetails.gender && <ImCheckmark style={{ color: '#ff3f6c' }} />} onClick={() => setFormDetails({ ...formDetails, gender: 'male' })} bg='white' _hover='none' _active='none' borderRadius='0' outline='1px solid #cbc9c9' w='50%'>{formDetails.gender === 'male' && <ImCheckmark style={{ color: '#ff3f6c' }} />} {' '} Male</Button>
+                                        <Button leftIcon={existedUser?.gender === 'female' && !formDetails.gender && <ImCheckmark style={{ color: '#ff3f6c' }} />} onClick={() => setFormDetails({ ...formDetails, gender: 'female' })} bg='white' _hover='none' _active='none' borderRadius='0' outline='1px solid #cbc9c9' w='50%'>{formDetails.gender === 'female' && <ImCheckmark style={{ color: '#ff3f6c' }} />} {' '} Female</Button>
                                     </Flex>
                                     <Box mt='25px' className='input-container'>
                                         <Input name='birthday' value={formDetails.birthday || ''} onChange={(e) => handleChange(e)} type='text' _focusVisible='none' borderRadius='0' border='1px solid #cccbcb' />
@@ -147,4 +146,4 @@ const Profile = () => {
     )
 }
 
-export default Profile;
+export default memo(Profile);

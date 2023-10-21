@@ -15,7 +15,7 @@ export const getProfile = () => (dispatch) => {
         })
 }
 
-export const addUserProfile = (payload) => (dispatch) => {
+export const addUserProfile = (payload) => async(dispatch) => {
     dispatch({ type: PROFILE_REQ });
     return axios.post(`https://petal-shining-falcon.glitch.me/users`, payload)
         .then(res => {
@@ -26,9 +26,9 @@ export const addUserProfile = (payload) => (dispatch) => {
         })
 }
 
-export const updateProfile = (id, payload) => (dispatch) => {
+export const updateUserProfile = (id, payload) => (dispatch) => {
     dispatch({ type: PROFILE_REQ });
-    return axios.put(`https://petal-shining-falcon.glitch.me/users/${id}`, payload)
+    axios.put(`https://petal-shining-falcon.glitch.me/users/${id}`, payload)
         .then(res => {
             dispatch({ type: UPDATE_PROFILE_SUCCESS });
         })

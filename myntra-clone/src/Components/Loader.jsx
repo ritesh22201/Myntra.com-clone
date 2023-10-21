@@ -1,9 +1,10 @@
 import { Box, Grid, Spinner } from '@chakra-ui/react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 
 const Loader = () => {
     const location = useLocation();
+    
     return (
         <Grid h={location.pathname === '/products' ? '65vh' : '85vh'} w={location.pathname === '/products' ? '78%' : '99%'} ml={location.pathname === '/products' ? '35px' : ''} placeItems={'center'}>
             <Spinner
