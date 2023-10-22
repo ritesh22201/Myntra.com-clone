@@ -188,6 +188,7 @@ const DesktopNav = () => {
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
   const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -199,6 +200,7 @@ const DesktopNav = () => {
                 p={2}
                 href={navItem.href ?? '#'}
                 fontSize={'md'}
+                onClick={() => setSearchParams(navItem.href)}
                 fontWeight={'bold'}
                 color={linkColor}
                 _hover={{
@@ -232,9 +234,12 @@ const DesktopNav = () => {
 };
 
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
     <Link
       href={href}
+      onClick={() => setSearchParams(href)}
       role={'group'}
       display={'block'}
       p={2}

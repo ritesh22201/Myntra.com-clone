@@ -17,7 +17,7 @@ const Product = () => {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     let pageButton = Math.ceil(totalCount / 14);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0 });
@@ -50,7 +50,7 @@ const Product = () => {
         else if(value === 'rating'){
             dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc', setLoading));
         }
-        else{
+        else if(value === ''){
             dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
         }
     }

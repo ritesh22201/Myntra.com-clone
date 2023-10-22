@@ -29,6 +29,7 @@ import { addProductToCart, getCartProducts } from "../Redux/CartReducer/action";
 import { BiRightArrow } from "react-icons/bi";
 import Loader from "../Components/Loader";
 import { width } from "../constants/responsiveness";
+import { Toaster, toast } from "react-hot-toast";
 
 
 const SingleProduct = () => {
@@ -36,7 +37,7 @@ const SingleProduct = () => {
   const [selectedSize, setSelectedSize] = useState({});
   const [pincode, setPincode] = useState("");
   const [deliveryStatus, setDeliveryStatus] = useState(null);
-  const toast = useToast()
+  const toaster = useToast()
   const dispatch = useDispatch()
   const { wishlist, isLoading, isAdded, isDeleted } = useSelector((store) => store.productReducer);
   const { cart, isLoadingCart, isAddedCart } = useSelector((store) => store.cartReducer);
@@ -94,7 +95,7 @@ const SingleProduct = () => {
 
   const handleAdd = async (id) => {
     if (!selectedSize[id]) {
-      toast({
+      toaster({
         title: 'Please select a size!',
         status: 'warning',
         duration: 3000,
@@ -107,7 +108,7 @@ const SingleProduct = () => {
     const existedProduct = cart?.find(el => el.productId == id || el.title == title);
 
     if (existedProduct) {
-      toast({
+      toaster({
         title: 'Product is already in the cart!',
         status: 'warning',
         duration: 3000,
@@ -143,7 +144,7 @@ const SingleProduct = () => {
   const handleWishList = async (id) => {
 
     if (!selectedSize[id]) {
-      toast({
+      toaster({
         title: 'Please select a size!',
         status: 'warning',
         duration: 3000,
@@ -156,7 +157,7 @@ const SingleProduct = () => {
     const existedProduct = wishlist?.find(el => el.id == id || el.title == title);
 
     if (existedProduct) {
-      toast({
+      toaster({
         title: 'Product is already in the wishlist!',
         status: 'warning',
         duration: 3000,
@@ -239,12 +240,16 @@ const SingleProduct = () => {
   useEffect(() => {
     dispatch(getwishlistproducts());
     dispatch(getCartProducts());
+    if(isAddedCart){
+      toast.success('Product added to the cart');
+    }
   }, [isAdded, isDeleted, isAddedCart])
 
   return (
     <>
       {!singleData.title ? <Loader /> :
         <Flex p={'0 20px'} m={'30px auto 0 auto'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row', xl: 'row', '2xl': 'row' }} justifyContent={'center'} gap={'60px'}>
+          <Toaster toastOptions={{duration : 4000}}/>
           <Box w={{ base: '95%', sm: '95%', md: '70%', lg: '50%', xl: '50%', '2xl': '50%' }} m='0 auto'>
             {window.screen.availWidth >= 350 && window.screen.availWidth < 450 ?
               <VStack w='100%'>

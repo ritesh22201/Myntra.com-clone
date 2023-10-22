@@ -19,7 +19,7 @@ import PaymentInfo from '../Components/PaymentInfo'
 import toast, { Toaster } from 'react-hot-toast'
 import { addOrders } from '../Redux/paymentReducer/action'
 import ContentLoader from '../Components/ContentLoader';
-import { addProductToCart } from '../Redux/CartReducer/action'
+import { addProductToCart, deleteCartProduct } from '../Redux/CartReducer/action'
 
 const Payment = () => {
   const { cart } = useSelector(store => store.cartReducer);
@@ -91,6 +91,12 @@ const Payment = () => {
 
           await dispatch(addOrders(payload));
           navigate('/orders');
+
+          
+
+          for(let i = 0; i<cart.length; i++){
+            await dispatch(deleteCartProduct(cart[i].id));
+          }
         }
       }
     }
