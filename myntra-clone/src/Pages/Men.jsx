@@ -8,25 +8,6 @@ import noProduct from '../Assets/empty-bag.png';
 
 const Men = ({ }) => {
     const { men } = useSelector(store => store.productReducer);
-    const dispatch = useDispatch();
-    const [page, setPage] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-    const [searchParams] = useSearchParams();
-    const [loading, setLoading] = useState(false);
-
-    let obj = {
-        params: {
-            categories: searchParams.getAll('categories'),
-            gender: searchParams.getAll('gender'),
-            color: searchParams.getAll('color'),
-            brand: searchParams.getAll('brand'),
-            price: searchParams.getAll('price')
-        }
-    }
-
-    useEffect(() => {
-        dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
-    }, [])
 
     return (
         <>
@@ -34,7 +15,6 @@ const Men = ({ }) => {
                 <Box
                     w="78%"
                     display={"grid"}
-                    // justifyContent='end'
                     h='fit-content'
                     gap={{ base: '0', sm: '0', md: "20px", lg: "20px", xl: "20px", '2xl': "20px" }}
                     gridTemplateColumns={{

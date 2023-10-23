@@ -92,8 +92,8 @@ export default function Navbar() {
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
           gap='10px'
-          w={{base : '120px', md : '80px'}}
-          >
+          w={{ base: '120px', md: '80px' }}
+        >
           <IconButton
             onClick={onToggle}
             display={{ base: 'flex', md: 'none' }}
@@ -188,7 +188,24 @@ const DesktopNav = () => {
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
   const [searchParams, setSearchParams] = useSearchParams();
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  let obj = {
+    params: {
+      categories: searchParams.getAll('categories'),
+      gender: searchParams.getAll('gender'),
+      color: searchParams.getAll('color'),
+      brand: searchParams.getAll('brand'),
+      price: searchParams.getAll('price')
+    }
+  }
+
+  useEffect(() => {
+    dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
+  }, [])
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -235,11 +252,31 @@ const DesktopNav = () => {
 
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  let obj = {
+    params: {
+      categories: searchParams.getAll('categories'),
+      gender: searchParams.getAll('gender'),
+      color: searchParams.getAll('color'),
+      brand: searchParams.getAll('brand'),
+      price: searchParams.getAll('price')
+    }
+  }
+
+  useEffect(() => {
+    dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
+  }, [])
 
   return (
     <Link
       href={href}
-      onClick={() => setSearchParams(href)}
+      onClick={() => {
+        setSearchParams(href);
+      }}
       role={'group'}
       display={'block'}
       p={2}
@@ -365,7 +402,7 @@ const NAV_ITEMS: Array<NavItem> = [
       },
       {
         label: 'Jeans',
-        href: 'products?gender=women&categories=jeans',
+        href: '/products?gender=women&categories=jeans',
       },
     ],
   },
@@ -375,7 +412,7 @@ const NAV_ITEMS: Array<NavItem> = [
   },
   {
     label: 'BEAUTY',
-    href : '/products?categories=beautycare'
+    href: '/products?categories=beautycare'
   },
   {
     label: 'STUDIO',

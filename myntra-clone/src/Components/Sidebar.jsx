@@ -87,6 +87,17 @@ const Sidebar = () => {
         window.location.reload();
     }
 
+    useEffect(() => {
+        let params = {
+            categories,
+            gender,
+            color,
+            brand,
+            price
+        }
+
+        setSearchParams(params)
+    },[])
 
     return (
         <Box w='100%' >

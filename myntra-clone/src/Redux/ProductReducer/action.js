@@ -11,6 +11,7 @@ export const getProductsMen = (setTotalCount, page, obj, sortBy='', orderBy='', 
             setTotalCount(res.headers['x-total-count']);
             dispatch({ type: PRODUCT_SUCCESS, payload: res.data })
             setLoading(false);
+            // console.log(res.data);
         })
         .catch(err => {
             dispatch({ type: PRODUCT_FAILURE });

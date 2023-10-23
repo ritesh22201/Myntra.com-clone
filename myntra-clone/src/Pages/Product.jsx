@@ -33,10 +33,6 @@ const Product = () => {
         }
     }
 
-    useEffect(() => {
-        dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
-    }, [page, searchParams])
-
     const handleSort = (value) => {
         if(value === 'discount'){
             dispatch(getProductsMen(setTotalCount, page, obj, value, 'desc', setLoading));
@@ -54,6 +50,16 @@ const Product = () => {
             dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
         }
     }
+
+    useEffect(() => {
+        dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
+    }, [])
+
+    useEffect(() => {
+        dispatch(getProductsMen(setTotalCount, page, obj, '', '', setLoading));
+    }, [page, searchParams])
+
+    console.log(searchParams)
 
     return (
         <>
