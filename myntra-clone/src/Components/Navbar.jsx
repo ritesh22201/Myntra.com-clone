@@ -48,6 +48,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductsMen, getSearchProducts } from '../Redux/ProductReducer/action';
 import { GlobalContext } from '../Context/GlobalContextProvider';
 import logo from '../Assets/myntra-logo.webp';
+import { getCartProducts } from '../Redux/CartReducer/action';
 
 export default function Navbar() {
   const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
@@ -75,6 +76,10 @@ export default function Navbar() {
     localStorage.removeItem('google-login');
     window.location.reload();
   }
+
+  useEffect(() => {
+    dispatch(getCartProducts());
+  }, [cart?.length])
 
   return (
     <Box position={'sticky'} top={0} zIndex={'overlay'} boxShadow='rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'>
@@ -170,7 +175,7 @@ export default function Navbar() {
           </VStack>
           <VStack position='relative' cursor={'pointer'} onClick={() => navigate('/cart')}>
             <HiOutlineShoppingBag style={{ fontSize: '20px' }} />
-            {cart?.length && token.token && location.pathname !== ('/orders' || '/profile') && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
+            {cart?.length && token.token && location.pathname !== '/orders' || cart?.length && token.token && location.pathname !== '/profile' && <Box bg={'#ff3f71'} top={'-19px'} left={'12px'} color={'white'} borderRadius={'50%'} display={'grid'} placeItems={'center'} position={'absolute'} w={'21px'} h={'21px'}>{cart?.length}</Box>}
             <Text style={{ fontSize: '15px', fontWeight: 'bold' }}>Bag</Text>
           </VStack>
         </Stack>
