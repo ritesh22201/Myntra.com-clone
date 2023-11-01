@@ -24,6 +24,7 @@ Checkout the above live demo link to use the website.
 - **Product Catalog**: Browse, search, and filter a wide range of fashion products.
 - **Product Details**: View detailed information about each product, including images, prices, and descriptions.
 - **Shopping Cart**: Add and remove items from the cart, calculate the total price.
+- **Wishlist Products**: Add to wishlist to buy the product later.
 - **Checkout Process**: Simulate the purchase process, including shipping and payment options.
 - **Order History**: View previous orders and their status.
 - **User Profiles**: Edit personal information and track order history.
