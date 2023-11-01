@@ -11,8 +11,6 @@ A clone of the popular online fashion and lifestyle e-commerce platform, Myntra.
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Demo
 
