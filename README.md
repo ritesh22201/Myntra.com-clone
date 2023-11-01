@@ -98,5 +98,9 @@ npm start
 
 ![Orders Page](./myntra-clone/src/Assets/readmeImg/09.png)
 
+### Profile Page
+
+![Profile Page](./myntra-clone/src/Assets/readmeImg/10.png)
+
 
 
